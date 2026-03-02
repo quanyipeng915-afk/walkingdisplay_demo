@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Discussion Area - Yuen Chau Kok Park</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            overflow: hidden;
+        }
+
+        /* Top Map Section */
+        .map-section {
+            width: 401.99px;
+            height: 524.27px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: linear-gradient(135deg, #008236 0%, #00A63E 50%, #00C950 100%);
+            overflow: hidden;
+        }
+
+        .map-bg {
+            width: 429px;
+            height: 550px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            object-fit: cover;
+        }
+
+        .map-overlay {
+            width: 401.99px;
+            height: 524.27px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0.30;
+        }
+
+        .route-icon-1 {
+            position: absolute;
+            left: 174px;
+            top: 185px;
+        }
+
+        .route-icon-2 {
+            position: absolute;
+            left: 277px;
+            top: 444px;
+        }
+
+        .route-icon-3 {
+            position: absolute;
+            left: 65px;
+            top: 314px;
+        }
+
+        .location-pin {
+            position: absolute;
+            left: 234px;
+            top: 388px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            width: 37px;
+            height: 42px;
+            position: absolute;
+            left: 17px;
+            top: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 18891700px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2), 8px 8px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .back-btn:active {
+            transform: translateY(1px);
+        }
+
+        .back-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Today's Walk Distance */
+        .walk-distance {
+            width: 103.08px;
+            height: 67.98px;
+            position: absolute;
+            left: 282.92px;
+            top: 15.99px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 4px;
+            padding: 12px 20px;
+        }
+
+        .walk-label {
+            width: 63.09px;
+            height: 15.99px;
+            position: absolute;
+            left: 20px;
+            top: 12px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .walk-value {
+            width: 63.09px;
+            height: 27.99px;
+            position: absolute;
+            left: 20px;
+            top: 27.99px;
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.55px;
+            background: #7CB342;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Location Name Tag */
+        .location-tag {
+            width: 129.97px;
+            height: 35.98px;
+            position: absolute;
+            left: 136.01px;
+            top: 472.30px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .location-tag-text {
+            width: 97.98px;
+            height: 19.99px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        /* Bottom Discussion Section */
+        .discussion-section {
+            width: 401.99px;
+            height: 349.52px;
+            position: absolute;
+            left: 0px;
+            top: 524px;
+            background: linear-gradient(180deg, #E0F7FA 0%, #F9FAFB 100%);
+        }
+
+        /* Tabs */
+        .tabs {
+            width: 401.99px;
+            height: 52.50px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            border-bottom: 0.56px #E5E7EB solid;
+            display: flex;
+        }
+
+        .tab {
+            width: 201px;
+            height: 51.94px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab.active {
+            border-bottom: 3.94px #7CB342 solid;
+        }
+
+        .tab-text {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #99A1AF;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .tab.active .tab-text {
+            background: #7CB342;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Discussion Messages */
+        .messages-container {
+            width: 401.99px;
+            height: 224.48px;
+            position: absolute;
+            left: 0px;
+            top: 52.50px;
+            overflow: hidden;
+            overflow-y: auto;
+        }
+
+        .messages-wrapper {
+            width: 370.01px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+        }
+
+        .message {
+            width: 370.01px;
+            position: absolute;
+            display: flex;
+            gap: 7.99px;
+        }
+
+        .message:nth-child(1) {
+            height: 55.97px;
+            left: 0px;
+            top: 0px;
+        }
+
+        .message:nth-child(2) {
+            height: 55.97px;
+            left: 0px;
+            top: 83.96px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: #4FC3F7;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 18891700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar img {
+            width: 16px;
+            height: 16px;
+        }
+
+        .message-content {
+            position: absolute;
+            left: 39.99px;
+            top: 0px;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            padding: 8px 15.99px;
+        }
+
+        .message-author {
+            width: 209.01px;
+            height: 15.99px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .message-text {
+            width: 207.01px;
+            height: 19.99px;
+            font-size: 13px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #0A0A0A;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .reply-button {
+            width: 101.98px;
+            height: 35.98px;
+            position: absolute;
+            left: 268.03px;
+            top: 83.96px;
+            background: #7CB342;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reply-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12), 3px 3px 0px rgba(0, 0, 0, 0.15);
+        }
+
+        .reply-button-text {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Input Section */
+        .input-section {
+            width: 401.99px;
+            height: 72.54px;
+            position: absolute;
+            left: 0px;
+            top: 277.02px;
+            background: white;
+            border-top: 0.56px #E5E7EB solid;
+        }
+
+        .input-wrapper {
+            width: 370.01px;
+            height: 39.99px;
+            position: absolute;
+            left: 15.99px;
+            top: 16.56px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 39.99px;
+            height: 39.99px;
+            background: #F3F4F6;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 18891700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .input-field {
+            width: 274.03px;
+            height: 35.98px;
+            position: relative;
+            top: 2.01px;
+            background: #F3F4F6;
+            overflow: hidden;
+            border-radius: 4px;
+            border: none;
+            padding: 0 16px;
+            font-size: 14px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            color: rgba(10, 10, 10, 0.50);
+            outline: none;
+        }
+
+        .input-field:focus {
+            color: #0A0A0A;
+        }
+
+        .send-button {
+            width: 39.99px;
+            height: 39.99px;
+            background: #7CB342;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 3px 3px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 18891700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2), 5px 5px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .send-button:active {
+            transform: translateY(1px);
+        }
+
+        .send-button img {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Map Section -->
+        <div class="map-section">
+            <img class="map-bg" src="./assets/CodeBubbyAssets/460_6588/10.png" alt="Route Map">
+            <div class="map-overlay"></div>
+            
+            <div class="route-icon-1">
+                <img src="./assets/CodeBubbyAssets/460_6588/1.svg" alt="Route Point 1">
+            </div>
+            <div class="route-icon-2">
+                <img src="./assets/CodeBubbyAssets/460_6588/2.svg" alt="Route Point 2">
+            </div>
+            <div class="route-icon-3">
+                <img src="./assets/CodeBubbyAssets/460_6588/3.svg" alt="Route Point 3">
+            </div>
+            
+            <div class="location-pin">
+                <img src="./assets/CodeBubbyAssets/460_6588/4.svg" alt="Location Pin">
+            </div>
+            
+            <!-- Back Button -->
+            <div class="back-btn" onclick="goBack()">
+                <img src="./assets/CodeBubbyAssets/460_6588/5.svg" alt="Back">
+            </div>
+            
+            <!-- Today's Walk Distance -->
+            <div class="walk-distance">
+                <div class="walk-label">Today's Walk</div>
+                <div class="walk-value">1.2km</div>
+            </div>
+            
+            <!-- Location Name Tag -->
+            <div class="location-tag">
+                <div class="location-tag-text">Yuen chau Kok Park</div>
+            </div>
+        </div>
+
+        <!-- Discussion Section -->
+        <div class="discussion-section">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab" onclick="switchTab('items')">
+                    <div class="tab-text">Items to be unlocked</div>
+                </div>
+                <div class="tab active">
+                    <div class="tab-text">Discussion Area</div>
+                </div>
+            </div>
+            
+            <!-- Messages Container -->
+            <div class="messages-container">
+                <div class="messages-wrapper">
+                    <!-- Message 1 -->
+                    <div class="message">
+                        <div class="avatar">
+                            <img src="./assets/CodeBubbyAssets/460_6588/6.svg" alt="fern avatar">
+                        </div>
+                        <div class="message-content">
+                            <div class="message-author">fern</div>
+                            <div class="message-text">Let's take a photo here!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Message 2 -->
+                    <div class="message">
+                        <div class="avatar">
+                            <img src="./assets/CodeBubbyAssets/460_6588/7.svg" alt="Evan avatar">
+                        </div>
+                        <div class="message-content">
+                            <div class="message-author">Evan</div>
+                            <div class="message-text">The scenery here is truly beautiful!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reply Button for first message -->
+                    <div class="reply-button" onclick="replyToMessage(0)">
+                        <div class="reply-button-text">I agree！</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <div class="user-avatar">
+                        <img src="./assets/CodeBubbyAssets/460_6588/8.svg" alt="User avatar">
+                    </div>
+                    <input type="text" class="input-field" placeholder="Input message..." id="messageInput">
+                    <button class="send-button" onclick="sendMessage()">
+                        <img src="./assets/CodeBubbyAssets/460_6588/9.svg" alt="Send">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function switchTab(tab) {
+            if (tab === 'items') {
+                window.location.href = 'location-route.html';
+            }
+        }
+
+        function replyToMessage(messageIndex) {
+            const messages = ['Let\'s take a photo here!', 'The scenery here is truly beautiful!'];
+            const authors = ['fern', 'Evan'];
+            
+            // Add reply to input field
+            document.getElementById('messageInput').value = `@${authors[messageIndex]} `;
+            document.getElementById('messageInput').focus();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                console.log('Sending message:', message);
+                // Here you would typically send the message to a server
+                // For now, just clear the input
+                input.value = '';
+                
+                // Show feedback
+                showFeedback('Message sent!', 'success');
+            }
+        }
+
+        // Handle Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function showFeedback(message, type) {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: 'Pixelify Sans', sans-serif;
+                font-weight: 500;
+                z-index: 1000;
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                background: ${type === 'success' ? '#7CB342' : '#FF6B6B'};
+                color: white;
+            `;
+            feedback.textContent = message;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.opacity = '1';
+                feedback.style.top = '40px';
+            }, 10);
+            
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                feedback.style.top = '20px';
+                setTimeout(() => document.body.removeChild(feedback), 300);
+            }, 2500);
+        }
+
+        // Simulate walk distance increase
+        let currentDistance = 1.2;
+        function updateWalkDistance() {
+            currentDistance += 0.1;
+            document.querySelector('.walk-value').textContent = currentDistance.toFixed(1) + 'km';
+        }
+
+        // Auto update distance every 5 seconds (demo)
+        setInterval(updateWalkDistance, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 商店 - Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            min-height: 100vh;
+            position: relative;
+            background: linear-gradient(180deg, #E1F5FE 0%, #FFFCE1 100%);
+            overflow: hidden;
+            padding-bottom: 40px;
+        }
+
+        /* Header */
+        .header {
+            width: 370.01px;
+            height: 55.98px;
+            position: absolute;
+            left: 16px;
+            top: 16px;
+        }
+
+        .back-btn {
+            width: 37.01px;
+            height: 41.83px;
+            position: absolute;
+            left: 0;
+            top: 7.07px;
+            cursor: pointer;
+        }
+
+        .back-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-text {
+            width: 146px;
+            height: 44px;
+            position: absolute;
+            left: 52.01px;
+            top: 5.99px;
+        }
+
+        .header-title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 26px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Currency */
+        .currency-bar {
+            width: 370.01px;
+            height: 55.99px;
+            position: absolute;
+            left: 15.99px;
+            top: 87.96px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .currency-coins {
+            width: 179px;
+            height: 55.99px;
+            background: #FFD54F;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 15.99px;
+        }
+
+        .currency-gems {
+            width: 179px;
+            height: 55.99px;
+            background: #7CB342;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 15.99px;
+        }
+
+        .currency-icon {
+            width: 24.21px;
+            height: 32px;
+            margin-right: 8px;
+        }
+
+        .currency-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .currency-value {
+            font-size: 20px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+        }
+
+        .currency-coins .currency-value {
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .currency-gems .currency-value {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tabs */
+        .tabs {
+            width: 338px;
+            height: 44px;
+            position: absolute;
+            left: 16px;
+            top: 160px;
+            display: flex;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        .tab {
+            height: 36px;
+            padding: 0 16px;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #7CB342;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .tab:nth-child(1) {
+            width: 72px;
+        }
+
+        .tab:nth-child(2) {
+            width: 84px;
+        }
+
+        .tab:nth-child(3) {
+            width: 68px;
+        }
+
+        .tab:nth-child(4) {
+            width: 84px;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            width: 370.01px;
+            position: absolute;
+            left: 15.99px;
+            top: 235.92px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: space-between;
+        }
+
+        .item-card {
+            width: 177px;
+            height: 220px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 5px 5px 0px rgba(0, 0, 0, 0.20);
+            overflow: hidden;
+            outline: 1.30px black solid;
+            outline-offset: -1.30px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .item-card.purchased {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .item-card.purchased .item-price {
+            background: #A9ADB4;
+        }
+
+        .purchase-feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #7CB342;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: 'Jersey 25', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .purchase-feedback.show {
+            opacity: 1;
+        }
+
+        .purchase-feedback.error {
+            background: #FF6B6B;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 125px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-image img {
+            max-width: 75%;
+            max-height: 75%;
+            object-fit: contain;
+        }
+
+        /* Specific image sizes for better fit */
+        .item-image img[alt="Crown"] {
+            width: 95px;
+            height: 64px;
+        }
+
+        .item-image img[alt="Adventure Jacket"] {
+            width: 100px;
+            height: 63px;
+        }
+
+        .item-image img[alt="Garden Swing"] {
+            width: 50px;
+            height: 64px;
+        }
+
+        .item-image img[alt="Mushroom Lamp"] {
+            width: 50px;
+            height: 50px;
+        }
+
+        .item-image img[alt="Rainbow Effect"] {
+            width: 100px;
+            height: 60px;
+        }
+
+        .item-image img[alt="Star Particles"] {
+            width: 110px;
+            height: 61px;
+        }
+
+        .item-image img[alt="Forest Cabin"] {
+            width: 130px;
+            height: 67px;
+        }
+
+        .item-category {
+            width: 55px;
+            height: 28px;
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            background: rgba(255, 255, 255, 0.90);
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .item-info {
+            width: 100%;
+            height: 95px;
+            padding: 10px;
+            position: relative;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .item-price {
+            width: 100%;
+            height: 40px;
+            background: #FFD54F;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .price-icon {
+            width: 16px;
+            height: 25px;
+            position: absolute;
+            left: 45px;
+            top: 7px;
+        }
+
+        .price-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .price-value {
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-left: 18px;
+        }
+
+        /* Item specific backgrounds */
+        .item-card:nth-child(1) .item-image {
+            background: #E8F5E9;
+        }
+
+        .item-card:nth-child(2) .item-image {
+            background: #FFF9C4;
+        }
+
+        .item-card:nth-child(3) .item-image {
+            background: #FFF0C4;
+        }
+
+        .item-card:nth-child(4) .item-image {
+            background: #E8F5E9;
+        }
+
+        .item-card:nth-child(5) .item-image {
+            background: #FFE9E6;
+        }
+
+        .item-card:nth-child(6) .item-image {
+            background: #FFF3E0;
+        }
+
+        .item-card:nth-child(7) .item-image {
+            background: #FFF9C4;
+        }
+
+        .item-card:nth-child(8) .item-image {
+            background: #E3F2FD;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                min-height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="back-btn" onclick="goBack()">
+                <img src="./assets/CodeBubbyAssets/3_1118/3.svg" alt="返回">
+            </div>
+            <div class="header-text">
+                <div class="header-title">Shop</div>
+                <div class="header-subtitle">Dress up your pet and home</div>
+            </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="currency-bar">
+            <div class="currency-coins">
+                <div class="currency-icon">
+                    <img src="./assets/CodeBubbyAssets/3_1118/1.svg" alt="coins">
+                </div>
+                <div class="currency-value">850</div>
+            </div>
+            <div class="currency-gems">
+                <div class="currency-icon">
+                    <img src="./assets/CodeBubbyAssets/3_1118/2.svg" alt="gems">
+                </div>
+                <div class="currency-value">100</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active">ALL</div>
+            <div class="tab">HOME</div>
+            <div class="tab">DRESS UP</div>
+            <div class="tab">EFFECTS</div>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="items-grid">
+            <!-- Straw Hat -->
+            <div class="item-card" data-item-id="straw-hat" data-price="100" data-name="Straw Hat">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/4.svg" alt="Straw Hat">
+                    <div class="item-category">Dress Up</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Straw Hat</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/5.svg" alt="coin">
+                        </div>
+                        <div class="price-value">100</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crown -->
+            <div class="item-card" data-item-id="crown" data-price="500" data-name="Crown">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/14.png" alt="Crown">
+                    <div class="item-category">Dress Up</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Crown</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/6.svg" alt="coin">
+                        </div>
+                        <div class="price-value">500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adventure Jacket -->
+            <div class="item-card" data-item-id="adventure-jacket" data-price="100" data-name="Adventure Jacket">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/15.png" alt="Adventure Jacket">
+                    <div class="item-category">Dress Up</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Adventure Jacket</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/7.svg" alt="coin">
+                        </div>
+                        <div class="price-value">100</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forest Cabin -->
+            <div class="item-card" data-item-id="forest-cabin" data-price="2000" data-name="Forest Cabin">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/19.png" alt="Forest Cabin" style="width: 158px; height: 82px; position: absolute; left: 10px; top: 20px;">
+                    <div class="item-category">Home</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Forest Cabin</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/8.svg" alt="coin">
+                        </div>
+                        <div class="price-value">2000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Garden Swing -->
+            <div class="item-card" data-item-id="garden-swing" data-price="800" data-name="Garden Swing">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/16.png" alt="Garden Swing">
+                    <div class="item-category">Home</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Garden Swing</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/9.svg" alt="coin">
+                        </div>
+                        <div class="price-value">800</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mushroom Lamp -->
+            <div class="item-card" data-item-id="mushroom-lamp" data-price="300" data-name="Mushroom Lamp">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/10.svg" alt="Mushroom Lamp">
+                    <div class="item-category">Home</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Mushroom Lamp</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/11.svg" alt="coin">
+                        </div>
+                        <div class="price-value">300</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rainbow Effect -->
+            <div class="item-card" data-item-id="rainbow-effect" data-price="1500" data-name="Rainbow Effect">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/17.png" alt="Rainbow Effect">
+                    <div class="item-category">Effects</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Rainbow Effect</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/12.svg" alt="coin">
+                        </div>
+                        <div class="price-value">1500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Star Particles -->
+            <div class="item-card" data-item-id="star-particles" data-price="600" data-name="Star Particles">
+                <div class="item-image">
+                    <img src="./assets/CodeBubbyAssets/3_1118/18.png" alt="Star Particles">
+                    <div class="item-category">Effects</div>
+                </div>
+                <div class="item-info">
+                    <div class="item-name">Star Particles</div>
+                    <div class="item-price">
+                        <div class="price-icon">
+                            <img src="./assets/CodeBubbyAssets/3_1118/13.svg" alt="coin">
+                        </div>
+                        <div class="price-value">600</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Feedback -->
+        <div class="purchase-feedback" id="purchaseFeedback"></div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            coins: 850,
+            gems: 100,
+            purchasedItems: []
+        };
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('walkingPetGameState');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameState = { ...gameState, ...loaded };
+            }
+            updateCurrencyDisplay();
+            updatePurchasedItems();
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('walkingPetGameState', JSON.stringify(gameState));
+        }
+
+        // Update currency display
+        function updateCurrencyDisplay() {
+            document.querySelector('.currency-coins .currency-value').textContent = gameState.coins;
+            document.querySelector('.currency-gems .currency-value').textContent = gameState.gems;
+        }
+
+        // Update purchased items UI
+        function updatePurchasedItems() {
+            document.querySelectorAll('.item-card').forEach(card => {
+                const itemId = card.dataset.itemId;
+                if (gameState.purchasedItems.includes(itemId)) {
+                    card.classList.add('purchased');
+                }
+            });
+        }
+
+        // Show purchase feedback
+        function showFeedback(message, isError = false) {
+            const feedback = document.getElementById('purchaseFeedback');
+            feedback.textContent = message;
+            feedback.className = isError ? 'purchase-feedback error' : 'purchase-feedback';
+            feedback.classList.add('show');
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // Purchase item
+        function purchaseItem(itemId, price, itemName) {
+            // Check if already purchased
+            if (gameState.purchasedItems.includes(itemId)) {
+                showFeedback('You already own this item!');
+                return;
+            }
+
+            // Check if enough coins
+            if (gameState.coins < price) {
+                showFeedback('Not enough coins!', true);
+                return;
+            }
+
+            // Process purchase
+            gameState.coins -= price;
+            gameState.purchasedItems.push(itemId);
+            
+            // Update UI
+            updateCurrencyDisplay();
+            const itemCard = document.querySelector(`[data-item-id="${itemId}"]`);
+            itemCard.classList.add('purchased');
+            
+            // Save state
+            saveGameState();
+            
+            // Show success feedback
+            showFeedback(`Purchased: ${itemName}!`);
+            
+            console.log(`Purchased ${itemName} for ${price} coins`);
+        }
+
+        // Go back
+        function goBack() {
+            console.log('返回宠物主页');
+            window.location.href = 'page5.html';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+
+            // Add click handlers to item cards
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const itemId = this.dataset.itemId;
+                    const price = parseInt(this.dataset.price);
+                    const itemName = this.dataset.name;
+                    
+                    purchaseItem(itemId, price, itemName);
+                });
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter items by category (optional enhancement)
+                    const category = this.textContent.trim();
+                    console.log(`Switched to ${category} tab`);
+                });
+            });
+
+            // Reset button (for testing) - press 'R' key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'r' || e.key === 'R') {
+                    if (confirm('Reset game state?')) {
+                        localStorage.removeItem('walkingPetGameState');
+                        location.reload();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

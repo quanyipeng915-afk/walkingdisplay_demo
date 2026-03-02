@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 第六页 - Find</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            min-height: 1496px;
+            position: relative;
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            width: 370.01px;
+            height: 55.98px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header:hover {
+            transform: translateY(-2px);
+        }
+
+        .header:active {
+            transform: translateY(1px);
+        }
+
+        .back-btn {
+            width: 37.01px;
+            height: 41.83px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            pointer-events: none; /* 让点击事件穿透到父元素 */
+        }
+
+        .back-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .title-section {
+            width: 193px;
+            height: 44px;
+            margin-left: 15px;
+            pointer-events: none; /* 让点击事件穿透到父元素 */
+        }
+
+        .main-title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 26px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .counter {
+            width: 106px;
+            height: 40px;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: default; /* 阻止继承父元素的pointer-events */
+            pointer-events: auto; /* 恢复点击事件 */
+        }
+
+        .counter-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .counter-text {
+            font-size: 16px;
+            font-family: 'Jersey 20', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            width: 306px;
+            height: 40px;
+            position: absolute;
+            left: 15.99px;
+            top: 87.96px;
+            display: flex;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .filter-tab {
+            height: 37px;
+            padding: 0 16px;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 2px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .filter-tab.active {
+            background: #DBC693;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .filter-tab:nth-child(1) {
+            width: 72px;
+        }
+
+        .filter-tab:nth-child(2) {
+            width: 68px;
+        }
+
+        .filter-tab:nth-child(3) {
+            width: 68px;
+        }
+
+        .filter-tab:nth-child(4) {
+            width: 68px;
+        }
+
+        /* Locations Container */
+        .locations-container {
+            width: 370.01px;
+            position: absolute;
+            left: 16px;
+            top: 152px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .location-card {
+            width: 370.01px;
+            height: 315.95px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .location-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .location-card.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .location-card.locked:hover {
+            transform: none;
+        }
+
+        .location-image {
+            width: 370.01px;
+            height: 192px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location-img {
+            width: 371px;
+            height: 265px;
+            position: absolute;
+            left: 0;
+            top: -55px;
+            object-fit: cover;
+        }
+
+        .location-card.locked .location-img {
+            filter: brightness(0.5);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            right: 16px;
+            top: 19.06px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            filter: drop-shadow(0 0 8px #FF5252);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            left: 12.01px;
+            top: 12.06px;
+            height: 30px;
+            padding: 0 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+        }
+
+        .difficulty-badge.easy {
+            background: #FFD54F;
+        }
+
+        .difficulty-badge.medium {
+            background: #FF8A50;
+        }
+
+        .difficulty-badge.hard {
+            background: #E53935;
+        }
+
+        .difficulty-text {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .location-info {
+            width: 370.01px;
+            height: 123.95px;
+            padding: 15.99px;
+            background: linear-gradient(180deg, #B2EBF2 0%, white 100%), rgba(255, 255, 255, 0.20);
+        }
+
+        .location-name {
+            width: 338.03px;
+            height: 27.99px;
+            margin-bottom: 8px;
+        }
+
+        .location-name-text {
+            font-size: 24px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 500;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .location-card.locked .location-name-text {
+            opacity: 0.6;
+        }
+
+        .location-description {
+            width: 338.03px;
+            height: 19.99px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .location-description-text {
+            font-size: 12px;
+            font-family: 'Jersey 20', sans-serif;
+            font-weight: 400;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.4;
+        }
+
+        .location-card.locked .location-description-text {
+            opacity: 0.6;
+        }
+
+        .location-stats {
+            width: 338.03px;
+            height: 27.99px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .location-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .location-card.locked .location-icon {
+            opacity: 0.6;
+        }
+
+        .biodiversity-info {
+            font-size: 10px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        .biodiversity-info .normal {
+            background: #ADADAD;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .biodiversity-info .highlight {
+            background: #DBC693;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Locked Overlay */
+        .locked-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lock-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 10px;
+        }
+
+        .locked-text {
+            font-size: 18px;
+            font-family: 'Jersey 20', sans-serif;
+            font-weight: 400;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        /* Modal Overlay - Bottom aligned */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            width: 402px;
+            height: 628px;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            width: 401.99px;
+            height: 192px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            overflow: hidden;
+        }
+
+        .modal-header img {
+            width: 403.48px;
+            height: 260px;
+            position: absolute;
+            left: 0px;
+            top: -25px;
+            object-fit: cover;
+        }
+
+        .modal-close {
+            position: absolute;
+            left: 361px;
+            top: 15px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            z-index: 10;
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .modal-body {
+            width: 401.99px;
+            height: 435.91px;
+            position: absolute;
+            left: 0px;
+            top: 192px;
+            overflow: hidden;
+        }
+
+        .modal-title-section {
+            width: 354px;
+            height: 51.99px;
+            position: absolute;
+            left: 24px;
+            top: 24px;
+        }
+
+        .modal-title {
+            width: 352px;
+            position: absolute;
+            left: 0px;
+            top: -0.62px;
+            font-size: 24px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 500;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-subtitle {
+            width: 352px;
+            position: absolute;
+            left: 1px;
+            top: 30px;
+            font-size: 12px;
+            font-family: 'Jersey 20', sans-serif;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.4;
+        }
+
+        .modal-find-section {
+            width: 354px;
+            height: 211.96px;
+            position: absolute;
+            left: 24px;
+            top: 99.99px;
+        }
+
+        .modal-section-title {
+            width: 354px;
+            height: 24px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .modal-section-title span {
+            position: absolute;
+            left: 0px;
+            top: -0.75px;
+            font-size: 16px;
+            font-family: 'Jersey 20', sans-serif;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .species-grid {
+            width: 354.12px;
+            height: 172px;
+            position: absolute;
+            left: 0px;
+            top: 39.99px;
+            overflow: hidden;
+        }
+
+        .species-card {
+            width: 108px;
+            height: 172px;
+            position: absolute;
+            background: linear-gradient(180deg, #D19A43 0%, #FFEFD6 20%), #FFEFD6;
+            border-radius: 1.59px;
+            outline: 1.19px black solid;
+            outline-offset: -1.19px;
+        }
+
+        .species-card.plant {
+            left: 123.06px;
+            background: linear-gradient(180deg, #ED9B9B 0%, #FFDCD6 20%);
+        }
+
+        .species-card.bird {
+            left: 246.12px;
+            background: linear-gradient(180deg, #43D1CA 0%, #CFFFFD 20%), #FFEFD6;
+        }
+
+        .species-id {
+            width: 54.71px;
+            position: absolute;
+            left: 12.69px;
+            top: 16.65px;
+            font-size: 7.93px;
+            font-family: 'Pixelify Sans', sans-serif;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .species-image {
+            width: 83.16px;
+            height: 93.56px;
+            position: absolute;
+            left: 12.33px;
+            top: 23.39px;
+            background: #D9D9D9;
+            overflow: hidden;
+        }
+
+        .species-image img {
+            width: 103.04px;
+            height: 93.52px;
+            position: absolute;
+            left: -12.29px;
+            top: -0.24px;
+            object-fit: cover;
+        }
+
+        .species-name {
+            width: 83.16px;
+            position: absolute;
+            left: 12.33px;
+            top: 121.48px;
+            font-size: 12.69px;
+            font-family: 'Jersey 20', sans-serif;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .species-stars {
+            position: absolute;
+            display: flex;
+            gap: 0px;
+        }
+
+        .species-stars img {
+            width: 12.69px;
+            height: 13.48px;
+        }
+
+        .species-card .species-stars {
+            left: 28.89px;
+            top: 139.48px;
+        }
+
+        .species-card.plant .species-stars {
+            left: 35.24px;
+            top: 139.48px;
+        }
+
+        .species-card.bird .species-stars {
+            left: 22.55px;
+            top: 139.48px;
+        }
+
+        .lets-go-btn {
+            width: 354px;
+            height: 59.98px;
+            position: absolute;
+            left: 24px;
+            top: 335.94px;
+            background: #DBC693;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 4px;
+            outline: 1px black solid;
+            outline-offset: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lets-go-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2), 8px 8px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .lets-go-text {
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.55px;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                min-height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header" onclick="goBack()">
+            <div class="back-btn">
+                <img src="./assets/CodeBubbyAssets/29_1068/1.svg" alt="返回">
+            </div>
+            <div class="title-section">
+                <div class="main-title">Find</div>
+                <div class="subtitle">Discovering Hong Kong's biodiversity</div>
+            </div>
+            <div class="counter">
+                <img class="counter-icon" src="./assets/CodeBubbyAssets/29_1068/2.svg" alt="计数">
+                <div class="counter-text" id="counterText">0/5</div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterLocations('all', this)">ALL</button>
+            <button class="filter-tab" onclick="filterLocations('easy', this)">EASY</button>
+            <button class="filter-tab" onclick="filterLocations('medium', this)">MEDIUM</button>
+            <button class="filter-tab" onclick="filterLocations('hard', this)">HARD</button>
+        </div>
+
+        <!-- Locations Container -->
+        <div class="locations-container" id="locationsContainer">
+            <!-- Yuen Chau Kok Park -->
+            <div class="location-card" data-difficulty="easy" data-location-id="1" data-location-name="Yuen Chau Kok Park" onclick="openLocationModal(1)">
+                <div class="location-image">
+                    <img class="location-img" src="./assets/CodeBubbyAssets/29_1068/6.png" alt="Yuen Chau Kok Park">
+                    <img class="favorite-btn" src="./assets/CodeBubbyAssets/29_1068/3.svg" alt="收藏" onclick="toggleFavorite(event, this, 1)">
+                    <div class="difficulty-badge easy">
+                        <div class="difficulty-text">EASY</div>
+                    </div>
+                </div>
+                <div class="location-info">
+                    <div class="location-name">
+                        <div class="location-name-text">Yuen Chau Kok Park</div>
+                    </div>
+                    <div class="location-description">
+                        <div class="location-description-text">Yuen Chau Kok Park in Sha Tin is built around a hill that offers a modest hike for those pressed for time or feeling a little intimidated by the mountains.</div>
+                    </div>
+                    <div class="location-stats">
+                        <img class="location-icon" src="./assets/CodeBubbyAssets/29_1068/4.svg" alt="位置">
+                        <div class="biodiversity-info">
+                            <span class="normal">Contains over </span>
+                            <span class="highlight">10</span>
+                            <span class="normal"> kinds of animals and plants</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pak Shek Kok Promenade -->
+            <div class="location-card" data-difficulty="easy" data-location-id="2" data-location-name="Pak Shek Kok Promenade" onclick="navigateToDetail(2)">
+                <div class="location-image">
+                    <img class="location-img" src="./assets/CodeBubbyAssets/29_1068/7.png" alt="Pak Shek Kok Promenade">
+                    <img class="favorite-btn" src="./assets/CodeBubbyAssets/29_1068/5.svg" alt="收藏" onclick="toggleFavorite(event, this, 2)">
+                    <div class="difficulty-badge easy">
+                        <div class="difficulty-text">EASY</div>
+                    </div>
+                </div>
+                <div class="location-info">
+                    <div class="location-name">
+                        <div class="location-name-text">Pak Shek Kok Promenade</div>
+                    </div>
+                    <div class="location-description">
+                        <div class="location-description-text">The Pak Shek Kok waterfront promenade stretches approximately 2 kilometers, featuring a 9.5-meter-wide pedestrian walkway along the coast.</div>
+                    </div>
+                    <div class="location-stats">
+                        <img class="location-icon" src="./assets/CodeBubbyAssets/29_1068/6.svg" alt="位置">
+                        <div class="biodiversity-info">
+                            <span class="normal">Contains over </span>
+                            <span class="highlight">10</span>
+                            <span class="normal"> kinds of animals and plants</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hung Mui Kuk Hiking Trail -->
+            <div class="location-card" data-difficulty="medium" data-location-id="3" data-location-name="Hung Mui Kuk Hiking Trail" onclick="navigateToDetail(3)">
+                <div class="location-image">
+                    <img class="location-img" src="./assets/CodeBubbyAssets/29_1068/8.png" alt="Hung Mui Kuk Hiking Trail">
+                    <img class="favorite-btn" src="./assets/CodeBubbyAssets/29_1068/7.svg" alt="收藏" onclick="toggleFavorite(event, this, 3)">
+                    <div class="difficulty-badge medium">
+                        <div class="difficulty-text">MEDIUM</div>
+                    </div>
+                </div>
+                <div class="location-info">
+                    <div class="location-name">
+                        <div class="location-name-text">Hung Mui Kuk Hiking Trail</div>
+                    </div>
+                    <div class="location-description">
+                        <div class="location-description-text">This area used to be famous for its abundant bayberry trees during spring and summer, hence its name.</div>
+                    </div>
+                    <div class="location-stats">
+                        <img class="location-icon" src="./assets/CodeBubbyAssets/29_1068/8.svg" alt="位置">
+                        <div class="biodiversity-info">
+                            <span class="normal">Contains over </span>
+                            <span class="highlight">10</span>
+                            <span class="normal"> kinds of animals and plants</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tao Fong Shan (Locked) -->
+            <div class="location-card locked" data-difficulty="hard" data-location-id="4" data-location-name="Tao Fong Shan">
+                <div class="location-image">
+                    <img class="location-img" src="./assets/CodeBubbyAssets/29_1068/9.png" alt="Tao Fong Shan">
+                    <div class="locked-overlay">
+                        <img class="lock-icon" src="./assets/CodeBubbyAssets/29_1068/10.svg" alt="锁定">
+                        <div class="locked-text">Need 5.5km to open</div>
+                    </div>
+                </div>
+                <div class="location-info">
+                    <div class="location-name">
+                        <div class="location-name-text">Tao Fong Shan</div>
+                    </div>
+                    <div class="location-description">
+                        <div class="location-description-text">Built in 1930, the complex is now a Grade II historic building in Hong Kong, and a 12-meter-high cross stands on its east side, is a landmark of the area.</div>
+                    </div>
+                    <div class="location-stats">
+                        <img class="location-icon" src="./assets/CodeBubbyAssets/29_1068/11.svg" alt="位置">
+                        <div class="biodiversity-info">
+                            <span class="normal">Contains over </span>
+                            <span class="highlight">10</span>
+                            <span class="normal"> kinds of animals and plants</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            favoriteCount: 0,
+            maxFavorites: 5,
+            purchasedItems: [],
+            favorites: []
+        };
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const saved = localStorage.getItem('walkingPetGameState');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameState = { ...gameState, ...loaded };
+            }
+            updateCounter();
+            restoreFavorites();
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('walkingPetGameState', JSON.stringify(gameState));
+        }
+
+        // Update counter display
+        function updateCounter() {
+            const counterText = document.getElementById('counterText');
+            counterText.textContent = `${gameState.favoriteCount}/${gameState.maxFavorites}`;
+
+            if (gameState.favoriteCount === gameState.maxFavorites) {
+                counterText.style.background = 'linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%)';
+                counterText.style.webkitBackgroundClip = 'text';
+                counterText.style.webkitTextFillColor = 'transparent';
+                counterText.style.backgroundClip = 'text';
+            }
+        }
+
+        // Restore favorites from localStorage
+        function restoreFavorites() {
+            document.querySelectorAll('.location-card').forEach(card => {
+                const locationId = parseInt(card.dataset.locationId);
+                const favoriteBtn = card.querySelector('.favorite-btn');
+
+                if (gameState.favorites.includes(locationId)) {
+                    favoriteBtn.src = './assets/CodeBubbyAssets/29_1068/9.svg';
+                    favoriteBtn.classList.add('active');
+                }
+            });
+        }
+
+        // Toggle favorite
+        function toggleFavorite(event, button, locationId) {
+            event.stopPropagation();
+
+            const isCurrentlyFavorite = gameState.favorites.includes(locationId);
+
+            if (isCurrentlyFavorite) {
+                // Remove from favorites
+                gameState.favorites = gameState.favorites.filter(id => id !== locationId);
+                gameState.favoriteCount--;
+                button.src = `./assets/CodeBubbyAssets/29_1068/${locationId * 2 + 1}.svg`;
+                button.classList.remove('active');
+                showFeedback('Removed from favorites', 'info');
+            } else {
+                // Add to favorites
+                if (gameState.favoriteCount >= gameState.maxFavorites) {
+                    showFeedback('Maximum 5 favorites allowed', 'error');
+                    return;
+                }
+
+                gameState.favorites.push(locationId);
+                gameState.favoriteCount++;
+                button.src = './assets/CodeBubbyAssets/29_1068/9.svg';
+                button.classList.add('active');
+                showFeedback('Added to favorites!', 'success');
+
+                if (gameState.favoriteCount === gameState.maxFavorites) {
+                    setTimeout(() => {
+                        showFeedback('Achievement unlocked: 5 favorites!', 'achievement');
+                    }, 500);
+                }
+            }
+
+            saveGameState();
+            updateCounter();
+        }
+
+        // Filter locations
+        function filterLocations(difficulty, button) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            button.classList.add('active');
+
+            document.querySelectorAll('.location-card').forEach(card => {
+                const cardDifficulty = card.dataset.difficulty;
+
+                if (difficulty === 'all' || cardDifficulty === difficulty) {
+                    card.style.display = 'block';
+                    setTimeout(() => card.style.opacity = '1', 10);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Show feedback
+        function showFeedback(message, type = 'info') {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: 'Pixelify Sans', sans-serif;
+                font-weight: 500;
+                z-index: 1000;
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+            `;
+
+            const colors = {
+                success: 'linear-gradient(180deg, #4CAF50 0%, #388E3C 100%)',
+                error: 'linear-gradient(180deg, #FF6B6B 0%, #FF5252 100%)',
+                achievement: 'linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%)',
+                info: 'linear-gradient(180deg, #4A5565 0%, #1E2939 100%)'
+            };
+
+            feedback.style.background = colors[type] || colors.info;
+            feedback.style.color = (type === 'achievement') ? '#1E2939' : 'white';
+            feedback.textContent = message;
+
+            document.body.appendChild(feedback);
+
+            setTimeout(() => {
+                feedback.style.opacity = '1';
+                feedback.style.top = '40px';
+            }, 10);
+
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                feedback.style.top = '20px';
+                setTimeout(() => document.body.removeChild(feedback), 300);
+            }, 2500);
+        }
+
+        // Go back
+        function goBack() {
+            window.location.href = 'page5.html';
+        }
+
+        // Navigate to location detail page (for cards other than the first one)
+        function navigateToDetail(locationId) {
+            const card = document.querySelector(`[data-location-id="${locationId}"]`);
+            const locationName = card.dataset.locationName;
+            
+            // Save current location and navigate to detail page
+            localStorage.setItem('currentLocationId', locationId);
+            localStorage.setItem('currentLocationName', locationName);
+            window.location.href = 'location-detail.html';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+        });
+
+        // Location Modal functions
+        function openLocationModal(locationId) {
+            if (locationId !== 1) return; // Only first location has modal for now
+
+            const modal = document.getElementById('locationModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLocationModal() {
+            const modal = document.getElementById('locationModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Handle Let's Go button
+        function startLocationRoute() {
+            closeLocationModal();
+            // Save location and navigate to route page
+            localStorage.setItem('currentLocationId', '1');
+            window.location.href = 'location-route.html';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('locationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLocationModal();
+            }
+        });
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLocationModal();
+            }
+        });
+    </script>
+
+    <!-- Location Detail Modal -->
+    <div class="modal-overlay" id="locationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="./assets/CodeBubbyAssets/29_1324/5.png" alt="Yuen Chau Kok Park">
+                <img class="modal-close" src="./assets/CodeBubbyAssets/29_1324/7.svg" alt="Close" onclick="closeLocationModal()">
+            </div>
+            <div class="modal-body">
+                <div class="modal-title-section">
+                    <div class="modal-title">Yuen Chau Kok Park</div>
+                    <div class="modal-subtitle">Yuen Chau Kok Park in Sha Tin is built around a hill that offers a modest hike for those pressed for time or feeling a little intimidated by the mountains.</div>
+                </div>
+
+                <div class="modal-find-section">
+                    <div class="modal-section-title">
+                        <span>You can find</span>
+                    </div>
+                    <div class="species-grid">
+                        <div class="species-card">
+                            <div class="species-id">#00001</div>
+                            <div class="species-image">
+                                <img src="./assets/CodeBubbyAssets/29_1324/5.png" alt="White Heron">
+                            </div>
+                            <div class="species-name">White Heron</div>
+                            <div class="species-stars">
+                                <img src="./assets/CodeBubbyAssets/29_1324/1.svg" alt="star">
+                                <img src="./assets/CodeBubbyAssets/29_1324/2.svg" alt="star">
+                            </div>
+                        </div>
+                        <div class="species-card plant">
+                            <div class="species-id">#00002</div>
+                            <div class="species-image">
+                                <img src="./assets/CodeBubbyAssets/29_1324/6.png" alt="Rhododendron">
+                            </div>
+                            <div class="species-name">Rhododendron</div>
+                            <div class="species-stars">
+                                <img src="./assets/CodeBubbyAssets/29_1324/5.svg" alt="star">
+                            </div>
+                        </div>
+                        <div class="species-card bird">
+                            <div class="species-id">#00003</div>
+                            <div class="species-image">
+                                <img src="./assets/CodeBubbyAssets/29_1324/7.png" alt="Black Kite">
+                            </div>
+                            <div class="species-name">Black Kite</div>
+                            <div class="species-stars">
+                                <img src="./assets/CodeBubbyAssets/29_1324/3.svg" alt="star">
+                                <img src="./assets/CodeBubbyAssets/29_1324/5.svg" alt="star">
+                                <img src="./assets/CodeBubbyAssets/29_1324/4.svg" alt="star">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lets-go-btn" onclick="startLocationRoute()">
+                    <div class="lets-go-text">Let's Go</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

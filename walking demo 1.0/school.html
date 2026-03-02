@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>School Ranking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            height: 1004px;
+            position: relative;
+            background: linear-gradient(0deg, #DDF7FA 0%, #DDF7FA 100%), white;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            width: 370.01px;
+            height: 55.98px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-section {
+            width: 97.98px;
+            height: 55.98px;
+            position: relative;
+        }
+
+        .back-btn {
+            width: 49px;
+            height: 55px;
+            position: absolute;
+            left: 0.01px;
+            top: 0.01px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            position: absolute;
+            left: 49.01px;
+            top: -2.99px;
+            font-size: 26px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.27px;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-badge {
+            width: 87px;
+            height: 40px;
+            background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ranking-badge img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .ranking-text {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* User Card */
+        .user-card {
+            width: 370.01px;
+            height: 175.35px;
+            position: absolute;
+            left: 15.99px;
+            top: 87.96px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            outline: 1.20px black solid;
+            outline-offset: -1.20px;
+            backdrop-filter: blur(0px);
+        }
+
+        .user-info {
+            width: 330.02px;
+            height: 64px;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .user-details {
+            width: 250.02px;
+            height: 43.99px;
+            position: absolute;
+            left: 79.99px;
+            top: 10px;
+        }
+
+        .user-name {
+            width: 250.02px;
+            height: 24px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .user-name-main {
+            position: absolute;
+            left: 0.02px;
+            top: -5.96px;
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 500;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-name-you {
+            position: absolute;
+            left: 60px;
+            top: -5.96px;
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 500;
+            background: #969696;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-level {
+            width: 157px;
+            position: absolute;
+            left: 80.01px;
+            top: 44.04px;
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .star-badge {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 43.99px;
+            top: 43.99px;
+            background: #FFD54F;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 18891700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .star-badge span {
+            font-size: 12px;
+        }
+
+        .stats-bar {
+            width: 330.02px;
+            height: 55.37px;
+            position: absolute;
+            left: 20px;
+            top: 99.99px;
+            background: linear-gradient(90deg, rgba(255, 213, 79, 0.20) 0%, rgba(255, 202, 40, 0.20) 100%);
+            border-radius: 16px;
+            outline: 1.69px rgba(0, 0, 0, 0.10) solid;
+            outline-offset: -1.69px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 17.68px;
+        }
+
+        .steps-stat {
+            width: 88.69px;
+            height: 27.99px;
+            display: flex;
+            align-items: center;
+            gap: 7.99px;
+        }
+
+        .steps-icon {
+            width: 20.27px;
+            height: 27.99px;
+            font-size: 20px;
+        }
+
+        .steps-value {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #364153;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-stat {
+            width: 84.19px;
+            height: 27.99px;
+            display: flex;
+            align-items: center;
+            gap: 7.99px;
+        }
+
+        .ranking-stat img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .ranking-value {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #364153;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tabs */
+        .tabs {
+            width: 370.01px;
+            height: 48px;
+            position: absolute;
+            left: 15.99px;
+            top: 279.31px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .tab {
+            width: 179.01px;
+            height: 48px;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            outline: 1px black solid;
+            outline-offset: -1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            background: #FFD54F;
+        }
+
+        .tab img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tab-text {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .tab.active .tab-text {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Ranking List */
+        .ranking-list {
+            width: 370.01px;
+            height: 627.87px;
+            position: absolute;
+            left: 15.99px;
+            top: 343.30px;
+        }
+
+        /* Top 3 Cards */
+        .top-3-container {
+            width: 370px;
+            height: 190px;
+            position: absolute;
+            left: 0.01px;
+            top: -0.30px;
+        }
+
+        .rank-card {
+            width: 115.34px;
+            height: 159.97px;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            outline: 1px black solid;
+            outline-offset: -1px;
+        }
+
+        .rank-card.first {
+            left: 127.01px;
+            top: -0.30px;
+        }
+
+        .rank-card.second {
+            left: 0px;
+            top: 23.70px;
+            background: #FFF9C4;
+        }
+
+        .rank-card.third {
+            left: 254.67px;
+            top: 23.70px;
+            background: #FFF6D9;
+        }
+
+        .rank-card-content {
+            width: 91.34px;
+            height: 135.97px;
+            position: absolute;
+            left: 12px;
+            top: 12px;
+        }
+
+        .rank-card-avatar {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .rank-card-avatar img {
+            width: 63px;
+            height: 89px;
+            box-shadow: 3px 2px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .rank-card-name {
+            width: 36px;
+            height: 15.99px;
+            position: absolute;
+            left: 27.67px;
+            top: 97px;
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #FFD54F;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .rank-card.second .rank-card-name {
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            font-size: 12px;
+        }
+
+        .rank-card.third .rank-card-name {
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            font-size: 12px;
+        }
+
+        .rank-card-steps {
+            width: 38px;
+            height: 15.99px;
+            position: absolute;
+            left: 26.43px;
+            top: 120px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .rank-card.third .rank-card-steps {
+            left: 26.56px;
+            top: 109.99px;
+        }
+
+        /* User Avatar Image */
+        .user-avatar-img {
+            width: 76px;
+            height: 85px;
+            position: absolute;
+            left: 21px;
+            top: 48px;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Ranking Items */
+        .ranking-item {
+            width: 370.01px;
+            height: 79.98px;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            outline: 1px black solid;
+            outline-offset: -1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ranking-item.user {
+            background: #43D1CA;
+        }
+
+        .ranking-item:nth-child(4) {
+            top: 199.70px;
+        }
+
+        .ranking-item:nth-child(5) {
+            top: 291.68px;
+        }
+
+        .ranking-item:nth-child(6) {
+            top: 383.67px;
+        }
+
+        .ranking-item:nth-child(7) {
+            top: 476.70px;
+        }
+
+        .rank-number {
+            width: 39.99px;
+            height: 39.99px;
+            margin-left: 15.99px;
+            background: #F3F4F6;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #364153;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item.user .rank-number {
+            background: rgba(255, 255, 255, 0.90);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-avatar-small {
+            margin-left: 7.99px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .user-details-ranking {
+            margin-left: 15.99px;
+            height: 35.98px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .user-name-ranking {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item.user .user-name-ranking {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-level-ranking {
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item.user .user-level-ranking {
+            background: rgba(255, 255, 255, 0.90);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-steps {
+            position: absolute;
+            right: 16.99px;
+            top: 20px;
+            height: 39.99px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .steps-count {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #364153;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item.user .steps-count {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .steps-label {
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item.user .steps-label {
+            background: rgba(255, 255, 255, 0.90);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trophy-icon {
+            position: absolute;
+            right: 32px;
+            top: 23.99px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.20);
+            border-radius: 18891700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="back-section">
+                <div class="back-btn" onclick="goBack()">
+                    <img src="./assets/CodeBubbyAssets/5_1679/1.svg" alt="Back">
+                </div>
+                <div class="title">RANKING</div>
+            </div>
+            <div class="ranking-badge">
+                <img src="./assets/CodeBubbyAssets/5_1679/2.svg" alt="Trophy">
+                <div class="ranking-text">NO.4</div>
+            </div>
+        </div>
+
+        <!-- User Card -->
+        <div class="user-card">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <img src="./assets/CodeBubbyAssets/5_1679/3.svg" alt="User Avatar">
+                    <div class="star-badge">
+                        <span>⭐</span>
+                    </div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">
+                        <span class="user-name-main">EMMA</span>
+                        <span class="user-name-you">(YOU)</span>
+                    </div>
+                    <div class="user-level">LEVEL 12 Guardians</div>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="steps-stat">
+                    <div class="steps-icon">👟</div>
+                    <div class="steps-value">12,450</div>
+                </div>
+                <div class="ranking-stat">
+                    <img src="./assets/CodeBubbyAssets/5_1679/4.svg" alt="Ranking Icon">
+                    <div class="ranking-value">NO.4</div>
+                </div>
+            </div>
+            <img class="user-avatar-img" src="./assets/CodeBubbyAssets/5_1679/3.png" alt="User Full Avatar">
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active">
+                <img src="./assets/CodeBubbyAssets/5_1679/5.svg" alt="Ranking Icon">
+                <div class="tab-text">RANKING LIST</div>
+            </div>
+            <div class="tab" onclick="switchToFriendList()">
+                <img src="./assets/CodeBubbyAssets/5_1679/6.svg" alt="Friend Icon">
+                <div class="tab-text">FRIEND LIST</div>
+            </div>
+        </div>
+
+        <!-- Ranking List -->
+        <div class="ranking-list">
+            <!-- Top 3 -->
+            <div class="top-3-container">
+                <!-- NO.2 MIKEY -->
+                <div class="rank-card second">
+                    <div class="rank-card-content">
+                        <div class="rank-card-avatar">
+                            <img src="./assets/CodeBubbyAssets/5_1679/3.png" alt="MIKEY">
+                        </div>
+                        <div class="rank-card-name">NO.2 MIKEY</div>
+                        <div class="rank-card-steps">13,850</div>
+                    </div>
+                </div>
+                
+                <!-- NO.1 AMY -->
+                <div class="rank-card first">
+                    <div class="rank-card-content">
+                        <div class="rank-card-avatar">
+                            <img src="./assets/CodeBubbyAssets/5_1679/1.png" alt="AMY">
+                        </div>
+                        <div class="rank-card-name">NO.1 AMY</div>
+                        <div class="rank-card-steps">14,100</div>
+                    </div>
+                </div>
+                
+                <!-- NO.3 CICI -->
+                <div class="rank-card third">
+                    <div class="rank-card-content">
+                        <div class="rank-card-avatar">
+                            <img src="./assets/CodeBubbyAssets/5_1679/2.png" alt="CICI">
+                        </div>
+                        <div class="rank-card-name">NO.3 CICI</div>
+                        <div class="rank-card-steps">15,230</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ranking Items -->
+            <!-- NO.4 EMMA (YOU) -->
+            <div class="ranking-item user">
+                <div class="rank-number">4</div>
+                <div class="user-avatar-small">
+                    <img src="./assets/CodeBubbyAssets/5_1679/7.svg" alt="EMMA">
+                </div>
+                <div class="user-details-ranking">
+                    <div class="user-name-ranking">EMMA (YOU)</div>
+                    <div class="user-level-ranking">LEVEL 12</div>
+                </div>
+                <div class="user-steps">
+                    <div class="steps-count">12,450</div>
+                    <div class="steps-label">Steps</div>
+                </div>
+                <div class="trophy-icon"></div>
+            </div>
+
+            <!-- NO.5 LIMA -->
+            <div class="ranking-item">
+                <div class="rank-number">5</div>
+                <div class="user-avatar-small">
+                    <img src="./assets/CodeBubbyAssets/5_1679/8.svg" alt="LIMA">
+                </div>
+                <div class="user-details-ranking">
+                    <div class="user-name-ranking">LIMA</div>
+                    <div class="user-level-ranking">LEVEL 11</div>
+                </div>
+                <div class="user-steps">
+                    <div class="steps-count">11,200</div>
+                    <div class="steps-label">Steps</div>
+                </div>
+            </div>
+
+            <!-- NO.6 JOHN -->
+            <div class="ranking-item">
+                <div class="rank-number">6</div>
+                <div class="user-avatar-small">
+                    <img src="./assets/CodeBubbyAssets/5_1679/9.svg" alt="JOHN">
+                </div>
+                <div class="user-details-ranking">
+                    <div class="user-name-ranking">JOHN</div>
+                    <div class="user-level-ranking">LEVEL 12</div>
+                </div>
+                <div class="user-steps">
+                    <div class="steps-count">9,800</div>
+                    <div class="steps-label">Steps</div>
+                </div>
+            </div>
+
+            <!-- NO.7 HANS -->
+            <div class="ranking-item">
+                <div class="rank-number">7</div>
+                <div class="user-avatar-small">
+                    <img src="./assets/CodeBubbyAssets/5_1679/10.svg" alt="HANS">
+                </div>
+                <div class="user-details-ranking">
+                    <div class="user-name-ranking">HANS</div>
+                    <div class="user-level-ranking">LEVEL 11</div>
+                </div>
+                <div class="user-steps">
+                    <div class="steps-count">11,200</div>
+                    <div class="steps-label">Steps</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function switchToFriendList() {
+            // For now, just show an alert
+            // In a real app, this would switch to friend list view
+            alert('Friend list feature coming soon!');
+        }
+
+        // Simulate step count updates
+        let currentSteps = 12450;
+        function updateSteps() {
+            currentSteps += Math.floor(Math.random() * 50) + 10;
+            document.querySelector('.steps-value').textContent = currentSteps.toLocaleString();
+            document.querySelectorAll('.steps-count')[0].textContent = currentSteps.toLocaleString();
+        }
+
+        // Update every 3 seconds (demo)
+        setInterval(updateSteps, 3000);
+    </script>
+</body>
+</html>

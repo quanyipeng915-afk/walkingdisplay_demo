@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 第三页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .background-image {
+            width: 401.99px;
+            height: 873.80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        /* 状态栏 */
+        .status-bar {
+            width: 401.99px;
+            height: 8px;
+            position: absolute;
+            left: 0;
+            top: 32px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 55px;
+            height: 8px;
+        }
+        
+        /* 主卡片 */
+        .main-card {
+            width: 354px;
+            height: 610px;
+            position: absolute;
+            left: 24px;
+            top: 131.90px;
+            background: rgba(255, 255, 255, 0.60);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 4px;
+            backdrop-filter: blur(3.90px);
+            -webkit-backdrop-filter: blur(3.90px);
+            padding: 32px;
+        }
+        
+        /* 标题区域 */
+        .header-section {
+            width: 290.01px;
+            height: 143.98px;
+            margin-bottom: 24px;
+        }
+        
+        .logo-container {
+            width: 290.01px;
+            height: 60px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+        
+        .logo {
+            position: absolute;
+            left: 114.88px;
+            top: 0.37px;
+            font-size: 60px;
+        }
+        
+        .main-title {
+            width: 290.01px;
+            text-align: center;
+            font-size: 30px;
+            font-family: 'Jersey 25', cursive;
+            font-weight: 400;
+            letter-spacing: 1.90px;
+            background: linear-gradient(180deg, #144B63 0%, #144B63 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            width: 290.01px;
+            text-align: center;
+            font-size: 16px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 表单区域 */
+        .form-section {
+            width: 290.01px;
+            height: 294px;
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            width: 290.01px;
+            height: 87.34px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .form-label {
+            width: 100%;
+            height: 19.99px;
+            font-size: 14px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input {
+            width: 290.01px;
+            height: 59.35px;
+            background: #F3F4F6;
+            border-radius: 4px;
+            outline: 1.69px rgba(0, 0, 0, 0.10) solid;
+            outline-offset: -1.69px;
+            border: none;
+            padding: 0 16px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: #364153;
+        }
+        
+        .form-input::placeholder {
+            background: linear-gradient(180deg, #99A1AF 0%, #99A1AF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-input:focus {
+            outline: 2px solid #4FC3F7;
+            outline-offset: -2px;
+        }
+        
+        .input-unit {
+            position: absolute;
+            right: 16px;
+            top: 47.67px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            pointer-events: none;
+        }
+        
+        /* 按钮区域 */
+        .button-group {
+            width: 290.01px;
+            height: 59.98px;
+            position: absolute;
+            left: 32px;
+            bottom: 32px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 139.01px;
+            height: 59.98px;
+            background: #E5E7EB;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.10), 4px 6px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10), 2px 2px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-text {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .create-button {
+            width: 139.01px;
+            height: 59.98px;
+            background: linear-gradient(180deg, #4FC3F7 0%, #039BE5 100%);
+            box-shadow: 0px 4px 0px #59A1CD;
+            border-radius: 4px;
+            outline: 3px #007AB1 solid;
+            outline-offset: -3px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .create-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 0px #59A1CD;
+        }
+        
+        .create-button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px #59A1CD;
+        }
+        
+        .create-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .create-text {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, white 0%, white 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .button-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+                max-height: 874px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .background-image {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        /* 高分辨率屏幕优化 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .main-card {
+                backdrop-filter: blur(7.8px);
+                -webkit-backdrop-filter: blur(7.8px);
+            }
+        }
+        
+        /* 添加Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Inter:wght@400&family=Pixelify+Sans:wght@500&display=swap');
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景图片 -->
+        <img class="background-image" src="./assets/CodeBubbyAssets/3_43/6.png" alt="背景">
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_43/3.svg" alt="状态1">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_43/4.svg" alt="状态2">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_43/5.svg" alt="状态3">
+        </div>
+        
+        <!-- 主卡片 -->
+        <div class="main-card">
+            <!-- 标题区域 -->
+            <div class="header-section">
+                <div class="logo-container">
+                    <div class="logo">📏</div>
+                </div>
+                <h1 class="main-title">Body Data</h1>
+                <p class="subtitle">to create your own partner</p>
+            </div>
+            
+            <!-- 表单区域 -->
+            <div class="form-section">
+                <div class="form-group">
+                    <label class="form-label" for="age">Age</label>
+                    <input type="number" id="age" class="form-input" placeholder="Enter your age...">
+                    <span class="input-unit">year</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="height">Height</label>
+                    <input type="number" id="height" class="form-input" placeholder="Enter your height...">
+                    <span class="input-unit">cm</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="weight">Weight</label>
+                    <input type="number" id="weight" class="form-input" placeholder="Enter your weight...">
+                    <span class="input-unit">kg</span>
+                </div>
+            </div>
+            
+            <!-- 按钮区域 -->
+            <div class="button-group">
+                <button class="back-button" onclick="handleBackClick()">
+                    <img class="button-icon" src="./assets/CodeBubbyAssets/3_43/1.svg" alt="返回">
+                    <span class="back-text">Back</span>
+                </button>
+                
+                <button class="create-button" onclick="handleCreateClick()">
+                    <span class="create-text">Create</span>
+                    <img class="button-icon" src="./assets/CodeBubbyAssets/3_43/2.svg" alt="创建">
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function handleBackClick() {
+            console.log('返回第二页');
+            // 返回到第二页
+            window.location.href = 'page2.html';
+        }
+        
+        function handleCreateClick() {
+            const age = document.getElementById('age').value.trim();
+            const height = document.getElementById('height').value.trim();
+            const weight = document.getElementById('weight').value.trim();
+            
+            // 表单验证
+            if (!age || !height || !weight) {
+                alert('请填写所有身体数据');
+                return;
+            }
+            
+            // 验证年龄范围
+            if (age < 1 || age > 150) {
+                alert('请输入有效的年龄（1-150岁）');
+                return;
+            }
+            
+            // 验证身高范围
+            if (height < 50 || height > 300) {
+                alert('请输入有效的身高（50-300cm）');
+                return;
+            }
+            
+            // 验证体重范围
+            if (weight < 10 || weight > 500) {
+                alert('请输入有效的体重（10-500kg）');
+                return;
+            }
+            
+            console.log('身体数据:', {
+                age: age,
+                height: height,
+                weight: weight
+            });
+            
+            // 保存数据到localStorage，用于第四页显示
+            const userData = {
+                age: age,
+                height: height,
+                weight: weight,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // 跳转到第四页（带孵化动画）
+            window.location.href = 'page4.html';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('APP第三页加载完成');
+            
+            // 为输入框添加回车键监听
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        // 如果是最后一个输入框，触发创建
+                        if (index === inputs.length - 1) {
+                            handleCreateClick();
+                        } else {
+                            // 否则聚焦到下一个输入框
+                            inputs[index + 1].focus();
+                        }
+                    }
+                });
+                
+                // 输入时实时验证
+                input.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9.]/g, '');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

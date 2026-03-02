@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .background-image {
+            width: 401.99px;
+            height: 873.80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, rgba(64, 44, 27, 0) 0%, rgba(63.98, 44.36, 26.98, 0.20) 100%), white;
+        }
+        
+        .top-image {
+            width: 315px;
+            height: 195px;
+            position: absolute;
+            left: 53px;
+            top: 114px;
+        }
+        
+        .center-button {
+            width: 169px;
+            height: 89px;
+            position: absolute;
+            left: 116.5px;
+            top: 369px;
+            backdrop-filter: blur(11.65px);
+            -webkit-backdrop-filter: blur(11.65px);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .center-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .center-button:active {
+            transform: scale(0.95);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+                max-height: 874px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .background-image {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        /* 高分辨率屏幕优化 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .center-button {
+                backdrop-filter: blur(23.3px);
+                -webkit-backdrop-filter: blur(23.3px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景图片 -->
+        <img class="background-image" src="./assets/CodeBubbyAssets/3_41/3.png" alt="背景">
+        
+        <!-- 顶部图片 -->
+        <img class="top-image" src="./assets/CodeBubbyAssets/3_41/2.png" alt="顶部内容">
+        
+        <!-- 中间按钮 -->
+        <img class="center-button" src="./assets/CodeBubbyAssets/3_41/1.png" alt="中间按钮" onclick="handleButtonClick()">
+    </div>
+    
+    <script>
+        function handleButtonClick() {
+            console.log('按钮被点击了，跳转到第二页');
+            // 跳转到第二页
+            window.location.href = 'page2.html';
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('APP页面加载完成');
+        });
+    </script>
+</body>
+</html>

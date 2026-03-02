@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 第四页 - 孵化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .background-image {
+            width: 401.99px;
+            height: 873.80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        /* 状态栏 */
+        .status-bar {
+            width: 401.99px;
+            height: 8px;
+            position: absolute;
+            left: 0;
+            top: 32px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 55px;
+            height: 8px;
+        }
+        
+        /* 孵化动画层 */
+        .hatching-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #0E0E0E;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease;
+        }
+        
+        .hatching-animation.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 像素风蛋 */
+        .pixel-egg {
+            width: 120px;
+            height: 140px;
+            position: relative;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .egg-shell {
+            width: 100%;
+            height: 100%;
+            background: #FFE082;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            box-shadow: inset -8px -8px 0 #FFCA28, inset 8px 8px 0 #FFF9C4;
+            animation: eggShake 2s ease-in-out infinite;
+        }
+        
+        .egg-shell::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 25px;
+            background: #FFCA28;
+            border-radius: 50%;
+            top: 30px;
+            left: 25px;
+            transform: rotate(-20deg);
+        }
+        
+        .egg-shell::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 20px;
+            background: #FFCA28;
+            border-radius: 50%;
+            top: 40px;
+            right: 30px;
+            transform: rotate(30deg);
+        }
+        
+        /* 裂纹效果 */
+        .crack {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: #8D6E63;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .crack1 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            transform-origin: center;
+        }
+        
+        .crack2 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            transform-origin: center;
+        }
+        
+        .crack3 {
+            top: 60%;
+            left: 40%;
+            transform: rotate(30deg);
+            transform-origin: top;
+        }
+        
+        .crack.show {
+            opacity: 1;
+            height: 60px;
+        }
+        
+        /* 蛋壳碎片 */
+        .shell-fragment {
+            position: absolute;
+            background: #FFE082;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .fragment1 {
+            width: 40px;
+            height: 50px;
+            border-radius: 50% 10% 50% 10%;
+            top: 20px;
+            left: 10px;
+            box-shadow: inset -3px -3px 0 #FFCA28;
+        }
+        
+        .fragment2 {
+            width: 35px;
+            height: 45px;
+            border-radius: 10% 50% 10% 50%;
+            top: 30px;
+            right: 15px;
+            box-shadow: inset 3px -3px 0 #FFCA28;
+        }
+        
+        .fragment3 {
+            width: 30px;
+            height: 40px;
+            border-radius: 50%;
+            bottom: 20px;
+            left: 45px;
+            box-shadow: inset -2px 2px 0 #FFCA28;
+        }
+        
+        .shell-fragment.fall {
+            opacity: 1;
+            transform: translateY(100px) rotate(180deg);
+        }
+        
+        /* 孵化文本 */
+        .hatching-text {
+            margin-top: 40px;
+            font-size: 24px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            animation: textPulse 1.5s ease-in-out infinite;
+        }
+        
+        /* 角色展示区域 */
+        .character-showcase {
+            position: absolute;
+            width: 354px;
+            height: 688px;
+            left: 24px;
+            top: 92.90px;
+            background: rgba(255, 255, 255, 0.80);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 4px;
+            backdrop-filter: blur(3.95px);
+            -webkit-backdrop-filter: blur(3.95px);
+            padding: 32px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .character-showcase.show {
+            opacity: 1;
+        }
+        
+        .character-header {
+            width: 290.01px;
+            height: 67.99px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .character-title {
+            font-size: 30px;
+            font-family: 'Jersey 25', cursive;
+            font-weight: 400;
+            letter-spacing: 1.90px;
+            background: linear-gradient(180deg, #D99362 0%, #D99362 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .character-subtitle {
+            font-size: 16px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .character-display {
+            width: 290.01px;
+            height: 555px;
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 12px;
+            padding: 13px;
+            text-align: center;
+        }
+        
+        .character-image-container {
+            width: 226.02px;
+            height: 240.57px;
+            margin: 0 auto 20px;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0.9;
+        }
+        
+        .character-image {
+            width: 189px;
+            height: 246px;
+            position: absolute;
+            left: 18.01px;
+            top: -29.89px;
+        }
+        
+        .character-info {
+            width: 226.02px;
+            height: 273px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 4px;
+            outline: 1px rgba(77.94, 77.94, 77.94, 0.50) solid;
+            outline-offset: -0.50px;
+            padding: 24px;
+        }
+        
+        .character-name {
+            width: 148.79px;
+            height: 55.99px;
+            margin: 0 auto 16px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 3px 3px 0px #DBDCDD;
+        }
+        
+        .name-text {
+            font-size: 24px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            letter-spacing: 1.27px;
+            background: linear-gradient(180deg, #737373 0%, #737373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .character-type {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .character-stats {
+            width: 146.03px;
+            height: 99.94px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.50);
+            border-radius: 14px;
+            padding: 15.99px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .stat-item {
+            font-size: 14px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        
+        /* 底部按钮 */
+        .button-group {
+            width: 290.01px;
+            height: 59.98px;
+            position: absolute;
+            left: 32px;
+            bottom: 32px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 139.01px;
+            height: 59.98px;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.10), 4px 6px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10), 2px 2px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-text {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .start-button {
+            width: 139.01px;
+            height: 59.98px;
+            background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.10), 4px 6px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .start-button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10), 2px 2px 0px rgba(0, 0, 0, 0.15);
+        }
+        
+        .start-text {
+            font-size: 20px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            letter-spacing: 0.55px;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .button-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* 动画定义 */
+        @keyframes eggShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        @keyframes textPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+                max-height: 874px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .background-image {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        /* 高分辨率屏幕优化 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .character-showcase {
+                backdrop-filter: blur(7.9px);
+                -webkit-backdrop-filter: blur(7.9px);
+            }
+        }
+        
+        /* 添加Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Inter:wght@400&family=Pixelify+Sans:wght@400;500;700&display=swap');
+        
+        /* 像素化渲染 */
+        .pixelated {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景图片 -->
+        <img class="background-image" src="./assets/CodeBubbyAssets/3_93/6.png" alt="背景">
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_93/2.svg" alt="状态1">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_93/3.svg" alt="状态2">
+            <img class="status-dot" src="./assets/CodeBubbyAssets/3_93/4.svg" alt="状态3">
+        </div>
+        
+        <!-- 孵化动画层 -->
+        <div class="hatching-animation" id="hatchingAnimation">
+            <div class="pixel-egg">
+                <div class="egg-shell">
+                    <div class="crack crack1"></div>
+                    <div class="crack crack2"></div>
+                    <div class="crack crack3"></div>
+                </div>
+                <div class="shell-fragment fragment1"></div>
+                <div class="shell-fragment fragment2"></div>
+                <div class="shell-fragment fragment3"></div>
+            </div>
+            <div class="hatching-text">Hatching...</div>
+        </div>
+        
+        <!-- 角色展示区域 -->
+        <div class="character-showcase" id="characterShowcase">
+            <div class="character-header">
+                <h1 class="character-title">Your own partner</h1>
+                <p class="character-subtitle">Base on your data</p>
+            </div>
+            
+            <div class="character-display">
+                <div class="character-image-container">
+                    <img class="character-image pixelated" src="./assets/CodeBubbyAssets/3_93/5.png" alt="角色">
+                </div>
+                
+                <div class="character-info">
+                    <div class="character-name">
+                        <span class="name-text" id="characterName">User Name</span>
+                    </div>
+                    
+                    <div class="character-type" id="characterType">Explorer</div>
+                    
+                    <div class="character-stats">
+                        <div class="stat-item" id="stat1">👤 Creative little genius</div>
+                        <div class="stat-item" id="stat2">🌟 Agile type</div>
+                        <div class="stat-item" id="stat3">📊 Lv.0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部按钮 -->
+            <div class="button-group">
+                <button class="back-button" onclick="handleBackClick()">
+                    <img class="button-icon" src="./assets/CodeBubbyAssets/3_93/1.svg" alt="返回">
+                    <span class="back-text">Back</span>
+                </button>
+                
+                <button class="start-button" onclick="handleStartClick()">
+                    <span class="start-text">Start</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 动画控制
+        let animationPhase = 0;
+        
+        // 页面加载时开始动画
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('APP第四页加载完成，开始孵化动画');
+            startHatchingAnimation();
+        });
+        
+        function startHatchingAnimation() {
+            const eggShell = document.querySelector('.egg-shell');
+            const cracks = document.querySelectorAll('.crack');
+            const fragments = document.querySelectorAll('.shell-fragment');
+            const hatchingText = document.querySelector('.hatching-text');
+            const hatchingAnimation = document.getElementById('hatchingAnimation');
+            const characterShowcase = document.getElementById('characterShowcase');
+            
+            // 动画阶段1：摇晃（2秒）
+            setTimeout(() => {
+                hatchingText.textContent = 'Hatching...';
+            }, 500);
+            
+            // 动画阶段2：出现裂纹（2秒）
+            setTimeout(() => {
+                hatchingText.textContent = 'Cracking...';
+                cracks.forEach((crack, index) => {
+                    setTimeout(() => {
+                        crack.classList.add('show');
+                    }, index * 200);
+                });
+            }, 2000);
+            
+            // 动画阶段3：蛋壳破碎（1秒）
+            setTimeout(() => {
+                hatchingText.textContent = 'Breaking...';
+                eggShell.style.opacity = '0.3';
+                fragments.forEach((fragment, index) => {
+                    setTimeout(() => {
+                        fragment.classList.add('fall');
+                    }, index * 100);
+                });
+            }, 4000);
+            
+            // 动画阶段4：显示角色（1秒）
+            setTimeout(() => {
+                hatchingText.textContent = 'Born!';
+                hatchingAnimation.classList.add('hide');
+                characterShowcase.classList.add('show');
+                
+                // 添加角色出现动画
+                const characterImage = document.querySelector('.character-image');
+                characterImage.style.animation = 'characterAppear 0.8s ease-out';
+            }, 5000);
+            
+            // 动画阶段5：完全隐藏动画层
+            setTimeout(() => {
+                hatchingAnimation.style.display = 'none';
+            }, 6000);
+        }
+        
+        function handleBackClick() {
+            console.log('返回第三页');
+            // 返回到第三页
+            window.location.href = 'page3.html';
+        }
+        
+        function handleStartClick() {
+            console.log('跳转到第五页');
+            
+            // 跳转到第五页
+            window.location.href = 'page5.html';
+        }
+        
+        // 根据用户数据更新角色信息
+        function updateCharacterInfo() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            
+            // 根据数据生成角色名称和类型
+            if (userData.age && userData.height && userData.weight) {
+                // 这里可以根据算法生成不同的角色类型
+                const types = ['Explorer', 'Warrior', 'Mage', 'Rogue'];
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                
+                document.getElementById('characterType').textContent = randomType;
+                
+                // 更新统计数据
+                document.getElementById('stat3').textContent = `📊 Lv.${Math.floor(userData.age / 10)}`;
+            }
+        }
+        
+        // 添加角色出现动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes characterAppear {
+                0% {
+                    transform: scale(0) rotate(180deg);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1.2) rotate(90deg);
+                    opacity: 0.7;
+                }
+                100% {
+                    transform: scale(1) rotate(0deg);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 页面加载完成后更新角色信息
+        setTimeout(() => {
+            updateCharacterInfo();
+        }, 5500);
+    </script>
+</body>
+</html>

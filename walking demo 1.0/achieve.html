@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 成就 - Achive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            min-height: 1344px;
+            position: relative;
+            background: linear-gradient(180deg, #FFFCE2 0%, #FFF8BC 100%);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            width: 370.01px;
+            height: 55.98px;
+            position: absolute;
+            left: 16px;
+            top: 16px;
+        }
+
+        .back-btn {
+            width: 37.01px;
+            height: 41.83px;
+            position: absolute;
+            left: 0;
+            top: 7.07px;
+            cursor: pointer;
+        }
+
+        .back-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-text {
+            width: 207px;
+            height: 44px;
+            position: absolute;
+            left: 52.01px;
+            top: 5.99px;
+        }
+
+        .header-title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 26px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            width: 370.01px;
+            height: 47.99px;
+            position: absolute;
+            left: 15.99px;
+            top: 87.96px;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 15.99px;
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            width: 306.03px;
+            height: 23.99px;
+            margin-left: 12px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            color: rgba(54, 65, 83, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: rgba(54, 65, 83, 0.5);
+        }
+
+        /* Category Grid */
+        .category-grid {
+            width: 370.01px;
+            height: 379.91px;
+            position: absolute;
+            left: 15.99px;
+            top: 151.94px;
+        }
+
+        .category-card {
+            width: 179px;
+            height: 183.96px;
+            position: absolute;
+            box-shadow: 4px 4px 0px rgba(104.21, 92.05, 0, 0.20);
+            outline: 1.20px #1E2939 solid;
+            outline-offset: -1.20px;
+            padding: 15.99px;
+        }
+
+        .category-card.birds {
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, #FFF2F0 0%, #FEDBD5 100%);
+        }
+
+        .category-card.plants {
+            left: 191px;
+            top: 0;
+            background: linear-gradient(180deg, #F1F8E9 0%, #DCEDC8 100%);
+        }
+
+        .category-card.marine {
+            left: 0;
+            top: 195.96px;
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%);
+        }
+
+        .category-card.insects {
+            left: 191px;
+            top: 195.96px;
+            background: linear-gradient(180deg, #FFF9C4 0%, #FFF59D 100%);
+        }
+
+        .category-icon {
+            width: 47.86px;
+            height: 48px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.20);
+        }
+
+        .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .category-badge {
+            position: absolute;
+            right: 15.99px;
+            top: 15.99px;
+            height: 35.36px;
+            background: rgba(255, 255, 255, 0.90);
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 13.69px;
+        }
+
+        .category-card.birds .category-badge {
+            outline: 1.69px #FF9F82 solid;
+            outline-offset: -1.69px;
+        }
+
+        .category-card.plants .category-badge {
+            outline: 1.69px #7CB342 solid;
+            outline-offset: -1.69px;
+        }
+
+        .category-card.marine .category-badge {
+            outline: 1.69px #29B6F6 solid;
+            outline-offset: -1.69px;
+        }
+
+        .category-card.insects .category-badge {
+            outline: 1.69px #FFD54F solid;
+            outline-offset: -1.69px;
+        }
+
+        .category-badge-text {
+            font-size: 12px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            text-align: center;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .category-title {
+            position: absolute;
+            left: 15.99px;
+            top: 103.98px;
+            font-size: 20px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .category-progress-bar {
+            width: 147.02px;
+            height: 12px;
+            position: absolute;
+            left: 15.99px;
+            top: 131.97px;
+            background: rgba(255, 255, 255, 0.50);
+            overflow: hidden;
+            border-radius: 18891700px;
+            outline: 1.69px white solid;
+            outline-offset: -1.69px;
+        }
+
+        .category-progress-inner {
+            height: 8.62px;
+            position: absolute;
+            left: 1.69px;
+            top: 1.69px;
+            border-radius: 74px;
+        }
+
+        .category-card.birds .category-progress-inner {
+            width: 95.76px;
+            background: #FF9F82;
+        }
+
+        .category-card.plants .category-progress-inner {
+            width: 107.73px;
+            background: #7CB342;
+            border-radius: 45px;
+        }
+
+        .category-card.marine .category-progress-inner {
+            width: 58px;
+            background: #29B6F6;
+        }
+
+        .category-card.insects .category-progress-inner {
+            width: 79.80px;
+            background: #FFD54F;
+            border-radius: 45px;
+        }
+
+        .category-percent {
+            position: absolute;
+            right: 15.99px;
+            top: 151.97px;
+            width: 53px;
+            text-align: right;
+            font-size: 12px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Recent Discover */
+        .recent-section {
+            width: 370px;
+            position: absolute;
+            left: 16px;
+            top: 556px;
+        }
+
+        .recent-title {
+            font-size: 26px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .discover-card {
+            width: 370px;
+            height: 95.98px;
+            background: white;
+            box-shadow: 4px 4px 0px rgba(104.21, 92.05, 0, 0.20);
+            outline: 1.20px #1E2939 solid;
+            outline-offset: -1.20px;
+            display: flex;
+            align-items: center;
+            padding: 15.47px 17.19px;
+            position: relative;
+        }
+
+        .discover-card.locked {
+            opacity: 0.50;
+        }
+
+        .discover-thumb {
+            width: 57.81px;
+            height: 65.04px;
+            background: #D9D9D9;
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .discover-thumb img {
+            width: 71.64px;
+            height: 65.02px;
+            position: absolute;
+            left: -8.54px;
+            top: -0.16px;
+            object-fit: cover;
+        }
+
+        .discover-info {
+            margin-left: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .discover-name {
+            font-size: 18px;
+            font-family: 'Jersey 20', sans-serif;
+            font-weight: 400;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .discover-stars {
+            display: flex;
+            gap: 0;
+            height: 14px;
+        }
+
+        .discover-stars img {
+            width: 14px;
+            height: 14px;
+        }
+
+        .discover-status {
+            width: 81px;
+            height: 32px;
+            position: absolute;
+            right: 17.19px;
+            top: 31.99px;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-family: 'Jersey 25', sans-serif;
+            font-weight: 400;
+        }
+
+        .discover-card:not(.locked) .discover-status {
+            background: #FFD54F;
+        }
+
+        .discover-card:not(.locked) .discover-status span {
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .discover-card.locked .discover-status {
+            background: #A9ADB4;
+        }
+
+        .discover-card.locked .discover-status span {
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .locked-icon {
+            width: 57.81px;
+            height: 65.04px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .locked-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                min-height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="back-btn" onclick="goBack()">
+                <img src="./assets/CodeBubbyAssets/3_895/29.svg" alt="返回">
+            </div>
+            <div class="header-text">
+                <div class="header-title">Achive</div>
+                <div class="header-subtitle">Collecting the biodiversity of Hong Kong</div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <img class="search-icon" src="./assets/CodeBubbyAssets/3_895/1.svg" alt="搜索">
+            <input class="search-input" placeholder="Search" />
+        </div>
+
+        <!-- Category Grid -->
+        <div class="category-grid">
+            <!-- Birds -->
+            <div class="category-card birds">
+                <div class="category-icon">
+                    <img src="./assets/CodeBubbyAssets/3_895/30.svg" alt="Birds">
+                </div>
+                <div class="category-badge">
+                    <span class="category-badge-text">8/12</span>
+                </div>
+                <div class="category-title">Birds</div>
+                <div class="category-progress-bar">
+                    <div class="category-progress-inner"></div>
+                </div>
+                <div class="category-percent">67%/100%</div>
+            </div>
+
+            <!-- Plants -->
+            <div class="category-card plants">
+                <div class="category-icon">
+                    <img src="./assets/CodeBubbyAssets/3_895/37.png" alt="Plants">
+                </div>
+                <div class="category-badge">
+                    <span class="category-badge-text">15/20</span>
+                </div>
+                <div class="category-title">Plants</div>
+                <div class="category-progress-bar">
+                    <div class="category-progress-inner"></div>
+                </div>
+                <div class="category-percent">75%/100%</div>
+            </div>
+
+            <!-- Marine Life -->
+            <div class="category-card marine">
+                <div class="category-icon">
+                    <img src="./assets/CodeBubbyAssets/3_895/31.svg" alt="Marine">
+                </div>
+                <div class="category-badge">
+                    <span class="category-badge-text">6/15</span>
+                </div>
+                <div class="category-title">Marine Life</div>
+                <div class="category-progress-bar">
+                    <div class="category-progress-inner"></div>
+                </div>
+                <div class="category-percent">40%/100%</div>
+            </div>
+
+            <!-- Insects -->
+            <div class="category-card insects">
+                <div class="category-icon">
+                    <img src="./assets/CodeBubbyAssets/3_895/32.svg" alt="Insects">
+                </div>
+                <div class="category-badge">
+                    <span class="category-badge-text">10/18</span>
+                </div>
+                <div class="category-title">Insects</div>
+                <div class="category-progress-bar">
+                    <div class="category-progress-inner"></div>
+                </div>
+                <div class="category-percent">56%/100%</div>
+            </div>
+        </div>
+
+        <!-- Recent Discover -->
+        <div class="recent-section">
+            <div class="recent-title">Recent Discover</div>
+            <div class="recent-list">
+                <!-- White Heron -->
+                <div class="discover-card">
+                    <div class="discover-thumb">
+                        <img src="./assets/CodeBubbyAssets/3_895/33.png" alt="White Heron">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">White Heron</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/4.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/5.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/6.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Collected</span>
+                    </div>
+                </div>
+
+                <!-- Rhododendron -->
+                <div class="discover-card">
+                    <div class="discover-thumb">
+                        <img src="./assets/CodeBubbyAssets/3_895/34.png" alt="Rhododendron">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">Rhododendron</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/7.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/8.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/9.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Collected</span>
+                    </div>
+                </div>
+
+                <!-- Black Kite -->
+                <div class="discover-card">
+                    <div class="discover-thumb">
+                        <img src="./assets/CodeBubbyAssets/3_895/35.png" alt="Black Kite">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">Black Kite</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/11.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/12.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/13.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Collected</span>
+                    </div>
+                </div>
+
+                <!-- Bubalus Bubalis -->
+                <div class="discover-card">
+                    <div class="discover-thumb">
+                        <img src="./assets/CodeBubbyAssets/3_895/36.png" alt="Bubalus Bubalis">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">Bubalus Bubalis</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/14.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/15.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/16.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Collected</span>
+                    </div>
+                </div>
+
+                <!-- Muntiacus Vaginalis -->
+                <div class="discover-card">
+                    <div class="discover-thumb">
+                        <img src="./assets/CodeBubbyAssets/3_895/10.svg" alt="Muntiacus Vaginalis">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">Muntiacus Vaginalis</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/18.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/19.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/20.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Collected</span>
+                    </div>
+                </div>
+
+                <!-- Locked 1 -->
+                <div class="discover-card locked">
+                    <div class="locked-icon">
+                        <img src="./assets/CodeBubbyAssets/3_895/21.svg" alt="Locked">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">???</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/22.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/23.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/24.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Not Found</span>
+                    </div>
+                </div>
+
+                <!-- Locked 2 -->
+                <div class="discover-card locked">
+                    <div class="locked-icon">
+                        <img src="./assets/CodeBubbyAssets/3_895/25.svg" alt="Locked">
+                    </div>
+                    <div class="discover-info">
+                        <div class="discover-name">???</div>
+                        <div class="discover-stars">
+                            <img src="./assets/CodeBubbyAssets/3_895/26.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/27.svg" alt="star">
+                            <img src="./assets/CodeBubbyAssets/3_895/28.svg" alt="star">
+                        </div>
+                    </div>
+                    <div class="discover-status">
+                        <span>Not Found</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            console.log('返回宠物主页');
+            window.location.href = 'page5.html';
+        }
+    </script>
+</body>
+</html>

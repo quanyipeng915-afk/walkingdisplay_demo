@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Location Route - Yuen Chau Kok Park</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            overflow: hidden;
+        }
+
+        /* Top Map Section */
+        .map-section {
+            width: 401.99px;
+            height: 524.27px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: linear-gradient(135deg, #008236 0%, #00A63E 50%, #00C950 100%);
+            overflow: hidden;
+        }
+
+        .map-bg {
+            width: 429px;
+            height: 550px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            object-fit: cover;
+        }
+
+        .map-overlay {
+            width: 401.99px;
+            height: 524.27px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0.30;
+        }
+
+        .route-icon-1 {
+            position: absolute;
+            left: 174px;
+            top: 185px;
+        }
+
+        .route-icon-2 {
+            position: absolute;
+            left: 277px;
+            top: 444px;
+        }
+
+        .route-icon-3 {
+            position: absolute;
+            left: 65px;
+            top: 314px;
+        }
+
+        .location-pin {
+            position: absolute;
+            left: 234px;
+            top: 388px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            width: 37px;
+            height: 42px;
+            position: absolute;
+            left: 17px;
+            top: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 18891700px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2), 8px 8px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .back-btn:active {
+            transform: translateY(1px);
+        }
+
+        .back-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Today's Walk Distance */
+        .walk-distance {
+            width: 103.08px;
+            height: 67.98px;
+            position: absolute;
+            left: 282.92px;
+            top: 15.99px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            border-radius: 4px;
+            padding: 12px 20px;
+        }
+
+        .walk-label {
+            width: 63.09px;
+            height: 15.99px;
+            position: absolute;
+            left: 20px;
+            top: 12px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #4A5565;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .walk-value {
+            width: 63.09px;
+            height: 27.99px;
+            position: absolute;
+            left: 20px;
+            top: 27.99px;
+            font-size: 20px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.55px;
+            background: #7CB342;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Location Name Tag */
+        .location-tag {
+            width: 129.97px;
+            height: 35.98px;
+            position: absolute;
+            left: 136.01px;
+            top: 472.30px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .location-tag-text {
+            width: 97.98px;
+            height: 19.99px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        /* Bottom Items Section */
+        .items-section {
+            width: 401.99px;
+            height: 349.52px;
+            position: absolute;
+            left: 0px;
+            top: 524.27px;
+            background: linear-gradient(180deg, #E0F7FA 0%, #F9FAFB 100%);
+        }
+
+        /* Tabs */
+        .tabs {
+            width: 401.99px;
+            height: 52.50px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            border-bottom: 0.56px #E5E7EB solid;
+            display: flex;
+        }
+
+        .tab {
+            width: 201px;
+            height: 51.94px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab.active {
+            border-bottom: 3.94px #7CB342 solid;
+        }
+
+        .tab-text {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #99A1AF;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .tab.active .tab-text {
+            background: #7CB342;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            width: 401.99px;
+            height: 297.02px;
+            position: absolute;
+            left: 0px;
+            top: 52.50px;
+            overflow: hidden;
+        }
+
+        .items-container {
+            width: 370.01px;
+            height: 339.90px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+        }
+
+        .item-card {
+            width: 179px;
+            height: 163.95px;
+            position: absolute;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .item-card.locked {
+            opacity: 0.60;
+        }
+
+        .item-card:nth-child(1) {
+            left: 0px;
+            top: 0px;
+        }
+
+        .item-card:nth-child(2) {
+            left: 191px;
+            top: 0px;
+        }
+
+        .item-card:nth-child(3) {
+            left: 0px;
+            top: 175.95px;
+        }
+
+        .item-card:nth-child(4) {
+            left: 191px;
+            top: 175.95px;
+        }
+
+        .item-content {
+            width: 147.02px;
+            height: 131.97px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+        }
+
+        .item-icon {
+            position: absolute;
+            left: 41.51px;
+            top: 0px;
+        }
+
+        .item-info {
+            width: 72px;
+            height: 59.97px;
+            position: absolute;
+            left: 37.51px;
+            top: 72px;
+        }
+
+        .item-name {
+            width: 72px;
+            height: 19.99px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #1E2939;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .item-desc {
+            width: 72px;
+            height: 15.99px;
+            position: absolute;
+            left: 0px;
+            top: 19.99px;
+            font-size: 11px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 400;
+            background: #6A7282;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .item-distance {
+            width: 72px;
+            height: 15.99px;
+            position: absolute;
+            left: 0px;
+            top: 35.98px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .distance-icon {
+            width: 12px;
+            height: 12px;
+            position: relative;
+        }
+
+        .distance-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .distance-text {
+            font-size: 12px;
+            font-family: 'Pixelify Sans', sans-serif;
+            font-weight: 700;
+            background: #7CB342;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .locked-overlay {
+            width: 15.99px;
+            height: 15.99px;
+            position: absolute;
+            left: 155.01px;
+            top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+            }
+
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Map Section -->
+        <div class="map-section">
+            <img class="map-bg" src="./assets/CodeBubbyAssets/29_750/14.png" alt="Route Map">
+            <div class="map-overlay"></div>
+            
+            <div class="route-icon-1">
+                <img src="./assets/CodeBubbyAssets/29_750/9.svg" alt="Route Point 1">
+            </div>
+            <div class="route-icon-2">
+                <img src="./assets/CodeBubbyAssets/29_750/10.svg" alt="Route Point 2">
+            </div>
+            <div class="route-icon-3">
+                <img src="./assets/CodeBubbyAssets/29_750/11.svg" alt="Route Point 3">
+            </div>
+            
+            <div class="location-pin">
+                <img src="./assets/CodeBubbyAssets/29_750/12.svg" alt="Location Pin">
+            </div>
+            
+            <!-- Back Button -->
+            <div class="back-btn" onclick="goBack()">
+                <img src="./assets/CodeBubbyAssets/29_750/13.svg" alt="Back">
+            </div>
+            
+            <!-- Today's Walk Distance -->
+            <div class="walk-distance">
+                <div class="walk-label">Today's Walk</div>
+                <div class="walk-value">1.2km</div>
+            </div>
+            
+            <!-- Location Name Tag -->
+            <div class="location-tag">
+                <div class="location-tag-text">Yuen chau Kok Park</div>
+            </div>
+        </div>
+
+        <!-- Items Section -->
+        <div class="items-section">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active">
+                    <div class="tab-text">Items to be unlocked</div>
+                </div>
+                <div class="tab">
+                    <div class="tab-text">Discussion Area</div>
+                </div>
+            </div>
+            
+            <!-- Items Grid -->
+            <div class="items-grid">
+                <div class="items-container">
+                    <!-- Item 1 - Unlocked -->
+                    <div class="item-card">
+                        <div class="item-content">
+                            <div class="item-icon">
+                                <img src="./assets/CodeBubbyAssets/29_750/1.svg" alt="Item A">
+                            </div>
+                            <div class="item-info">
+                                <div class="item-name">Mysterious items A</div>
+                                <div class="item-desc">This area was discovered</div>
+                                <div class="item-distance">
+                                    <div class="distance-icon">
+                                        <img src="./assets/CodeBubbyAssets/29_750/2.svg" alt="Distance">
+                                    </div>
+                                    <div class="distance-text">120m</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 - Unlocked -->
+                    <div class="item-card">
+                        <div class="item-content">
+                            <div class="item-icon">
+                                <img src="./assets/CodeBubbyAssets/29_750/3.svg" alt="Item B">
+                            </div>
+                            <div class="item-info">
+                                <div class="item-name">Mysterious items B</div>
+                                <div class="item-desc">This area was discovered</div>
+                                <div class="item-distance">
+                                    <div class="distance-icon">
+                                        <img src="./assets/CodeBubbyAssets/29_750/4.svg" alt="Distance">
+                                    </div>
+                                    <div class="distance-text">350m</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 3 - Locked -->
+                    <div class="item-card locked">
+                        <div class="item-content">
+                            <div class="item-icon">
+                                <img src="./assets/CodeBubbyAssets/29_750/5.svg" alt="Item C">
+                            </div>
+                            <div class="item-info">
+                                <div class="item-name">Mysterious items C</div>
+                                <div class="item-desc">在此区域发现</div>
+                                <div class="item-distance">
+                                    <div class="distance-icon">
+                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                            <rect x="2" y="1" width="8" height="10" stroke="#7CB342" stroke-width="1"/>
+                                            <rect x="4.5" y="3.5" width="3" height="3" stroke="#7CB342" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                    <div class="distance-text">580m</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="locked-overlay">
+                            <img src="./assets/CodeBubbyAssets/29_750/6.svg" alt="Locked">
+                        </div>
+                    </div>
+                    
+                    <!-- Item 4 - Locked -->
+                    <div class="item-card locked">
+                        <div class="item-content">
+                            <div class="item-icon">
+                                <img src="./assets/CodeBubbyAssets/29_750/7.svg" alt="Item D">
+                            </div>
+                            <div class="item-info">
+                                <div class="item-name">Mysterious items D</div>
+                                <div class="item-desc">在此区域发现</div>
+                                <div class="item-distance">
+                                    <div class="distance-icon">
+                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                            <rect x="2" y="1" width="8" height="10" stroke="#7CB342" stroke-width="1"/>
+                                            <rect x="4.5" y="3.5" width="3" height="3" stroke="#7CB342" stroke-width="1"/>
+                                        </svg>
+                                    </div>
+                                    <div class="distance-text">720m</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="locked-overlay">
+                            <img src="./assets/CodeBubbyAssets/29_750/8.svg" alt="Locked">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabText = this.querySelector('.tab-text').textContent;
+                
+                if (tabText === 'Discussion Area') {
+                    // Navigate to discussion area
+                    window.location.href = 'discussion-area.html';
+                }
+                // If it's already active, do nothing
+            });
+        });
+
+        // Simulate walk distance increase
+        let currentDistance = 1.2;
+        function updateWalkDistance() {
+            currentDistance += 0.1;
+            document.querySelector('.walk-value').textContent = currentDistance.toFixed(1) + 'km';
+        }
+
+        // Auto update distance every 5 seconds (demo)
+        setInterval(updateWalkDistance, 5000);
+    </script>
+</body>
+</html>

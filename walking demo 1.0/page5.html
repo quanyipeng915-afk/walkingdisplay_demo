@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APP 第五页 - 宠物主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Jersey 25', 'Pixelify Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .background-image {
+            width: 401.99px;
+            height: 873.80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .main-frame {
+            width: 370px;
+            height: 836px;
+            position: absolute;
+            left: 16px;
+            top: 27px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15), 6px 6px 0px rgba(0, 0, 0, 0.20);
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        
+        /* 宠物展示区域 */
+        .pet-showcase {
+            width: 370px;
+            height: 470px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+            background-image: url('./assets/CodeBubbyAssets/3_129/53.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* 用户信息卡片 */
+        .user-info {
+            width: 117px;
+            height: 83px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 3px 5px 0px #9D8A79;
+            border-radius: 4px;
+            padding: 6px;
+        }
+        
+        .username {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .level-text {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .exp-bar {
+            width: 68px;
+            height: 9px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+            outline: 0.76px rgba(82, 82, 82, 0.10) solid;
+            outline-offset: -0.76px;
+            position: relative;
+        }
+        
+        .exp-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #368BCB 0%, #4FC3F7 100%);
+            width: 30%;
+        }
+        
+        .exp-info {
+            display: flex;
+            gap: 4px;
+            font-size: 10px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+        }
+        
+        .exp-label {
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .exp-value {
+            background: linear-gradient(180deg, #368BCB 0%, #368BCB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .exp-total {
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 宠物图片 - 上下浮动动画 */
+        .pet-image {
+            width: 151px;
+            height: 178px;
+            position: absolute;
+            left: 111px;
+            top: 200px;
+            animation: petFloat 3s ease-in-out infinite;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        @keyframes petFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* 宠物名称 */
+        .pet-name {
+            width: 149.72px;
+            height: 40.08px;
+            position: absolute;
+            left: 110px;
+            top: 408px;
+        }
+        
+        /* 步数显示（金币） */
+        .coin-display {
+            width: 90px;
+            height: 29px;
+            position: absolute;
+            left: 29.86px;
+            top: 5.54px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .name-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .name-bg {
+            position: absolute;
+            width: 136.93px;
+            height: 37px;
+            left: 6.40px;
+            top: 1.54px;
+            background: #BC8C61;
+        }
+        
+        .name-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 右侧导航按钮容器 - 严格按照Figma位置 */
+        .nav-buttons {
+            width: 73px;
+            height: 423.60px;
+            position: absolute;
+            left: 322px;
+            top: 61px;
+        }
+        
+        /* 单个导航按钮 - 严格按照Figma位置和尺寸 */
+        .nav-button {
+            position: absolute;
+            width: 73px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-4px);
+        }
+        
+        .nav-button:active {
+            transform: translateY(2px);
+        }
+        
+        /* Find按钮 - 位置: left: 0px, top: 0px */
+        .nav-button:nth-child(1) {
+            height: 107.44px;
+            left: 0px;
+            top: 0px;
+        }
+        
+        .nav-button:nth-child(1) .nav-icon {
+            width: 73px;
+            height: 79.44px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        
+        .nav-button:nth-child(1) .nav-text {
+            position: absolute;
+            left: 0px;
+            top: 79.44px;
+            width: 73px;
+            text-align: center;
+        }
+        
+        /* Shop按钮 - 位置: left: 0px, top: 123.44px */
+        .nav-button:nth-child(2) {
+            height: 86.83px;
+            left: 0px;
+            top: 123.44px;
+        }
+        
+        .nav-button:nth-child(2) .nav-icon {
+            width: 55px;
+            height: 60.83px;
+            position: absolute;
+            left: 9.16px;
+            top: 0px;
+        }
+        
+        .nav-button:nth-child(2) .nav-text {
+            position: absolute;
+            left: 0px;
+            top: 60.83px;
+            width: 73px;
+            text-align: center;
+        }
+        
+        /* Achieve按钮 - 位置: left: 0px, top: 226.27px */
+        .nav-button:nth-child(3) {
+            height: 85px;
+            left: 0px;
+            top: 226.27px;
+        }
+        
+        .nav-button:nth-child(3) .nav-icon {
+            width: 54px;
+            height: 57px;
+            position: absolute;
+            left: 9.50px;
+            top: 0px;
+        }
+        
+        .nav-button:nth-child(3) .nav-text {
+            position: absolute;
+            left: 0px;
+            top: 57px;
+            width: 73px;
+            text-align: center;
+        }
+        
+        /* School按钮 - 位置: left: 0px, top: 327.27px */
+        .nav-button:nth-child(4) {
+            height: 96.33px;
+            left: 0px;
+            top: 327.27px;
+        }
+        
+        .nav-button:nth-child(4) .nav-icon {
+            width: 73px;
+            height: 75.70px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        
+        .nav-button:nth-child(4) .nav-text {
+            position: absolute;
+            left: 0px;
+            top: 70.33px;
+            width: 73px;
+            text-align: center;
+        }
+        
+        .nav-icon {
+            display: block;
+        }
+        
+        .nav-text {
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 右侧菜单图标和文字已包含在背景图中，这里只保留点击区域，隐藏重复图层 */
+        .nav-button .nav-icon,
+        .nav-button .nav-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 按钮文字字体大小 - 严格按照Figma */
+        .nav-button:nth-child(1) .nav-text {
+            font-size: 18px;
+        }
+        
+        .nav-button:nth-child(2) .nav-text {
+            font-size: 16.12px;
+        }
+        
+        .nav-button:nth-child(3) .nav-text {
+            font-size: 18px;
+        }
+        
+        .nav-button:nth-child(4) .nav-text {
+            font-size: 16.12px;
+        }
+        
+        /* 卡牌收集区域 */
+        .cards-collection {
+            width: 100%;
+            height: 317px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: #FFFBF8;
+            box-shadow: 0px -4px 0px #444444;
+            overflow: hidden;
+            border-radius: 4px;
+            padding: 15px 16px;
+        }
+        
+        .collection-title {
+            font-size: 24px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #A29080 0%, #A29080 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        
+        .cards-container {
+            width: 100%;
+            height: 244px;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .cards-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* 卡牌样式 */
+        .card {
+            width: 136px;
+            height: 244px;
+            flex-shrink: 0;
+            border-radius: 2px;
+            outline: 1.50px #525252 solid;
+            outline-offset: -1.50px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .card.animal {
+            background: linear-gradient(180deg, #D19A43 0%, #FFEFD6 20%), #FFEFD6;
+        }
+        
+        .card.plant {
+            background: linear-gradient(180deg, #ED9B9B 0%, #FFDCD6 20%);
+        }
+        
+        .card.unknown {
+            background: linear-gradient(180deg, #AFAFAF 0%, rgba(216, 216, 216, 0.40) 20%), #D8D8D8;
+        }
+        
+        .card.removing {
+            animation: cardDisappear 0.5s ease-out forwards;
+        }
+        
+        @keyframes cardDisappear {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) rotate(10deg);
+            }
+        }
+        
+        .card-number {
+            position: absolute;
+            left: 16px;
+            top: 21px;
+            font-size: 10px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-image-container {
+            width: 104.89px;
+            height: 169px;
+            position: absolute;
+            left: 15.56px;
+            top: 29.50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .card-image {
+            width: 104.89px;
+            height: 118px;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            background: #D9D9D9;
+        }
+        
+        .card-image img {
+            width: 129.97px;
+            height: 117.96px;
+            position: absolute;
+            left: -15.49px;
+            top: -0.30px;
+        }
+        
+        .card-name {
+            width: 104.89px;
+            font-size: 16px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .card-icons {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+        }
+        
+        .card-icon {
+            width: 16px;
+            height: 17px;
+        }
+        
+        /* Translated按钮 */
+        .translated-btn {
+            width: 104px;
+            height: 27px;
+            position: absolute;
+            left: 16px;
+            top: 204.50px;
+            background: white;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .translated-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08), 2px 4px 0px rgba(0, 0, 0, 0.10);
+        }
+        
+        .translated-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.08), 1px 1px 0px rgba(0, 0, 0, 0.10);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            width: 97.56px;
+            height: 11.63px;
+            position: absolute;
+            left: 8px;
+            top: 64px;
+            display: flex;
+            gap: 4px;
+        }
+        
+        .nav-dot {
+            width: 20.51px;
+            height: 11.63px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+                max-height: 874px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .background-image {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        /* 高分辨率屏幕优化 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .pet-image {
+                image-rendering: -webkit-optimize-contrast;
+            }
+        }
+        
+        /* 添加Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Inter:wght@400&family=Pixelify+Sans:wght@400;500;700&display=swap');
+        
+        /* 像素化渲染 */
+        .pixelated {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        /* 礼花动画 */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti {
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        .confetti.square {
+            width: 10px;
+            height: 10px;
+        }
+
+        .confetti.circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .confetti.triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid;
+            background: transparent !important;
+        }
+
+        .confetti.rectangle {
+            width: 8px;
+            height: 15px;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景图片 -->
+        <img class="background-image" src="./assets/CodeBubbyAssets/3_129/61.png" alt="背景">
+        
+        <!-- 主框架 -->
+        <div class="main-frame">
+            <!-- 宠物展示区域 -->
+            <div class="pet-showcase">
+                <!-- 用户信息 -->
+                <div class="user-info">
+                    <div class="username">User name</div>
+                    <div class="level-info">
+                        <div class="level-text">Lv.5</div>
+                        <div class="exp-bar">
+                            <div class="exp-progress"></div>
+                        </div>
+                    </div>
+                    <div class="exp-info">
+                        <div class="exp-label">Today Exp</div>
+                        <div class="exp-value">30</div>
+                        <div class="exp-total">/100</div>
+                    </div>
+                </div>
+                
+                <!-- 宠物图片 -->
+                <img class="pet-image pixelated" src="./assets/CodeBubbyAssets/3_129/52.png" alt="宠物">
+                
+                <!-- 宠物名称装饰 -->
+                <div class="pet-name">
+                    <div class="name-frame">
+                        <div class="name-bg"></div>
+                        <div class="name-border">
+                            <!-- 这里可以添加更多的装饰SVG -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 设置按钮 -->
+                <div class="settings-btn" onclick="toggleLanguage()" style="position: absolute; right: 15px; top: 15px; cursor: pointer;">
+                    <img src="./assets/CodeBubbyAssets/3_129/2.svg" alt="设置" width="24" height="24">
+                </div>
+                
+                <!-- 金币显示（步数） - 移动到pet-showcase内部左上角 -->
+                <div class="coin-display">
+                    <img class="coin-icon" src="./assets/CodeBubbyAssets/3_129/43.svg" alt="金币">
+                    <div class="coin-text">1922,0</div>
+                </div>
+                
+                <!-- 底部导航点 -->
+                <div class="bottom-nav">
+                    <img class="nav-dot" src="./assets/CodeBubbyAssets/3_129/44.svg" alt="nav1">
+                    <img class="nav-dot" src="./assets/CodeBubbyAssets/3_129/45.svg" alt="nav2">
+                    <img class="nav-dot" src="./assets/CodeBubbyAssets/3_129/46.svg" alt="nav3">
+                    <img class="nav-dot" src="./assets/CodeBubbyAssets/3_129/47.svg" alt="nav4">
+                    <img class="nav-dot" src="./assets/CodeBubbyAssets/3_129/48.svg" alt="nav5">
+                </div>
+            </div>
+            
+            <!-- 右侧导航按钮 -->
+            <div class="nav-buttons">
+                <!-- Find按钮 -->
+                <div class="nav-button" onclick="goToPage('find.html')">
+                    <img class="nav-icon pixelated" src="./assets/CodeBubbyAssets/3_129/57.png" alt="Find">
+                    <div class="nav-text">Find</div>
+                </div>
+                
+                <!-- Shop按钮 -->
+                <div class="nav-button" onclick="goToPage('shop.html')">
+                    <img class="nav-icon" src="./assets/CodeBubbyAssets/3_129/56.svg" alt="Shop">
+                    <div class="nav-text">Shop</div>
+                </div>
+                
+                <!-- Achieve按钮 -->
+                <div class="nav-button" onclick="goToPage('achieve.html')">
+                    <img class="nav-icon" src="./assets/CodeBubbyAssets/3_129/60.svg" alt="Achieve">
+                    <div class="nav-text">Achieve</div>
+                </div>
+                
+                <!-- School按钮 -->
+                <div class="nav-button" onclick="goToPage('school.html')">
+                    <img class="nav-icon pixelated" src="./assets/CodeBubbyAssets/3_129/58.png" alt="School">
+                    <div class="nav-text">School</div>
+                </div>
+            </div>
+            
+            <!-- 卡牌收集区域 -->
+            <div class="cards-collection">
+                <div class="collection-title">Cards collection</div>
+                
+                <div class="cards-container" id="cardsContainer">
+                    <!-- 动物类卡片 -->
+                    <div class="card animal" data-card-id="1">
+                        <div class="card-number">#00001</div>
+                        <div class="card-image-container">
+                            <div class="card-image">
+                                <img src="./assets/CodeBubbyAssets/3_129/54.png" alt="White Heron">
+                            </div>
+                            <div class="card-name">White Heron</div>
+                        </div>
+                        <div class="card-icons">
+                            <img class="card-icon" src="./assets/CodeBubbyAssets/3_129/50.svg" alt="icon1">
+                            <img class="card-icon" src="./assets/CodeBubbyAssets/3_129/51.svg" alt="icon2">
+                        </div>
+                        <button class="translated-btn" onclick="translateCard(this, 'animal')">Translated</button>
+                    </div>
+                    
+                    <!-- 植物类卡片 -->
+                    <div class="card plant" data-card-id="2">
+                        <div class="card-number">#00002</div>
+                        <div class="card-image-container">
+                            <div class="card-image">
+                                <img src="./assets/CodeBubbyAssets/3_129/59.png" alt="Rhododendron">
+                            </div>
+                            <div class="card-name">Rhododendron</div>
+                        </div>
+                        <div class="card-icons">
+                            <img class="card-icon" src="./assets/CodeBubbyAssets/3_129/49.svg" alt="icon">
+                        </div>
+                        <button class="translated-btn" onclick="translateCard(this, 'plant')">Translated</button>
+                    </div>
+                    
+                    <!-- 未知卡片 -->
+                    <div class="card unknown" data-card-id="3">
+                        <div class="card-number">#0000？</div>
+                        <div class="card-image-container">
+                            <div class="card-image">
+                                <img src="./assets/CodeBubbyAssets/3_129/55.png" alt="Unknown" style="background: linear-gradient(0deg, rgba(81.82, 81.82, 81.82, 0.20) 0%, rgba(81.82, 81.82, 81.82, 0.20) 100%);">
+                            </div>
+                            <div class="card-name">Unknown</div>
+                        </div>
+                        <button class="translated-btn" onclick="translateCard(this, 'unknown')">Translated</button>
+                    </div>
+                    
+                    <!-- 添加更多卡片占位符 -->
+                    <div class="card unknown" data-card-id="4" style="opacity: 0.6;">
+                        <div class="card-number">#0000？</div>
+                        <div class="card-image-container">
+                            <div class="card-image" style="background: #E0E0E0;">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #999;">?</div>
+                            </div>
+                            <div class="card-name">Locked</div>
+                        </div>
+                        <button class="translated-btn" disabled style="opacity: 0.5;">Translated</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 语言切换状态
+        let isEnglish = true;
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('APP第五页加载完成');
+            initializeCards();
+        });
+        
+        // 初始化卡片滑动
+        function initializeCards() {
+            const cardsContainer = document.getElementById('cardsContainer');
+            
+            // 添加触摸滑动支持
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            
+            cardsContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - cardsContainer.offsetLeft;
+                scrollLeft = cardsContainer.scrollLeft;
+            });
+            
+            cardsContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+            
+            cardsContainer.addEventListener('mouseup', () => {
+                isDown = false;
+            });
+            
+            cardsContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - cardsContainer.offsetLeft;
+                const walk = (x - startX) * 2;
+                cardsContainer.scrollLeft = scrollLeft - walk;
+            });
+            
+            // 添加滚轮支持
+            cardsContainer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                cardsContainer.scrollLeft += e.deltaY;
+            });
+        }
+        
+        // 切换语言（中英互换）
+        function toggleLanguage() {
+            isEnglish = !isEnglish;
+            console.log('切换语言到:', isEnglish ? '英文' : '中文');
+            
+            // 更新UI文本
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[key]) {
+                    el.textContent = isEnglish ? translations[key].en : translations[key].cn;
+                }
+            });
+            
+            alert(`语言已切换到: ${isEnglish ? 'English' : '中文'}`);
+        }
+        
+        // 翻译卡片
+        function translateCard(button, cardType) {
+            console.log('翻译卡片:', cardType);
+            
+            const card = button.closest('.card');
+            const cardName = card.querySelector('.card-name');
+            const cardNumber = card.querySelector('.card-number');
+            
+            // 添加翻译动画
+            button.textContent = 'Translating...';
+            button.style.background = 'linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%)';
+            button.style.color = 'white';
+            
+            setTimeout(() => {
+                // 根据卡片类型更新内容
+                switch(cardType) {
+                    case 'animal':
+                        if (isEnglish) {
+                            cardName.textContent = '白鹭';
+                        } else {
+                            cardName.textContent = 'White Heron';
+                        }
+                        break;
+                    case 'plant':
+                        if (isEnglish) {
+                            cardName.textContent = '杜鹃花';
+                        } else {
+                            cardName.textContent = 'Rhododendron';
+                        }
+                        break;
+                    case 'unknown':
+                        alert('这张卡片还未解锁！');
+                        button.textContent = 'Translated';
+                        button.style.background = 'white';
+                        return;
+                }
+                
+                // 卡片消失动画
+                card.classList.add('removing');
+                
+                setTimeout(() => {
+                    card.style.display = 'none';
+                    
+                    // 更新进度或显示奖励
+                    updateProgress(cardType);
+                }, 500);
+                
+            }, 1000);
+        }
+        
+        // 更新进度
+        function updateProgress(cardType) {
+            console.log('更新进度:', cardType);
+            
+            // 增加经验值
+            const expProgress = document.querySelector('.exp-progress');
+            const currentWidth = parseInt(expProgress.style.width || '30%');
+            const newWidth = Math.min(currentWidth + 10, 100);
+            
+            expProgress.style.width = newWidth + '%';
+            
+            // 更新经验值文本
+            const expValue = document.querySelector('.exp-value');
+            const currentExp = parseInt(expValue.textContent || '30');
+            const newExp = Math.min(currentExp + 10, 100);
+            expValue.textContent = newExp;
+            
+            // 显示奖励提示
+            alert(`恭喜！获得 ${cardType === 'animal' ? '10' : '15'} 经验值！`);
+            
+            // 检查是否升级
+            if (newWidth >= 100) {
+                setTimeout(() => {
+                    alert('恭喜升级！Lv.6');
+                    const levelText = document.querySelector('.level-text');
+                    levelText.textContent = 'Lv.6';
+                    expProgress.style.width = '0%';
+                    expValue.textContent = '0';
+                }, 500);
+            }
+        }
+        
+        // 页面跳转
+        function goToPage(page) {
+            console.log('跳转到页面:', page);
+            
+            // 显示跳转提示
+            const pageNames = {
+                'find.html': '查找页面',
+                'shop.html': '商店页面',
+                'achieve.html': '成就页面',
+                'school.html': '学校页面'
+            };
+            
+            // 跳转到Find页面
+            if (page === 'find.html') {
+                window.location.href = 'page6.html';
+            } else if (page === 'shop.html') {
+                // 跳转到商店页面
+                window.location.href = 'shop.html';
+            } else if (page === 'achieve.html') {
+                // 跳转到成就页面
+                window.location.href = 'achieve.html';
+            } else if (page === 'school.html') {
+                // 显示礼花动画，然后跳转到学校页面
+                showConfettiAndRedirect('page7.html');
+            } else {
+                alert(`跳转到 ${pageNames[page] || page}`);
+            }
+        }
+        
+        // 显示礼花动画并跳转
+        function showConfettiAndRedirect(targetPage) {
+            // 创建礼花容器
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'confetti-container';
+            confettiContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 9999;
+            `;
+            document.body.appendChild(confettiContainer);
+
+            const colors = ['#FFD54F', '#FF6B6B', '#4ECDC4', '#95E1D3', '#FFB6C1', '#98D8C8', '#F38181', '#AA96DA'];
+            const shapes = ['square', 'circle', 'triangle', 'rectangle'];
+
+            // 创建50个礼花碎片
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // 随机形状
+                    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                    confetti.classList.add(randomShape);
+                    
+                    // 随机颜色
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    if (randomShape !== 'triangle') {
+                        confetti.style.background = randomColor;
+                    } else {
+                        confetti.style.borderBottomColor = randomColor;
+                    }
+                    
+                    // 随机位置（从顶部随机位置落下）
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    
+                    // 随机动画参数
+                    const duration = Math.random() * 2 + 2; // 2-4秒
+                    const delay = Math.random() * 0.5; // 0-0.5秒延迟
+                    confetti.style.animation = `confetti-fall ${duration}s linear ${delay}s forwards`;
+                    
+                    // 随机大小
+                    const size = Math.random() * 8 + 6; // 6-14px
+                    confetti.style.width = size + 'px';
+                    confetti.style.height = size + 'px';
+                    
+                    // 三角形特殊处理
+                    if (randomShape === 'triangle') {
+                        confetti.style.borderLeftWidth = (size / 2) + 'px';
+                        confetti.style.borderRightWidth = (size / 2) + 'px';
+                        confetti.style.borderBottomWidth = size + 'px';
+                        confetti.style.background = 'transparent';
+                    }
+                    
+                    confettiContainer.appendChild(confetti);
+                    
+                    // 动画结束后移除
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, (duration + delay) * 1000);
+                }, i * 40); // 每40ms创建一个，形成连续效果
+            }
+            
+            // 2.5秒后跳转到目标页面
+            setTimeout(() => {
+                window.location.href = targetPage;
+            }, 2500);
+            
+            // 3秒后移除容器
+            setTimeout(() => {
+                confettiContainer.remove();
+            }, 3000);
+        }
+        
+        // 翻译数据
+        const translations = {
+            'find': { en: 'Find', cn: '查找' },
+            'shop': { en: 'Shop', cn: '商店' },
+            'achieve': { en: 'Achieve', cn: '成就' },
+            'school': { en: 'School', cn: '学校' },
+            'collection': { en: 'Cards collection', cn: '卡片收集' }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Ranking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pixelify Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: linear-gradient(0deg, #DDF7FA 0%, #DDF7FA 100%), white;
+            overflow: hidden;
+        }
+
+        /* 顶部标题 */
+        .header {
+            width: 370.01px;
+            height: 55.98px;
+            position: absolute;
+            left: 15.99px;
+            top: 15.99px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-section {
+            width: 97.98px;
+            height: 55.98px;
+            position: relative;
+        }
+
+        .main-title {
+            width: 248px;
+            height: 40px;
+            position: absolute;
+            left: 49.01px;
+            top: 2.01px;
+            font-size: 30px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            letter-spacing: 1.27px;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            width: 49px;
+            height: 55px;
+            position: absolute;
+            left: 0.01px;
+            top: 0.01px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ranking-badge {
+            width: 87px;
+            height: 40px;
+            position: absolute;
+            left: 283.01px;
+            top: 0px;
+            background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10), 4px 4px 0px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .ranking-text {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        /* 用户信息卡片 */
+        .user-card {
+            width: 370.01px;
+            height: 175.35px;
+            position: absolute;
+            left: 15.99px;
+            top: 87.96px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            outline: 1.20px black solid;
+            outline-offset: -1.20px;
+            backdrop-filter: blur(0px);
+            border-radius: 4px;
+        }
+
+        .user-info {
+            width: 330.02px;
+            height: 64px;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15.99px;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 64px;
+            height: 64px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+
+        .level-badge {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 43.99px;
+            top: 43.99px;
+            background: #FFD54F;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+        }
+
+        .user-details {
+            width: 250.02px;
+            height: 43.99px;
+            position: relative;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .user-name .you-tag {
+            background: linear-gradient(180deg, #969696 0%, #969696 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-level {
+            font-size: 16px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-bar {
+            width: 330.02px;
+            height: 55.37px;
+            position: absolute;
+            left: 20px;
+            top: 99.99px;
+            background: linear-gradient(90deg, rgba(255, 213, 79, 0.20) 0%, rgba(255, 202, 40, 0.20) 100%);
+            border-radius: 4px;
+            outline: 1.69px rgba(0, 0, 0, 0.10) solid;
+            outline-offset: -1.69px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-icon {
+            width: 20.27px;
+            height: 27.99px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ranking-stat-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 标签切换 */
+        .tabs {
+            width: 370.01px;
+            height: 48px;
+            position: absolute;
+            left: 15.99px;
+            top: 279.31px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .tab {
+            width: 179.01px;
+            height: 48px;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            outline: 1px black solid;
+            outline-offset: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+        }
+
+        .tab.active {
+            background: #FFD54F;
+            color: white;
+            text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .tab:not(.active) {
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 排名列表 */
+        .ranking-list {
+            width: 370.01px;
+            height: 527.87px;
+            position: absolute;
+            left: 15.99px;
+            top: 343.30px;
+            overflow-y: auto;
+        }
+
+        .ranking-item {
+            width: 370.01px;
+            height: 79.98px;
+            position: relative;
+            margin-bottom: 12px;
+            background: white;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.10);
+            outline: 1px black solid;
+            outline-offset: -1px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            transition: all 0.2s ease;
+        }
+
+        .ranking-item.gold {
+            background: #43D1CA;
+            color: white;
+        }
+
+        .ranking-item.silver {
+            background: #FFF6D9;
+        }
+
+        .ranking-item.bronze {
+            background: #FFF9C4;
+        }
+
+        .rank-number {
+            width: 39.99px;
+            height: 39.99px;
+            background: #F3F4F6;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 15.99px;
+        }
+
+        .ranking-item.gold .rank-number {
+            background: rgba(255, 255, 255, 0.90);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-avatar-small {
+            width: 48px;
+            height: 48px;
+            margin-right: 15.99px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+        }
+
+        .user-info-small {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name-small {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .ranking-item.gold .user-name-small {
+            background: linear-gradient(180deg, white 0%, white 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item:not(.gold) .user-name-small {
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-level-small {
+            font-size: 12px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+        }
+
+        .ranking-item.gold .user-level-small {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.90) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item:not(.gold) .user-level-small {
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-steps {
+            text-align: right;
+        }
+
+        .steps-value {
+            font-size: 16px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            display: block;
+        }
+
+        .ranking-item.gold .steps-value {
+            background: linear-gradient(180deg, white 0%, white 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item:not(.gold) .steps-value {
+            background: linear-gradient(180deg, #364153 0%, #364153 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .steps-label {
+            font-size: 12px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            display: block;
+        }
+
+        .ranking-item.gold .steps-label {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.90) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ranking-item:not(.gold) .steps-label {
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 装饰图像 */
+        .decoration-image {
+            width: 76px;
+            height: 85px;
+            position: absolute;
+            left: 21px;
+            top: 48px;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.25);
+            image-rendering: pixelated;
+        }
+
+        /* 滚动条样式 */
+        .ranking-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .ranking-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .ranking-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        /* 礼花动画 */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        .confetti.square {
+            background: #FFD54F;
+        }
+
+        .confetti.circle {
+            background: #FF6B6B;
+            border-radius: 50%;
+        }
+
+        .confetti.triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid #4ECDC4;
+            background: transparent;
+        }
+
+        .confetti.rectangle {
+            width: 8px;
+            height: 15px;
+            background: #95E1D3;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+        
+        /* 添加Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Inter:wght@400&family=Pixelify+Sans:wght@400;500;700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部标题 -->
+        <div class="header">
+            <div class="title-section">
+                <div class="main-title">RANKING</div>
+                <div class="back-btn" onclick="goBack()">
+                    <img src="./assets/CodeBubbyAssets/5_1679/1.svg" alt="返回" width="49" height="55">
+                </div>
+            </div>
+            <div class="ranking-badge">
+                <img src="./assets/CodeBubbyAssets/5_1679/2.svg" alt="奖杯" width="24" height="24">
+                <span class="ranking-text">NO.4</span>
+            </div>
+        </div>
+
+        <!-- 用户信息卡片 -->
+        <div class="user-card">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <img class="avatar-img" src="./assets/CodeBubbyAssets/5_1679/3.svg" alt="用户头像">
+                    <div class="level-badge">⭐</div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">EMMA <span class="you-tag">(YOU)</span></div>
+                    <div class="user-level">LEVEL 12 Guardians</div>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-icon">👟</div>
+                    <div class="stat-value">12,450</div>
+                </div>
+                <div class="ranking-stat">
+                    <img class="ranking-stat-icon" src="./assets/CodeBubbyAssets/5_1679/4.svg" alt="排名">
+                    <div class="stat-value">NO.4</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 标签切换 -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('ranking')">
+                <img src="./assets/CodeBubbyAssets/5_1679/5.svg" alt="排名" width="24" height="24">
+                <span>RANKING LIST</span>
+            </div>
+            <div class="tab" onclick="switchTab('friend')">
+                <img src="./assets/CodeBubbyAssets/5_1679/6.svg" alt="好友" width="24" height="24">
+                <span>FRIEND LIST</span>
+            </div>
+        </div>
+
+        <!-- 排名列表 -->
+        <div class="ranking-list" id="rankingList">
+            <!-- NO.1 -->
+            <div class="ranking-item gold">
+                <div class="rank-number">1</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/7.svg" alt="AMY">
+                <div class="user-info-small">
+                    <div class="user-name-small">NO.1 AMY</div>
+                    <div class="user-level-small">LEVEL 13</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">14,100</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+
+            <!-- NO.2 -->
+            <div class="ranking-item bronze">
+                <div class="rank-number">2</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/8.svg" alt="MIKEY">
+                <div class="user-info-small">
+                    <div class="user-name-small">NO.2 MIKEY</div>
+                    <div class="user-level-small">LEVEL 12</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">13,850</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+
+            <!-- NO.3 -->
+            <div class="ranking-item silver">
+                <div class="rank-number">3</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/9.svg" alt="CICI">
+                <div class="user-info-small">
+                    <div class="user-name-small">NO.3 CICI</div>
+                    <div class="user-level-small">LEVEL 11</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">15,230</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+
+            <!-- NO.4 -->
+            <div class="ranking-item gold">
+                <div class="rank-number">4</div>
+                <div class="user-avatar-small" style="background: rgba(255, 255, 255, 0.90); box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #364153;">4</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/10.svg" alt="EMMA">
+                <div class="user-info-small">
+                    <div class="user-name-small">EMMA (YOU)</div>
+                    <div class="user-level-small">LEVEL 12</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">12,450</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+                <div style="width: 32px; height: 32px; background: rgba(255, 255, 255, 0.20); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 10px;">
+                    <div style="width: 14.08px; height: 19.99px;"></div>
+                </div>
+            </div>
+
+            <!-- NO.5 -->
+            <div class="ranking-item">
+                <div class="rank-number">5</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/11.png" alt="LIMA">
+                <div class="user-info-small">
+                    <div class="user-name-small">LIMA</div>
+                    <div class="user-level-small">LEVEL 11</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">11,200</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+
+            <!-- NO.6 -->
+            <div class="ranking-item">
+                <div class="rank-number">6</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/12.png" alt="JOHN">
+                <div class="user-info-small">
+                    <div class="user-name-small">JOHN</div>
+                    <div class="user-level-small">LEVEL 12</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">9,800</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+
+            <!-- NO.7 -->
+            <div class="ranking-item">
+                <div class="rank-number">7</div>
+                <img class="user-avatar-small" src="./assets/CodeBubbyAssets/5_1679/13.png" alt="HANS">
+                <div class="user-info-small">
+                    <div class="user-name-small">HANS</div>
+                    <div class="user-level-small">LEVEL 11</div>
+                </div>
+                <div class="user-steps">
+                    <span class="steps-value">11,200</span>
+                    <span class="steps-label">Steps</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 装饰图像 -->
+        <img class="decoration-image" src="./assets/CodeBubbyAssets/5_1679/11.png" alt="装饰">
+    </div>
+
+    <script>
+        // 返回第五页主页
+        function goBack() {
+            console.log('返回第五页主页');
+            window.location.href = 'page5.html';
+        }
+
+        // 切换标签
+        function switchTab(tabName) {
+            if (tabName === 'friend') {
+                // 跳转到第八页（Friend List）
+                console.log('跳转到好友列表页面');
+                window.location.href = 'page8.html';
+                return;
+            }
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            if (tabName === 'ranking') {
+                tabs[0].classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+            }
+            
+            console.log('切换到:', tabName);
+        }
+
+        // 页面加载完成后显示礼花动画
+        window.addEventListener('load', function() {
+            createConfetti();
+        });
+
+        // 创建礼花动画
+        function createConfetti() {
+            const container = document.createElement('div');
+            container.className = 'confetti-container';
+            document.body.appendChild(container);
+
+            const colors = ['#FFD54F', '#FF6B6B', '#4ECDC4', '#95E1D3', '#FFB6C1', '#98D8C8'];
+            const shapes = ['square', 'circle', 'triangle', 'rectangle'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // 随机形状
+                    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                    confetti.classList.add(randomShape);
+                    
+                    // 随机颜色
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    if (randomShape !== 'triangle') {
+                        confetti.style.background = randomColor;
+                    } else {
+                        confetti.style.borderBottomColor = randomColor;
+                    }
+                    
+                    // 随机位置
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    
+                    container.appendChild(confetti);
+                    
+                    // 动画结束后移除
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 4000);
+                }, i * 50);
+            }
+            
+            // 4秒后移除容器
+            setTimeout(() => {
+                container.remove();
+            }, 4000);
+        }
+
+        // 监听键盘ESC键返回
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                goBack();
+            }
+        });
+
+        // 添加页面进入动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            container.style.opacity = '0';
+            container.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                container.style.transition = 'all 0.5s ease';
+                container.style.opacity = '1';
+                container.style.transform = 'scale(1)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

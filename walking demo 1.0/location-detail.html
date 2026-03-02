@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>地点详情 - Find</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Pixelify Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            width: 402px;
+            height: 874px;
+            position: relative;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .background-gradient {
+            width: 402px;
+            height: 874px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%), white;
+        }
+        
+        /* 地点详情卡片 */
+        .location-detail {
+            width: 370.01px;
+            height: 315.95px;
+            position: absolute;
+            left: 16px;
+            top: 152px;
+            background: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        
+        /* 关闭按钮 */
+        .close-btn {
+            position: absolute;
+            right: 16px;
+            top: 19.06px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        /* 地点图片 */
+        .location-image {
+            width: 370.01px;
+            height: 192px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .location-img {
+            width: 371px;
+            height: 265px;
+            position: absolute;
+            left: 0;
+            top: -55px;
+            object-fit: cover;
+        }
+        
+        /* 难度标签 */
+        .difficulty-badge {
+            position: absolute;
+            left: 12.01px;
+            top: 12.06px;
+            height: 30px;
+            padding: 0 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08), 2px 2px 0px rgba(0, 0, 0, 0.10);
+        }
+        
+        .difficulty-badge.easy {
+            background: #FFD54F;
+        }
+        
+        .difficulty-badge.medium {
+            background: #FF8A50;
+        }
+        
+        .difficulty-badge.hard {
+            background: #E53935;
+        }
+        
+        .difficulty-text {
+            font-size: 14px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 700;
+            background: linear-gradient(180deg, #4A5565 0%, #4A5565 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 地点信息 */
+        .location-info {
+            width: 370.01px;
+            height: 123.95px;
+            padding: 15.99px;
+            background: linear-gradient(180deg, #B2EBF2 0%, white 100%), rgba(255, 255, 255, 0.20);
+        }
+        
+        .location-name {
+            width: 338.03px;
+            height: 27.99px;
+            margin-bottom: 8px;
+        }
+        
+        .location-name-text {
+            font-size: 24px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 500;
+            background: linear-gradient(180deg, #1E2939 0%, #1E2939 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .location-description {
+            width: 338.03px;
+            height: 19.99px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .location-description-text {
+            font-size: 12px;
+            font-family: 'Jersey 20', cursive;
+            font-weight: 400;
+            background: linear-gradient(180deg, #6A7282 0%, #6A7282 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.4;
+        }
+        
+        .location-stats {
+            width: 338.03px;
+            height: 27.99px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .location-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .biodiversity-info {
+            font-size: 10px;
+            font-family: 'Pixelify Sans', cursive;
+            font-weight: 400;
+            text-align: right;
+            line-height: 1.2;
+        }
+        
+        .biodiversity-info .normal {
+            background: linear-gradient(180deg, #ADADAD 0%, #ADADAD 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .biodiversity-info .highlight {
+            background: linear-gradient(180deg, #DBC693 0%, #DBC693 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 返回按钮 */
+        .back-button {
+            position: absolute;
+            left: 16px;
+            top: 15.99px;
+            width: 37.01px;
+            height: 41.83px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateX(-4px);
+        }
+        
+        .back-button:active {
+            transform: translateX(2px);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 402px;
+                max-height: 874px;
+                border-radius: 0;
+                margin: 0;
+            }
+            
+            .background-gradient {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        
+        /* 添加Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Jersey+20&family=Jersey+25&family=Inter:wght@400&family=Pixelify+Sans:wght@400;500;700&display=swap');
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .location-detail {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 背景渐变 -->
+        <div class="background-gradient"></div>
+        
+        <!-- 返回按钮 -->
+        <div class="back-button" onclick="goBack()">
+            <img src="./assets/CodeBubbyAssets/29_1068/1.svg" alt="返回" width="37" height="42">
+        </div>
+        
+        <!-- 地点详情卡片 -->
+        <div class="location-detail" id="locationDetail">
+            <!-- 地点图片 -->
+            <div class="location-image">
+                <img class="location-img" id="locationImg" src="" alt="地点图片">
+                
+                <!-- 关闭按钮 -->
+                <img class="close-btn" src="./assets/CodeBubbyAssets/231_5934/1.svg" alt="关闭" onclick="closeDetail()">
+                
+                <!-- 难度标签 -->
+                <div class="difficulty-badge" id="difficultyBadge">
+                    <div class="difficulty-text" id="difficultyText">EASY</div>
+                </div>
+            </div>
+            
+            <!-- 地点信息 -->
+            <div class="location-info">
+                <div class="location-name">
+                    <div class="location-name-text" id="locationName">Yuen Chau Kok Park</div>
+                </div>
+                <div class="location-description">
+                    <div class="location-description-text" id="locationDescription">Yuen Chau Kok Park in Sha Tin is built around a hill that offers a modest hike for those pressed for time or feeling a little intimidated by the mountains.</div>
+                </div>
+                <div class="location-stats">
+                    <img class="location-icon" id="locationIcon" src="./assets/CodeBubbyAssets/231_5934/2.svg" alt="位置">
+                    <div class="biodiversity-info">
+                        <span class="normal">Contains over </span>
+                        <span class="highlight" id="speciesCount">10</span>
+                        <span class="normal"> kinds of animals and plants</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 地点数据
+        const locationData = {
+            1: {
+                name: "Yuen Chau Kok Park",
+                description: "Yuen Chau Kok Park in Sha Tin is built around a hill that offers a modest hike for those pressed for time or feeling a little intimidated by the mountains.",
+                difficulty: "easy",
+                difficultyText: "EASY",
+                image: "./assets/CodeBubbyAssets/231_5934/3.png",
+                speciesCount: 10
+            },
+            2: {
+                name: "Pak Shek Kok Promenade",
+                description: "The Pak Shek Kok waterfront promenade stretches approximately 2 kilometers, featuring a 9.5-meter-wide pedestrian walkway along the coast.",
+                difficulty: "easy",
+                difficultyText: "EASY",
+                image: "./assets/CodeBubbyAssets/29_1068/13.png",
+                speciesCount: 10
+            },
+            3: {
+                name: "Hung Mui Kuk Hiking Trail",
+                description: "This area used to be famous for its abundant bayberry trees during spring and summer, hence its name.",
+                difficulty: "medium",
+                difficultyText: "MEDIUM",
+                image: "./assets/CodeBubbyAssets/29_1068/14.png",
+                speciesCount: 10
+            },
+            4: {
+                name: "Tao Fong Shan",
+                description: "Built in 1930, the complex is now a Grade II historic building in Hong Kong, and a 12-meter-high cross stands on its east side, is a landmark of the area.",
+                difficulty: "hard",
+                difficultyText: "HARD",
+                image: "./assets/CodeBubbyAssets/29_1068/15.png",
+                speciesCount: 10,
+                locked: true
+            }
+        };
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('地点详情页加载完成');
+            loadLocationData();
+        });
+        
+        // 加载地点数据
+        function loadLocationData() {
+            const locationId = localStorage.getItem('currentLocationId');
+            const data = locationData[locationId] || locationData[1];
+            
+            // 更新页面内容
+            document.getElementById('locationName').textContent = data.name;
+            document.getElementById('locationDescription').textContent = data.description;
+            document.getElementById('locationImg').src = data.image;
+            document.getElementById('difficultyText').textContent = data.difficultyText;
+            document.getElementById('speciesCount').textContent = data.speciesCount;
+            
+            // 更新难度标签颜色
+            const difficultyBadge = document.getElementById('difficultyBadge');
+            difficultyBadge.className = 'difficulty-badge ' + data.difficulty;
+            
+            // 如果地点被锁定，显示锁定样式
+            if (data.locked) {
+                document.getElementById('locationDetail').style.opacity = '0.7';
+            }
+        }
+        
+        // 关闭详情页
+        function closeDetail() {
+            console.log('关闭详情页');
+            window.location.href = 'page6.html';
+        }
+        
+        // 返回上一页
+        function goBack() {
+            console.log('返回第六页');
+            window.location.href = 'page6.html';
+        }
+        
+        // 点击详情卡片外部区域也可以关闭
+        document.addEventListener('click', function(e) {
+            const detail = document.getElementById('locationDetail');
+            if (e.target === document.body || e.target.classList.contains('background-gradient')) {
+                closeDetail();
+            }
+        });
+        
+        // ESC键关闭详情页
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetail();
+            }
+        });
+    </script>
+</body>
+</html>

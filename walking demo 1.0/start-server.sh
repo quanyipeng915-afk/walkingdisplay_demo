@@ -1,0 +1,15 @@
+#!/bin/bash
+cd "$(dirname "$0")"
+echo "启动HTTP服务器..."
+echo "请在浏览器中访问: http://localhost:3000"
+echo ""
+echo "可用页面:"
+echo "- http://localhost:3000/index.html (第一页 - 欢迎页)"
+echo "- http://localhost:3000/page2.html (第二页 - 个人信息)"
+echo "- http://localhost:3000/page3.html (第三页 - 身体数据)"
+echo "- http://localhost:3000/page4.html (第四页 - 孵化动画)"
+echo "- http://localhost:3000/page5.html (第五页 - 宠物主页)"
+echo "- http://localhost:3000/page6.html (第六页 - Find页面)"
+echo ""
+echo "按 Ctrl+C 停止服务器"
+python3 -m http.server 3000
