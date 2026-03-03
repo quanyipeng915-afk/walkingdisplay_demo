@@ -453,12 +453,17 @@
         @media (max-width: 768px) {
             body {
                 align-items: flex-start;
+                min-height: 100dvh;
+                overflow-y: auto;
             }
 
             .app-container {
                 width: 100vw;
-                height: 100vh;
-                max-width: 402px;
+                height: 874px;
+                min-height: 874px;
+                max-width: none;
+                max-height: none;
+                margin: 0 auto;
             }
         }
     </style>

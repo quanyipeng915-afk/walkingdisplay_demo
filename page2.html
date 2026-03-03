@@ -235,15 +235,12 @@
 
             .app-container {
                 width: 100vw;
-                min-height: 100dvh;
-                height: auto;
+                height: 874px;
+                min-height: 874px;
                 max-width: none;
                 max-height: none;
                 border-radius: 0;
-                margin: 0;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+                margin: 0 auto;
             }
             
             .background-image {
@@ -253,37 +250,8 @@
             }
 
             .main-card {
-                position: relative;
-                left: auto;
-                top: 116px;
-                width: calc(100vw - 32px);
-                max-width: 354px;
-                height: auto;
-                min-height: 610px;
-                margin: 0 auto 24px;
-                padding: 24px;
-            }
-
-            .header-section,
-            .logo-container,
-            .main-title,
-            .subtitle,
-            .form-section,
-            .form-group,
-            .form-input {
-                width: 100%;
-            }
-
-            .form-section {
-                height: auto;
-            }
-
-            .next-button {
-                position: static;
-                left: auto;
-                bottom: auto;
-                width: 100%;
-                margin-top: 8px;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
             }
         }
         
