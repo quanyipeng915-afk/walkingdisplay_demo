@@ -580,11 +580,18 @@
         
         /* 响应式设计 */
         @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                min-height: 100dvh;
+                overflow-y: auto;
+            }
+
             .app-container {
                 width: 100vw;
-                height: 100vh;
-                max-width: 402px;
-                max-height: 874px;
+                height: 874px;
+                min-height: 874px;
+                max-width: none;
+                max-height: none;
                 border-radius: 0;
                 margin: 0;
             }

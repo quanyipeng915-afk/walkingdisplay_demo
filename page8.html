@@ -440,9 +440,16 @@
 
         /* 响应式 */
         @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                min-height: 100dvh;
+                overflow-y: auto;
+            }
+
             .container {
                 width: 100vw;
-                height: 100vh;
+                height: 874px;
+                min-height: 874px;
             }
         }
         
