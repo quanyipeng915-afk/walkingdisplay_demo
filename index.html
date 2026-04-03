@@ -666,12 +666,14 @@
        PAGE 5: MAIN — Gameplay Screen
        =================================================== */
     .page-main {
-      background: linear-gradient(180deg, #A2E0F5 0%, #1579B5 100%);
+      background: white;
       overflow: hidden;
     }
     /* Full-page ocean background (45.png — clean, no UI baked in) */
     .main-bg {
-      display: none;
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      z-index: 1;
     }
 
     /* --- Triangle toggle buttons (pixel style) --- */
