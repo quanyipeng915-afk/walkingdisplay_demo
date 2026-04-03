@@ -666,13 +666,12 @@
        PAGE 5: MAIN — Gameplay Screen
        =================================================== */
     .page-main {
-      background: white;
+      background: linear-gradient(180deg, #A2E0F5 0%, #1579B5 100%);
       overflow: hidden;
     }
     /* Full-page ocean background (45.png — clean, no UI baked in) */
     .main-bg {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; object-fit: cover;
+      display: none;
     }
 
     /* --- Triangle toggle buttons (pixel style) --- */
@@ -719,15 +718,16 @@
     /* --- Pet sprite — positioned directly on page per Figma --- */
     .main-pet-sprite {
       position: absolute;
-      left: 125.5px; top: 226px;
+      left: 50%; top: 226px;
+      transform: translateX(-50%);
       width: 151px; height: 178px;
       object-fit: contain; image-rendering: pixelated;
       animation: mainPetBob 3s ease-in-out infinite;
-      z-index: 5;
+      z-index: 10; pointer-events: none;
     }
     @keyframes mainPetBob {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
     }
 
     /* Level-up flash effect */
@@ -735,10 +735,10 @@
       animation: petLevelUp 0.8s ease-out;
     }
     @keyframes petLevelUp {
-      0% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: scale(1); }
-      30% { filter: brightness(2) drop-shadow(0 0 20px #FFD700); transform: scale(1.15); }
-      60% { filter: brightness(1.5) drop-shadow(0 0 10px #FFD700); transform: scale(1.05); }
-      100% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: scale(1); }
+      0% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: translateX(-50%) scale(1); }
+      30% { filter: brightness(2) drop-shadow(0 0 20px #FFD700); transform: translateX(-50%) scale(1.15); }
+      60% { filter: brightness(1.5) drop-shadow(0 0 10px #FFD700); transform: translateX(-50%) scale(1.05); }
+      100% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: translateX(-50%) scale(1); }
     }
 
     /* --- Settings icon — grouped with sidebar, collapses together --- */
@@ -890,7 +890,7 @@
       background: #FFFBF8;
       box-shadow: 0px -4px 0px #444444;
       border-radius: 4px;
-      overflow: hidden; z-index: 15;
+      overflow: hidden; z-index: 50;
       pointer-events: auto;
     }
     .cards-panel-header {
