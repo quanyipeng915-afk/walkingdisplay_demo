@@ -1,0 +1,4733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Have You Walked</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Jersey+20&family=Pixelify+Sans:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: #1a1a2e;
+    }
+
+    .app {
+      position: relative;
+      width: 100%; height: 100%;
+      max-width: 402px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* ===== PAGE SYSTEM ===== */
+    .page {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1);
+      will-change: opacity, transform;
+    }
+    .page.hidden { opacity: 0; pointer-events: none; transform: translateX(30px); }
+    .page.hidden-left { opacity: 0; pointer-events: none; transform: translateX(-30px); }
+    .page.visible { opacity: 1; pointer-events: auto; transform: translateX(0); }
+
+    /* ===== PAGE 1: LANDING ===== */
+    .page-landing {
+      background: linear-gradient(180deg, rgba(64,44,27,0) 0%, rgba(64,44,27,0.20) 100%), white;
+    }
+    .landing-bg {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .landing-title {
+      position: absolute; top: 13%; left: 50%;
+      transform: translateX(-50%);
+      width: 78.4%; max-width: 315px; height: auto;
+      z-index: 2;
+      animation: titleFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+    @keyframes titleFloat {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+    .landing-start-btn {
+      position: absolute; top: 42.2%; left: 50%;
+      transform: translateX(-50%);
+      width: 42%; max-width: 169px; height: auto;
+      z-index: 2; cursor: pointer;
+      backdrop-filter: blur(11.65px);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s ease;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+    @keyframes btnPulse {
+      0%,100% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)) brightness(1); }
+      50% { filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3)) brightness(1.08); }
+    }
+    .landing-start-btn:hover { transform: translateX(-50%) scale(1.08); filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35)) brightness(1.12); animation: none; }
+    .landing-start-btn:active { transform: translateX(-50%) scale(0.95) translateY(3px); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)) brightness(0.95); animation: none; }
+
+    .pixel-sparkle {
+      position: absolute; width: 6px; height: 6px;
+      background: #fff; z-index: 3;
+      animation: sparklePixel 3s ease-in-out infinite;
+      image-rendering: pixelated;
+    }
+    .pixel-sparkle:nth-child(1) { top: 8%; left: 15%; animation-delay: 0s; }
+    .pixel-sparkle:nth-child(2) { top: 12%; left: 75%; animation-delay: 0.5s; }
+    .pixel-sparkle:nth-child(3) { top: 25%; left: 85%; animation-delay: 1s; }
+    .pixel-sparkle:nth-child(4) { top: 18%; left: 35%; animation-delay: 1.5s; width: 4px; height: 4px; }
+    .pixel-sparkle:nth-child(5) { top: 6%; left: 55%; animation-delay: 2s; width: 4px; height: 4px; }
+    .pixel-sparkle:nth-child(6) { top: 30%; left: 20%; animation-delay: 0.8s; width: 5px; height: 5px; }
+    @keyframes sparklePixel { 0%,100% { opacity: 0.2; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.3); } }
+
+    .tap-hint {
+      position: absolute; bottom: 8%; left: 50%;
+      transform: translateX(-50%); z-index: 5;
+      font-family: 'Pixelify Sans', cursive; font-size: 14px;
+      color: rgba(255,255,255,0.7); text-align: center;
+      animation: hintBlink 2s ease-in-out infinite;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5); letter-spacing: 1px;
+    }
+    @keyframes hintBlink { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* ===== SHARED: BG, Progress, Card ===== */
+    .register-bg, .bodydata-bg, .partner-bg {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .progress-bar {
+      position: absolute; top: 3.66%; left: 0; width: 100%;
+      display: flex; justify-content: center; gap: 8px; z-index: 10;
+    }
+    .progress-step {
+      width: 48px; height: 8px; border-radius: 2px;
+      transition: background 0.4s ease;
+    }
+    .progress-step.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .progress-step.inactive { background: rgba(255,255,255,0.3); }
+
+    .card-base {
+      position: absolute; top: 15.1%; left: 6%; width: 88%; height: 69.8%;
+      border-radius: 4px; z-index: 5;
+      display: flex; flex-direction: column; padding: 32px;
+      overflow-y: auto;
+    }
+    .register-card {
+      background: rgba(255,255,255,0.60);
+      box-shadow: 0px 4px 0px #8E8D87;
+      border: 3px solid #8E8D87;
+      backdrop-filter: blur(9.20px);
+    }
+    .bodydata-card {
+      background: rgba(255,255,255,0.60);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      backdrop-filter: blur(3.90px);
+    }
+
+    @keyframes cardSlideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .page.visible .card-base,
+    .page.visible .partner-card {
+      animation: cardSlideIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    .card-header {
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: 24px; flex-shrink: 0;
+    }
+    .card-icon { width: 73px; height: 82px; margin-bottom: 8px; animation: iconBounce 2s ease-in-out infinite; }
+    .card-icon-emoji { font-size: 60px; line-height: 1; margin-bottom: 8px; text-align: center; animation: iconBounce 2s ease-in-out infinite; }
+    @keyframes iconBounce {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-4px) rotate(-2deg); }
+      75% { transform: translateY(-4px) rotate(2deg); }
+    }
+
+    .card-title {
+      font-family: 'Jersey 25', cursive; font-size: 30px; font-weight: 400;
+      letter-spacing: 1.9px;
+      text-align: center; margin-bottom: 4px;
+    }
+    .card-title-warm { color: #D99362; }
+    .card-title-cool { color: #144B63; }
+
+    .card-subtitle {
+      font-family: 'Jersey 20', cursive; font-size: 16px; font-weight: 400;
+      color: #4A5565; text-align: center;
+    }
+
+    /* ===== SHARED: Form ===== */
+    .form-fields { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label {
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 500;
+      color: #364153;
+    }
+    .form-input {
+      width: 100%; height: 59px; background: #F3F4F6; border-radius: 4px;
+      border: 1.69px solid rgba(0,0,0,0.10); padding: 0 16px;
+      font-family: 'Inter', sans-serif; font-size: 16px; color: #364153; outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    .form-input::placeholder { color: #99A1AF; }
+    .form-input:focus { border-color: #D99362; box-shadow: 0 0 0 3px rgba(217,147,98,0.18); transform: translateY(-1px); }
+    .form-input:not(:placeholder-shown) { background: #fff; border-color: rgba(217,147,98,0.3); }
+
+    .input-with-suffix { position: relative; width: 100%; }
+    .input-with-suffix .form-input { padding-right: 56px; }
+    .input-suffix {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      font-family: 'Inter', sans-serif; font-size: 16px; color: #6A7282; pointer-events: none;
+    }
+    .bodydata-card .form-input:focus { border-color: #144B63; box-shadow: 0 0 0 3px rgba(20,75,99,0.15); }
+    .bodydata-card .form-input:not(:placeholder-shown) { border-color: rgba(20,75,99,0.3); }
+
+    /* ===== SHARED: Buttons ===== */
+    .next-btn {
+      margin-top: auto; width: 100%; height: 60px;
+      background: linear-gradient(180deg, #FEC60B 0%, #D95900 100%);
+      box-shadow: 0px 4px 0px #8E8E87, inset 0px 2px 0px rgba(235,247,248,0.5);
+      border-radius: 4px; border: 3px solid #402C1B; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: transform 0.15s ease, filter 0.15s ease, opacity 0.4s ease, box-shadow 0.15s ease;
+      flex-shrink: 0; opacity: 0.5; pointer-events: none; position: relative; overflow: hidden;
+    }
+    .next-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease; }
+    .next-btn.active { opacity: 1; pointer-events: auto; }
+    .next-btn.active:hover::before { left: 100%; }
+    .next-btn.active:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0px 6px 0px #8E8E87, inset 0px 2px 0px rgba(235,247,248,0.5); }
+    .next-btn.active:active { transform: translateY(3px); box-shadow: 0px 1px 0px #8E8E87, inset 0px 2px 0px rgba(235,247,248,0.5); filter: brightness(0.95); }
+    .next-btn-text { font-family: 'Pixelify Sans', cursive; font-size: 18px; font-weight: 500; color: white; }
+    .next-btn-arrow { width: 24px; height: 24px; }
+
+    .btn-row { margin-top: auto; display: flex; gap: 12px; flex-shrink: 0; }
+    .back-btn {
+      flex: 1; height: 60px; background: #E5E7EB;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+    }
+    .back-btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .back-btn:active { transform: translateY(3px); box-shadow: 0px 1px 4px rgba(0,0,0,0.10), 2px 2px 0px rgba(0,0,0,0.12); }
+    .back-btn-arrow { width: 24px; height: 24px; flex-shrink: 0; }
+    .back-btn-text { font-family: 'Pixelify Sans', cursive; font-size: 18px; font-weight: 500; color: #364153; }
+
+    .create-btn {
+      flex: 1; height: 60px;
+      background: linear-gradient(180deg, #4FC3F7 0%, #039BE5 100%);
+      box-shadow: 0px 4px 0px #59A1CD; border-radius: 4px; border: 3px solid #007AB1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.15s ease, filter 0.15s ease, opacity 0.4s ease, box-shadow 0.15s ease;
+      opacity: 0.5; pointer-events: none; position: relative; overflow: hidden;
+    }
+    .create-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: left 0.5s ease; }
+    .create-btn.active { opacity: 1; pointer-events: auto; }
+    .create-btn.active:hover::before { left: 100%; }
+    .create-btn.active:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0px 6px 0px #59A1CD; }
+    .create-btn.active:active { transform: translateY(3px); box-shadow: 0px 1px 0px #59A1CD; filter: brightness(0.95); }
+    .create-btn-text { font-family: 'Pixelify Sans', cursive; font-size: 18px; font-weight: 500; color: white; }
+    .create-btn-arrow { width: 24px; height: 24px; flex-shrink: 0; }
+
+    /* ===================================================
+       HATCHING OVERLAY — Pixel Egg Crack Animation
+       =================================================== */
+    .hatch-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0E0E0E; z-index: 100;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+    }
+    .hatch-overlay.active { display: flex; opacity: 1; pointer-events: auto; }
+
+    .hatch-scene {
+      position: relative; width: 200px; height: 220px; margin-bottom: 24px;
+    }
+
+    /* Egg base */
+    .egg-whole {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 140px;
+      background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 40%, #FFA726 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.3), inset -6px -6px 0px rgba(0,0,0,0.08);
+      animation: eggIdle 1.5s ease-in-out infinite;
+      transition: opacity 0.3s ease;
+    }
+    /* Egg clickable state — glowing pulse */
+    .egg-whole.clickable {
+      cursor: pointer;
+      animation: eggClickPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes eggClickPulse {
+      0%,100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        filter: drop-shadow(0 0 8px rgba(255,213,79,0.4));
+      }
+      50% {
+        transform: translateX(-50%) translateY(-4px) scale(1.03);
+        filter: drop-shadow(0 0 20px rgba(255,213,79,0.8)) drop-shadow(0 0 40px rgba(255,167,38,0.3));
+      }
+    }
+    /* Pixel zigzag crack line — stages */
+    .egg-whole::after {
+      content: '';
+      position: absolute; top: 42%; left: 0; width: 100%; height: 4px;
+      background: repeating-linear-gradient(90deg, transparent 0px, transparent 6px, rgba(139,90,43,0.5) 6px, rgba(139,90,43,0.5) 10px, transparent 10px, transparent 16px);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .egg-whole.crack-1::after {
+      opacity: 0.5;
+      height: 3px;
+      background: repeating-linear-gradient(90deg, transparent 0px, transparent 8px, rgba(139,90,43,0.45) 8px, rgba(139,90,43,0.45) 12px, transparent 12px, transparent 20px);
+    }
+    .egg-whole.crack-2::after {
+      opacity: 0.8;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, transparent 0px, transparent 5px, rgba(120,70,30,0.7) 5px, rgba(120,70,30,0.7) 9px, transparent 9px, transparent 14px);
+    }
+    .egg-whole.crack-3::after {
+      opacity: 1;
+      height: 5px;
+      background: repeating-linear-gradient(90deg, transparent 0px, transparent 4px, rgba(100,50,10,0.9) 4px, rgba(100,50,10,0.9) 9px, transparent 9px, transparent 13px);
+    }
+    .egg-whole.cracking::after { opacity: 1; }
+    /* Crack hit shake — stronger than idle shake */
+    @keyframes eggHit {
+      0% { transform: translateX(-50%) rotate(0deg) scale(1); }
+      10% { transform: translateX(-50%) rotate(6deg) translateX(5px) scale(1.02); }
+      20% { transform: translateX(-50%) rotate(-6deg) translateX(-5px) scale(1.02); }
+      30% { transform: translateX(-50%) rotate(8deg) translateX(6px) scale(1.03); }
+      40% { transform: translateX(-50%) rotate(-8deg) translateX(-6px) scale(1.03); }
+      50% { transform: translateX(-50%) rotate(5deg) translateX(3px) scale(1.01); }
+      60% { transform: translateX(-50%) rotate(-4deg) translateX(-3px); }
+      70% { transform: translateX(-50%) rotate(2deg) translateX(1px); }
+      80% { transform: translateX(-50%) rotate(-1deg); }
+      100% { transform: translateX(-50%) rotate(0deg); }
+    }
+    .egg-whole.hit-shake {
+      animation: eggHit 0.5s ease-out !important;
+    }
+    /* Click prompt text above egg */
+    .hatch-prompt {
+      font-family: 'Jersey 25', cursive; font-size: 22px; font-weight: 400;
+      color: rgba(255,255,255,0.9); text-align: center;
+      margin-bottom: 16px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .hatch-prompt.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .hatch-prompt.visible {
+      animation: promptPulse 2s ease-in-out infinite;
+    }
+    @keyframes promptPulse {
+      0%,100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    /* Click counter indicator */
+    .hatch-click-count {
+      font-family: 'Jersey 25', cursive; font-size: 18px; font-weight: 400;
+      color: rgba(255,213,79,0.9); text-align: center;
+      margin-top: 4px;
+      opacity: 0; transition: opacity 0.3s ease;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .hatch-click-count.visible { opacity: 1; }
+
+    /* Egg top half */
+    .egg-top {
+      position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 80px;
+      background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+      border-radius: 50% 50% 30% 30% / 70% 70% 20% 20%;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.3), inset -6px -6px 0px rgba(0,0,0,0.08);
+      opacity: 0; z-index: 3;
+      transition: opacity 0.2s ease;
+    }
+    /* Zigzag bottom of top shell */
+    .egg-top::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 5px; right: 5px; height: 8px;
+      background: repeating-linear-gradient(90deg, #FFCA28 0px, #FFCA28 8px, transparent 8px, transparent 12px);
+      clip-path: polygon(0% 0%, 8% 100%, 16% 0%, 24% 100%, 32% 0%, 40% 100%, 48% 0%, 56% 100%, 64% 0%, 72% 100%, 80% 0%, 88% 100%, 100% 0%);
+    }
+
+    /* Egg bottom half */
+    .egg-bottom {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 60px;
+      background: linear-gradient(180deg, #FFCA28 0%, #FFA726 100%);
+      border-radius: 20% 20% 50% 50% / 10% 10% 60% 60%;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.3), inset -6px -6px 0px rgba(0,0,0,0.08);
+      opacity: 0; z-index: 2;
+    }
+    /* Zigzag top of bottom shell */
+    .egg-bottom::before {
+      content: '';
+      position: absolute; top: -4px; left: 5px; right: 5px; height: 8px;
+      background: repeating-linear-gradient(90deg, #FFCA28 0px, #FFCA28 8px, transparent 8px, transparent 12px);
+      clip-path: polygon(0% 100%, 8% 0%, 16% 100%, 24% 0%, 32% 100%, 40% 0%, 48% 100%, 56% 0%, 64% 100%, 72% 0%, 80% 100%, 88% 0%, 100% 100%);
+    }
+
+    /* Pet reveal inside egg */
+    .egg-pet-reveal {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%) scale(0);
+      width: 100px; height: 100px; z-index: 2;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      opacity: 0; image-rendering: pixelated;
+    }
+    .egg-pet-reveal.show {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+    }
+
+    @keyframes eggIdle {
+      0%,100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      25% { transform: translateX(-50%) translateY(-3px) rotate(-1deg); }
+      75% { transform: translateX(-50%) translateY(-3px) rotate(1deg); }
+    }
+
+    @keyframes eggShake {
+      0%,100% { transform: translateX(-50%) rotate(0deg); }
+      10% { transform: translateX(-50%) rotate(4deg) translateX(3px); }
+      20% { transform: translateX(-50%) rotate(-4deg) translateX(-3px); }
+      30% { transform: translateX(-50%) rotate(6deg) translateX(4px); }
+      40% { transform: translateX(-50%) rotate(-6deg) translateX(-4px); }
+      50% { transform: translateX(-50%) rotate(8deg) translateX(5px); }
+      60% { transform: translateX(-50%) rotate(-8deg) translateX(-5px); }
+      70% { transform: translateX(-50%) rotate(5deg) translateX(3px); }
+      80% { transform: translateX(-50%) rotate(-3deg) translateX(-2px); }
+      90% { transform: translateX(-50%) rotate(1deg); }
+    }
+
+    .egg-whole.shaking {
+      animation: eggShake 0.8s ease-in-out;
+    }
+
+    @keyframes topFlyOff {
+      0% { transform: translateX(-50%) translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(-30%) translateY(-120px) rotate(-25deg); opacity: 0; }
+    }
+    .egg-top.fly-off {
+      animation: topFlyOff 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+
+    /* Sparkle particles during hatch */
+    .hatch-particle {
+      position: absolute; width: 8px; height: 8px;
+      border-radius: 0; z-index: 5;
+      animation: particleBurst 0.8s ease-out forwards;
+      image-rendering: pixelated;
+    }
+    @keyframes particleBurst {
+      0% { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: var(--particle-end) scale(0); }
+    }
+
+    .hatch-text {
+      font-family: 'Jersey 25', cursive; font-size: 22px; font-weight: 400;
+      color: white; text-align: center; margin-bottom: 8px;
+    }
+    .hatch-subtext {
+      font-family: 'Jersey 25', cursive; font-size: 16px;
+      color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 24px;
+    }
+    .hatch-bar-container {
+      width: 200px; height: 8px;
+      background: rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden;
+    }
+    .hatch-bar-fill {
+      width: 0%; height: 100%;
+      background: linear-gradient(90deg, #FFD54F, #FFA726, #FFD54F);
+      background-size: 200% 100%; border-radius: 4px;
+      transition: width 0.3s ease;
+      animation: barShimmer 2s linear infinite;
+    }
+    @keyframes barShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .hatch-dots { display: inline-block; }
+
+    /* ===================================================
+       PAGE 4: PARTNER — Your Own Partner
+       =================================================== */
+    .page-partner { background: #0E0E0E; }
+
+    .partner-card {
+      position: absolute; top: 10.6%; left: 6%; width: 88%;
+      bottom: auto;
+      background: rgba(255,255,255,0.80);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      border-radius: 4px;
+      backdrop-filter: blur(3.95px);
+      z-index: 5;
+      display: flex; flex-direction: column;
+      padding: 32px 32px 24px;
+      overflow: hidden;
+      /* Figma: 688px / 874px ≈ 78.7% but buttons are outside, card content only */
+      height: 70%;
+    }
+
+    .partner-card .card-header { margin-bottom: 8px; }
+    .partner-card .card-title {
+      font-family: 'Jersey 25', cursive; font-size: 30px; font-weight: 400;
+      letter-spacing: 1.9px; text-align: center; margin-bottom: 4px;
+      color: #D99362;
+    }
+
+    /* Pet display area */
+    .partner-content {
+      flex: 1;
+      background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+      box-shadow: 0px 1px 4px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.10);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      overflow: hidden; position: relative;
+    }
+
+    .partner-pet-container {
+      width: 100%; display: flex; justify-content: center;
+      padding: 13px 32px 0; position: relative;
+    }
+
+    .partner-pet-img {
+      width: 152px; height: 152px; object-fit: contain;
+      image-rendering: pixelated;
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .partner-pet-img.switching {
+      opacity: 0; transform: scale(0.5) rotate(10deg);
+    }
+
+    /* Regenerate button */
+    .regen-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 40px; height: 40px;
+      background: linear-gradient(180deg, #A78BFA 0%, #7C3AED 100%);
+      border: 2px solid #5B21B6;
+      box-shadow: 0px 3px 0px #4C1D95, inset 0px 1px 0px rgba(255,255,255,0.3);
+      border-radius: 4px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      z-index: 8;
+    }
+    .regen-btn:hover {
+      filter: brightness(1.1); transform: translateY(-1px);
+      box-shadow: 0px 4px 0px #4C1D95, inset 0px 1px 0px rgba(255,255,255,0.3);
+    }
+    .regen-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0px 1px 0px #4C1D95, inset 0px 1px 0px rgba(255,255,255,0.3);
+      filter: brightness(0.9);
+    }
+    .regen-btn.spinning .regen-icon { animation: regenSpin 0.5s ease-in-out; }
+    .regen-icon {
+      width: 22px; height: 22px; fill: none; stroke: white; stroke-width: 2.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    @keyframes regenSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .regen-tooltip {
+      position: absolute; top: -36px; right: 0;
+      background: #1E293B; color: white; padding: 4px 10px;
+      border-radius: 4px; font-family: 'Pixelify Sans', cursive;
+      font-size: 11px; white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(4px);
+    }
+    .regen-tooltip::after {
+      content: ''; position: absolute; bottom: -4px; right: 14px;
+      width: 8px; height: 8px; background: #1E293B;
+      transform: rotate(45deg);
+    }
+    .regen-btn:hover .regen-tooltip { opacity: 1; transform: translateY(0); }
+
+    /* Partner info area */
+    .partner-info {
+      background: white; border-radius: 4px;
+      border: 0.5px solid rgba(78,78,78,0.5);
+      margin: 0 32px 32px; padding: 24px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px; flex: 1;
+    }
+    .partner-name-box { background: white; border-radius: 4px; padding: 10px 24px; }
+    .partner-name {
+      font-family: 'Pixelify Sans', cursive; font-size: 24px; font-weight: 700;
+      letter-spacing: 1.27px; color: #737373;
+      text-shadow: 3px 3px 0px #DBDCDD; text-align: center;
+    }
+    .partner-class {
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 400;
+      color: #364153; text-align: center;
+    }
+    .partner-traits {
+      background: rgba(255,255,255,0.50); border-radius: 14px;
+      padding: 16px; width: 100%;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .partner-trait {
+      font-family: 'Jersey 20', cursive; font-size: 14px;
+      color: #4A5565; text-align: center; line-height: 20px;
+    }
+
+    /* Partner bottom buttons — positioned outside the card on the page bg */
+    /* Figma: absolute position ~796px from top on 874px page → bottom ~18px */
+    .partner-btn-row {
+      position: absolute; bottom: 18px; left: 6%; width: 88%;
+      display: flex; gap: 12px; z-index: 30;
+      visibility: visible; opacity: 1;
+    }
+    .partner-back-btn {
+      flex: 1; height: 60px; background: white;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      visibility: visible; opacity: 1;
+    }
+    .partner-back-btn:hover { filter: brightness(0.97); }
+    .partner-back-btn:active { transform: translateY(2px); box-shadow: 0px 1px 4px rgba(0,0,0,0.10), 2px 2px 0px rgba(0,0,0,0.15); }
+
+    .partner-start-btn {
+      flex: 1; height: 60px;
+      background: linear-gradient(180deg, #FFD54F 0%, #FFCA28 100%);
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      visibility: visible; opacity: 1;
+    }
+    .partner-start-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .partner-start-btn:active { transform: translateY(2px); box-shadow: 0px 1px 4px rgba(0,0,0,0.10), 2px 2px 0px rgba(0,0,0,0.15); }
+    .partner-start-text {
+      font-family: 'Pixelify Sans', cursive; font-size: 20px; font-weight: 700;
+      letter-spacing: 0.55px; color: #1E2939;
+    }
+
+    /* ===== PIXEL TRANSITION ===== */
+    .transition-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 50; pointer-events: none;
+      display: grid; grid-template-columns: repeat(8,1fr); grid-template-rows: repeat(16,1fr);
+    }
+    .transition-pixel {
+      background: #1a1a2e; opacity: 0; transform: scale(0);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .transition-overlay.active .transition-pixel { opacity: 1; transform: scale(1); }
+    .transition-overlay.reverse .transition-pixel { opacity: 0; transform: scale(0); }
+
+    /* ===================================================
+       PAGE 5: MAIN — Gameplay Screen
+       =================================================== */
+    .page-main {
+      background: white;
+      overflow: hidden;
+    }
+    /* Full-page ocean background (45.png — clean, no UI baked in) */
+    .main-bg {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    /* --- Triangle toggle buttons (pixel style) --- */
+    .tri-toggle {
+      position: absolute; z-index: 35;
+      width: 0; height: 0;
+      border: none; background: none; padding: 0;
+      cursor: pointer;
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.25));
+      transition: filter 0.2s ease, transform 0.2s ease;
+    }
+    .tri-toggle:hover { filter: drop-shadow(1px 1px 4px rgba(0,0,0,0.35)); transform: scale(1.15); }
+    .tri-toggle:active { transform: scale(0.9); }
+
+    /* Left triangle — top-left, points LEFT (▶ mirrored) → opens status bar */
+    /* When status bar is visible, triangle points LEFT (collapse); when hidden, points RIGHT (expand) */
+    .tri-toggle-left {
+      top: 18px; left: 14px;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 14px solid rgba(255,255,255,0.92);
+      border-left: none;
+      transition: filter 0.2s ease, transform 0.2s ease, border-right-color 0.2s ease;
+    }
+    .tri-toggle-left.pointing-right {
+      border-right: none;
+      border-left: 14px solid rgba(255,255,255,0.92);
+    }
+
+    /* Right triangle — top-right, points RIGHT → opens sidebar */
+    .tri-toggle-right {
+      top: 18px; right: 14px;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 14px solid rgba(255,255,255,0.92);
+      border-right: none;
+      transition: filter 0.2s ease, transform 0.2s ease, border-left-color 0.2s ease;
+    }
+    .tri-toggle-right.pointing-left {
+      border-left: none;
+      border-right: 14px solid rgba(255,255,255,0.92);
+    }
+
+    /* --- Pet sprite — positioned directly on page per Figma --- */
+    .main-pet-sprite {
+      position: absolute;
+      left: 127px; top: 226px;
+      width: 151px; height: 178px;
+      object-fit: contain; image-rendering: pixelated;
+      animation: mainPetBob 3s ease-in-out infinite;
+      z-index: 5;
+    }
+    @keyframes mainPetBob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Level-up flash effect */
+    .main-pet-sprite.level-up {
+      animation: petLevelUp 0.8s ease-out;
+    }
+    @keyframes petLevelUp {
+      0% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: scale(1); }
+      30% { filter: brightness(2) drop-shadow(0 0 20px #FFD700); transform: scale(1.15); }
+      60% { filter: brightness(1.5) drop-shadow(0 0 10px #FFD700); transform: scale(1.05); }
+      100% { filter: brightness(1) drop-shadow(0 0 0px transparent); transform: scale(1); }
+    }
+
+    /* --- Settings icon — grouped with sidebar, collapses together --- */
+    .main-settings-btn {
+      position: absolute; top: 26px; right: 35px;
+      width: 24px; height: 24px; z-index: 22;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      background: none; border: none; padding: 0;
+      transition: transform 0.2s, opacity 0.35s ease;
+    }
+    .main-settings-btn.collapsed {
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+    }
+    .main-settings-btn:hover { transform: scale(1.1); }
+    .main-settings-btn:active { transform: scale(0.95); }
+    .main-settings-btn img { width: 24px; height: 24px; }
+
+    /* --- Step Counter — Figma: left:126, top:434 (150×40 frame) --- */
+    .step-counter {
+      position: absolute; top: 434px; left: 126px;
+      z-index: 10;
+    }
+    .step-counter-frame {
+      position: relative; width: 150px; height: 40px;
+    }
+    .step-frame-outer {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #BC8C61;
+      border: 2px solid #451B0B;
+      border-radius: 3px;
+      box-shadow: inset 0 0 0 2px #BC8C61, inset 0 0 0 4px #B47C57;
+    }
+    .step-frame-inner {
+      position: absolute; top: 4px; left: 4px;
+      width: calc(100% - 8px); height: calc(100% - 8px);
+      background: #FCBD80;
+      border: 1px solid #B47C57;
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .step-icon {
+      width: 20px; height: 24px;
+    }
+    .step-count {
+      font-family: 'Jersey 20', cursive; font-size: 24px; font-weight: 400;
+      color: black;
+    }
+
+    /* --- Status Bar — collapsible with left triangle --- */
+    .status-bar {
+      position: absolute; top: 26px; left: 16px; z-index: 20;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+    }
+    .status-bar.collapsed {
+      transform: translateX(-160px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .status-bar-panel {
+      width: 117px; height: 83px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 3px 5px 0px #9D8A79;
+      border-radius: 4px;
+      padding: 0 8px;
+      position: relative;
+    }
+
+    .status-username {
+      font-family: 'Pixelify Sans', cursive; font-size: 18px; font-weight: 500;
+      color: #1E2939; line-height: 28px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100px;
+    }
+    .status-level-row {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .status-lv {
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 400;
+      color: #6A7282; flex-shrink: 0;
+    }
+    .status-exp-bar {
+      width: 68px; height: 9px;
+      background: #E5E7EB; border-radius: 0;
+      overflow: hidden; position: relative;
+      outline: 0.76px solid rgba(82,82,82,0.10);
+    }
+    .status-exp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #368BCB, #5BA3D9);
+      transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .status-exp-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .status-exp-label {
+      font-family: 'Pixelify Sans', cursive; font-size: 10px;
+      color: #6A7282;
+    }
+    .status-exp-value {
+      font-family: 'Pixelify Sans', cursive; font-size: 10px;
+    }
+    .status-exp-current { color: #368BCB; }
+    .status-exp-max { color: #6A7282; }
+
+    .status-hearts {
+      display: flex; gap: 5px; align-items: center;
+      padding: 2px 0 4px;
+    }
+    .heart-icon {
+      width: 15px; height: 12px;
+      image-rendering: pixelated;
+    }
+
+    /* --- Right Sidebar — collapsible with right triangle --- */
+    .main-sidebar {
+      position: absolute; top: 61px; right: 7px; z-index: 20;
+      width: 73px;
+      display: flex; flex-direction: column;
+      gap: 16px;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;
+    }
+    .main-sidebar.collapsed {
+      transform: translateX(90px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .sidebar-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 2px;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .sidebar-item:hover { transform: scale(1.08); filter: brightness(1.05); }
+    .sidebar-item:active { transform: scale(0.95); }
+    .sidebar-item-icon {
+      width: 73px; height: auto; max-height: 80px;
+      object-fit: contain; image-rendering: pixelated;
+    }
+    .sidebar-item-label {
+      font-family: 'Jersey 20', cursive; font-size: 16px; font-weight: 400;
+      color: #6A7282; text-align: center;
+    }
+
+    /* --- Cards Collection Panel — Figma: top:557, 401×317 --- */
+    .cards-panel {
+      position: absolute; top: 557px; left: 0; width: 100%;
+      height: 317px;
+      background: #FFFBF8;
+      box-shadow: 0px -4px 0px #444444;
+      border-radius: 4px;
+      overflow: hidden; z-index: 15;
+    }
+    .cards-panel-header {
+      padding: 15px 16px 0;
+    }
+    .cards-panel-title {
+      font-family: 'Pixelify Sans', cursive; font-size: 24px; font-weight: 500;
+      color: #A29080;
+    }
+    .cards-scroll {
+      display: flex; gap: 16px;
+      padding: 14px 16px 20px;
+      overflow-x: auto; overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .cards-scroll::-webkit-scrollbar { height: 4px; }
+    .cards-scroll::-webkit-scrollbar-track { background: transparent; }
+    .cards-scroll::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 2px; }
+
+    /* Card base — Figma: 136×244 */
+    .collect-card {
+      flex-shrink: 0; width: 136px; height: 244px;
+      border-radius: 2px; position: relative;
+      outline: 1.5px solid #525252; outline-offset: -1.5px;
+      scroll-snap-align: start;
+      transition: transform 0.3s ease;
+      overflow: hidden;
+    }
+    .collect-card:hover { transform: translateY(-4px); }
+
+    /* Card type variants */
+    .collect-card.card-animal {
+      background: linear-gradient(180deg, #D19A43 0%, #FFEFD6 20%), #FFEFD6;
+    }
+    .collect-card.card-plant {
+      background: linear-gradient(180deg, #ED9B9B 0%, #FFDCD6 20%);
+    }
+    .collect-card.card-unknown {
+      background: linear-gradient(180deg, #AFAFAF 0%, rgba(216,216,216,0.40) 20%), #D8D8D8;
+    }
+
+    .card-number {
+      position: absolute; top: 21px; left: 16px;
+      font-family: 'Pixelify Sans', cursive; font-size: 10px; font-weight: 400;
+      color: #1E2939;
+    }
+    .card-image-box {
+      position: absolute; top: 29.5px; left: 15.56px;
+      width: 104.89px; height: 118px;
+      background: #D9D9D9; overflow: hidden;
+      border-radius: 0;
+    }
+    .card-image-box img {
+      width: 129.97px; height: 117.96px;
+      object-fit: cover; position: absolute;
+      left: -15.49px; top: -0.30px;
+    }
+    .card-unknown-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(82,82,82,0.20);
+    }
+    .card-species-name {
+      position: absolute; top: 152.5px; left: 0; width: 100%;
+      text-align: center;
+      font-family: 'Jersey 20', cursive; font-size: 16px; font-weight: 400;
+      color: #1E2939;
+    }
+    .card-species-icons {
+      position: absolute; top: 181.5px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 0;
+    }
+    .card-species-icons img {
+      width: 16px; height: 17px;
+    }
+
+    /* Translated button — Figma: 104×27 at top:204.5px from card top */
+    .card-translated-btn {
+      position: absolute; top: 204.5px; left: 16px;
+      width: 104px; height: 27px;
+      background: white;
+      box-shadow: 0px 1px 4px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.10);
+      border-radius: 4px; border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .card-translated-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.12), 2px 3px 0px rgba(0,0,0,0.12);
+    }
+    .card-translated-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.08), 1px 1px 0px rgba(0,0,0,0.10);
+    }
+    .card-translated-btn.used {
+      background: #E5E7EB; pointer-events: none; opacity: 0.5;
+    }
+    .card-translated-btn span {
+      font-family: 'Jersey 20', cursive; font-size: 14px; font-weight: 400;
+      color: #4A5565; text-align: center;
+    }
+
+    /* --- Ability Transfer Animation --- */
+    .transfer-particle {
+      position: fixed; width: 8px; height: 8px;
+      border-radius: 50%; z-index: 200;
+      pointer-events: none;
+      animation: transferFly var(--duration) cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes transferFly {
+      0% { opacity: 1; transform: translate(0,0) scale(1); }
+      40% { opacity: 1; transform: translate(var(--mid-x), var(--mid-y)) scale(1.5); }
+      100% { opacity: 0; transform: translate(var(--end-x), var(--end-y)) scale(0.3); }
+    }
+
+    /* Level up notification */
+    .level-up-toast {
+      position: absolute; top: 30%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(180deg, #FFD54F 0%, #FFA726 100%);
+      border: 3px solid #B45309; border-radius: 8px;
+      box-shadow: 0px 4px 0px #92400E, 0 0 30px rgba(255,213,79,0.5);
+      padding: 16px 32px; z-index: 100;
+      text-align: center; white-space: nowrap;
+      animation: levelUpPop 2s ease-out forwards;
+    }
+    @keyframes levelUpPop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      25% { transform: translate(-50%, -50%) scale(1); }
+      75% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    }
+    .level-up-toast .lu-title {
+      font-family: 'Pixelify Sans', cursive; font-size: 24px; font-weight: 700;
+      color: #1E2939; text-shadow: 0 2px 0 rgba(255,255,255,0.3);
+    }
+    .level-up-toast .lu-sub {
+      font-family: 'Jersey 20', cursive; font-size: 14px;
+      color: #5C3A0A; margin-top: 4px;
+    }
+
+    /* Shimmer on exp bar during transfer */
+    .status-exp-fill.gaining {
+      animation: expGlow 0.5s ease-in-out 3;
+    }
+    @keyframes expGlow {
+      0%,100% { box-shadow: 0 0 0px transparent; }
+      50% { box-shadow: 0 0 8px #368BCB, 0 0 16px rgba(54,139,203,0.4); }
+    }
+
+    /* ===================================================
+       PAGE 6: FIND — Map Discovery Page
+       =================================================== */
+    .page-find {
+      background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%);
+      overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .page-find::-webkit-scrollbar { width: 0; display: none; }
+
+    /* --- Header area --- */
+    .find-header {
+      position: sticky; top: 0; left: 0; width: 100%;
+      padding: 16px 16px 0; z-index: 10;
+      background: linear-gradient(180deg, #E0F7FA 0%, rgba(224,247,250,0.95) 100%);
+    }
+    .find-header-top {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 16px;
+    }
+    .find-back-btn {
+      width: 37px; height: 42px; flex-shrink: 0;
+      margin-top: 7px;
+      background: none; border: none; padding: 0;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .find-back-btn:hover { transform: scale(1.1); }
+    .find-back-btn:active { transform: scale(0.9); }
+    .find-back-btn img { width: 24px; height: 24px; }
+
+    .find-title-block {
+      flex: 1;
+      padding-top: 6px;
+    }
+    .find-title {
+      font-family: 'Pixelify Sans', cursive; font-size: 26px; font-weight: 400;
+      color: #4A5565;
+      line-height: 1;
+    }
+    .find-subtitle {
+      font-family: 'Jersey 25', cursive; font-size: 14px; font-weight: 400;
+      color: #4A5565; margin-top: 2px;
+    }
+
+    .find-progress-badge {
+      flex-shrink: 0; margin-top: 8px;
+      width: 106px; height: 40px;
+      background: white;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .find-progress-badge img { width: 24px; height: 24px; }
+    .find-progress-badge span {
+      font-family: 'Jersey 20', cursive; font-size: 16px; font-weight: 400;
+      color: #4A5565;
+    }
+
+    /* --- Difficulty filter tabs --- */
+    .find-tabs {
+      display: flex; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .find-tab {
+      height: 35px; padding: 0 16px;
+      background: white;
+      box-shadow: 0px 1px 4px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.10);
+      border-radius: 2px; border: none;
+      cursor: pointer;
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 700;
+      color: #4A5565; text-align: center;
+      transition: background 0.25s ease, color 0.25s ease, transform 0.15s ease;
+      flex-shrink: 0;
+    }
+    .find-tab:hover { transform: translateY(-1px); }
+    .find-tab:active { transform: translateY(1px); }
+    .find-tab.active {
+      background: #DBC693;
+      color: white;
+      height: 37px;
+    }
+
+    /* --- Location cards container --- */
+    .find-cards {
+      padding: 0 16px 32px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* --- Location card --- */
+    .find-card {
+      width: 370px; max-width: 100%;
+      background: white;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .find-card:hover { transform: translateY(-2px); }
+    .find-card.filter-hidden {
+      display: none;
+    }
+
+    .find-card-image {
+      position: relative; width: 100%; height: 192px;
+      background: #C4C4C4; overflow: hidden;
+    }
+    .find-card-image img {
+      width: 100%; height: 265px;
+      object-fit: cover;
+      position: absolute; left: 0; top: -55px;
+    }
+    /* Difficulty badge on image */
+    .find-difficulty-badge {
+      position: absolute; top: 12px; left: 12px;
+      height: 30px; padding: 0 12px;
+      border-radius: 4px;
+      box-shadow: 0px 1px 4px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.10);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 700;
+      color: #4A5565;
+    }
+    .find-difficulty-badge.badge-easy { background: #FFD54F; }
+    .find-difficulty-badge.badge-medium { background: #FF8A50; }
+    .find-difficulty-badge.badge-hard { background: #FF5252; }
+
+    /* Chevron icon on card image */
+    .find-card-chevron {
+      position: absolute; top: 19px; right: 12px;
+      width: 24px; height: 24px; opacity: 0.6;
+    }
+
+    /* Locked overlay */
+    .find-card-locked-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px;
+    }
+    .find-card-locked-overlay .lock-icon {
+      width: 48px; height: 48px;
+    }
+    .find-card-locked-overlay .lock-text {
+      font-family: 'Jersey 20', cursive; font-size: 18px; font-weight: 400;
+      color: white; text-align: center;
+    }
+
+    /* Card info area */
+    .find-card-info {
+      padding: 16px;
+      background: linear-gradient(180deg, #B2EBF2 0%, white 100%);
+    }
+    .find-card-name {
+      font-family: 'Pixelify Sans', cursive; font-size: 24px; font-weight: 500;
+      color: #1E2939;
+      margin-bottom: 4px;
+    }
+    .find-card-desc {
+      font-family: 'Jersey 20', cursive; font-size: 12px; font-weight: 400;
+      color: #6A7282;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .find-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .find-card-footer img {
+      height: 24px; width: auto;
+    }
+    .find-card-species {
+      font-family: 'Pixelify Sans', cursive; font-size: 10px; font-weight: 400;
+      text-align: right; line-height: 1.3;
+    }
+    .find-card-species .text-gray { color: #ADADAD; }
+    .find-card-species .text-gold { color: #DBC693; }
+
+    /* ===================================================
+       ROUTE DETAIL PAGE — Full-screen map + checkpoints
+       =================================================== */
+    .route-detail-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: white;
+      z-index: 180;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      overflow: hidden;
+    }
+    .route-detail-backdrop.active {
+      display: block; opacity: 1;
+    }
+
+    .route-detail-page {
+      width: 402px; max-width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      background: white;
+      overflow: hidden;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+      position: relative;
+      display: flex; flex-direction: column;
+    }
+    .route-detail-backdrop.active .route-detail-page {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    /* --- Map area (top) --- */
+    .route-detail-map {
+      position: relative;
+      width: 100%;
+      flex-shrink: 0;
+      height: 60%;
+      overflow: hidden;
+      background: #2A2A2A;
+    }
+    .route-detail-map-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; left: 0; top: 0;
+    }
+
+    /* Route path markers (SVG overlays on the map) */
+    .route-map-marker {
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .route-map-marker.clickable {
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 6;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .route-map-marker.clickable::before {
+      content: '';
+      position: absolute;
+      top: -12px; left: -12px; right: -12px; bottom: -12px;
+      border-radius: 50%;
+    }
+    .route-map-marker.clickable:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 2px 8px rgba(124,179,66,0.5));
+    }
+    .route-map-marker.clickable:active {
+      transform: scale(0.92);
+    }
+    /* Pulse animation for clickable markers */
+    .route-map-marker.clickable::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 36px; height: 36px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid rgba(124,179,66,0.5);
+      animation: markerPulse 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes markerPulse {
+      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.8); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.3); }
+    }
+    .route-map-marker img {
+      width: auto; height: auto;
+      display: block;
+    }
+
+    /* Back button on map */
+    .route-detail-back {
+      position: absolute; top: 14px; left: 17px;
+      width: 37px; height: 42px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      border-radius: 999px;
+      border: none;
+      cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .route-detail-back:hover { background: #f0f0f0; transform: scale(1.08); }
+    .route-detail-back:active { transform: scale(0.92) translateY(1px); }
+    .route-detail-back img {
+      width: 24px; height: 24px;
+    }
+
+    /* Today's Walk badge (top-right) */
+    .route-detail-walk-badge {
+      position: absolute; top: 16px; right: 16px;
+      width: 103px; height: 68px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      border-radius: 4px;
+      padding: 12px 20px;
+      z-index: 10;
+    }
+    .route-detail-walk-label {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 400;
+      color: #4A5565;
+      margin-bottom: 2px;
+    }
+    .route-detail-walk-value {
+      font-family: 'Pixelify Sans', cursive; font-size: 20px; font-weight: 700;
+      color: #7CB342;
+      letter-spacing: 0.55px;
+    }
+
+    /* Route name label (bottom center of map) */
+    .route-detail-name-label {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      padding: 8px 16px;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    .route-detail-name-label span {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 700;
+      color: #1E2939;
+    }
+
+    /* Location pin on map */
+    .route-map-pin {
+      position: absolute;
+      z-index: 5;
+    }
+    .route-map-pin img {
+      width: auto; height: auto;
+    }
+
+    /* --- Bottom section (tabs + items) --- */
+    .route-detail-bottom {
+      flex: 1;
+      background: linear-gradient(180deg, #E0F7FA 0%, #F9FAFB 100%);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tab bar */
+    .route-detail-tabs {
+      display: flex;
+      border-bottom: 0.56px solid #E5E7EB;
+      flex-shrink: 0;
+    }
+    .route-detail-tab {
+      flex: 1;
+      height: 52px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 700;
+      color: #99A1AF;
+      text-align: center;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .route-detail-tab.active {
+      color: #7CB342;
+    }
+    .route-detail-tab.active::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      height: 3.94px;
+      background: #7CB342;
+    }
+    .route-detail-tab:hover:not(.active) { color: #6A7282; }
+
+    /* Tab content area */
+    .route-detail-tab-content {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .route-detail-tab-content::-webkit-scrollbar { width: 0; display: none; }
+    .route-detail-tab-panel {
+      display: none;
+    }
+    .route-detail-tab-panel.active {
+      display: block;
+    }
+
+    /* Checkpoint items grid */
+    .route-checkpoint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .route-checkpoint-card {
+      background: white;
+      box-shadow: 0px 1px 4px rgba(0,0,0,0.08), 2px 2px 0px rgba(0,0,0,0.10);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+    .route-checkpoint-card:hover { transform: translateY(-2px); box-shadow: 0px 3px 8px rgba(0,0,0,0.12), 2px 2px 0px rgba(0,0,0,0.10); }
+    .route-checkpoint-card:active { transform: translateY(1px); }
+    .route-checkpoint-card.locked {
+      opacity: 0.60;
+    }
+
+    /* Lock icon overlay */
+    .route-checkpoint-lock {
+      position: absolute; top: 8px; right: 8px;
+      width: 16px; height: 16px;
+    }
+    .route-checkpoint-lock img {
+      width: 16px; height: 16px;
+    }
+
+    .route-checkpoint-icon {
+      width: 64px; height: 64px;
+      margin-bottom: 8px;
+    }
+    .route-checkpoint-icon img {
+      width: 64px; height: 64px;
+    }
+
+    .route-checkpoint-name {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 700;
+      color: #1E2939;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .route-checkpoint-hint {
+      font-family: 'Pixelify Sans', cursive; font-size: 11px; font-weight: 400;
+      color: #6A7282;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .route-checkpoint-dist {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .route-checkpoint-dist img {
+      width: 12px; height: 12px;
+    }
+    .route-checkpoint-dist span {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 700;
+      color: #7CB342;
+    }
+
+    /* Discussion area placeholder */
+    .route-discussion-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .route-discussion-empty-icon {
+      font-size: 48px; margin-bottom: 12px; opacity: 0.5;
+    }
+    .route-discussion-empty-text {
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 600;
+      color: #99A1AF;
+      margin-bottom: 6px;
+    }
+    .route-discussion-empty-sub {
+      font-family: 'Jersey 20', cursive; font-size: 14px;
+      color: #C5C9D2;
+    }
+
+    /* ===================================================
+       CHECKPOINT DETAIL PAGE — Full-screen zoomed map view
+       =================================================== */
+    .checkpoint-detail-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: white;
+      z-index: 190;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      overflow: hidden;
+    }
+    .checkpoint-detail-backdrop.active {
+      display: block; opacity: 1;
+    }
+
+    .checkpoint-detail-page {
+      width: 402px; max-width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      background: white;
+      overflow: hidden;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+      position: relative;
+      display: flex; flex-direction: column;
+    }
+    .checkpoint-detail-backdrop.active .checkpoint-detail-page {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    /* --- Checkpoint map area (top) --- */
+    .checkpoint-detail-map {
+      position: relative;
+      width: 100%;
+      flex-shrink: 0;
+      height: 60%;
+      overflow: hidden;
+      background: #2A2A2A;
+    }
+    .checkpoint-detail-map-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; left: 0; top: 0;
+    }
+
+    /* Back button on checkpoint map */
+    .checkpoint-detail-back {
+      position: absolute; top: 14px; left: 17px;
+      width: 37px; height: 42px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      border-radius: 999px;
+      border: none;
+      cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .checkpoint-detail-back:hover { background: #f0f0f0; transform: scale(1.08); }
+    .checkpoint-detail-back:active { transform: scale(0.92) translateY(1px); }
+    .checkpoint-detail-back img {
+      width: 24px; height: 24px;
+    }
+
+    /* Today's Walk badge on checkpoint page */
+    .checkpoint-detail-walk-badge {
+      position: absolute; top: 16px; right: 16px;
+      width: 103px; height: 68px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15), 6px 6px 0px rgba(0,0,0,0.20);
+      border-radius: 4px;
+      padding: 12px 20px;
+      z-index: 10;
+    }
+    .checkpoint-detail-walk-label {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 400;
+      color: #4A5565;
+      margin-bottom: 2px;
+    }
+    .checkpoint-detail-walk-value {
+      font-family: 'Pixelify Sans', cursive; font-size: 20px; font-weight: 700;
+      color: #7CB342;
+      letter-spacing: 0.55px;
+    }
+
+    /* "I got here!" action button (bottom center of checkpoint map) */
+    .checkpoint-detail-arrived-btn {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.10), 4px 4px 0px rgba(0,0,0,0.15);
+      border-radius: 4px;
+      padding: 8px 16px;
+      z-index: 10;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .checkpoint-detail-arrived-btn:hover { background: #f0f0f0; transform: translateX(-50%) scale(1.05); }
+    .checkpoint-detail-arrived-btn:active { transform: translateX(-50%) scale(0.95) translateY(1px); }
+    .checkpoint-detail-arrived-btn span {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 700;
+      color: #1E2939;
+    }
+    .checkpoint-detail-arrived-btn img {
+      width: 14px; height: 14px;
+    }
+    /* "I got here!" checked-in state */
+    .checkpoint-detail-arrived-btn.checked-in {
+      background: linear-gradient(180deg, #4AEAB0 0%, #1DB88A 100%) !important;
+      pointer-events: none;
+      box-shadow: 0px 2px 8px rgba(29,184,138,0.30), 4px 4px 0px rgba(0,0,0,0.10);
+    }
+    .checkpoint-detail-arrived-btn.checked-in span {
+      color: #fff !important;
+    }
+    .checkpoint-detail-arrived-btn.checked-in img {
+      filter: brightness(0) invert(1);
+    }
+
+    /* ===================================================
+       CAMERA OVERLAY — Pixel-style camera simulator
+       =================================================== */
+    .camera-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000;
+      z-index: 300;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .camera-overlay.active {
+      display: flex; opacity: 1;
+    }
+    .camera-page {
+      width: 402px; max-width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      position: relative;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Camera viewfinder */
+    .camera-viewfinder {
+      flex: 1;
+      position: relative;
+      background: #1a1a2e;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .camera-viewfinder-grid {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .camera-viewfinder-grid::before,
+    .camera-viewfinder-grid::after {
+      content: '';
+      position: absolute;
+      background: rgba(255,255,255,0.15);
+    }
+    .camera-viewfinder-grid::before {
+      top: 33.33%; left: 0; width: 100%; height: 1px;
+      box-shadow: 0 calc(33.33vh) 0 rgba(255,255,255,0.15);
+    }
+    .camera-viewfinder-grid::after {
+      left: 33.33%; top: 0; height: 100%; width: 1px;
+      box-shadow: calc(33.33vw) 0 0 rgba(255,255,255,0.15);
+    }
+
+    /* Corner brackets */
+    .camera-bracket {
+      position: absolute;
+      width: 40px; height: 40px;
+      z-index: 3;
+    }
+    .camera-bracket::before, .camera-bracket::after {
+      content: '';
+      position: absolute;
+      background: #7CB342;
+    }
+    .camera-bracket-tl { top: 20%; left: 10%; }
+    .camera-bracket-tl::before { top: 0; left: 0; width: 20px; height: 3px; }
+    .camera-bracket-tl::after { top: 0; left: 0; width: 3px; height: 20px; }
+    .camera-bracket-tr { top: 20%; right: 10%; }
+    .camera-bracket-tr::before { top: 0; right: 0; width: 20px; height: 3px; }
+    .camera-bracket-tr::after { top: 0; right: 0; width: 3px; height: 20px; }
+    .camera-bracket-bl { bottom: 20%; left: 10%; }
+    .camera-bracket-bl::before { bottom: 0; left: 0; width: 20px; height: 3px; }
+    .camera-bracket-bl::after { bottom: 0; left: 0; width: 3px; height: 20px; }
+    .camera-bracket-br { bottom: 20%; right: 10%; }
+    .camera-bracket-br::before { bottom: 0; right: 0; width: 20px; height: 3px; }
+    .camera-bracket-br::after { bottom: 0; right: 0; width: 3px; height: 20px; }
+
+    /* Pixel scanline effect on viewfinder */
+    .camera-viewfinder::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        transparent 0px, transparent 2px,
+        rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none; z-index: 1;
+    }
+
+    /* Simulated scene (when no real camera) */
+    .camera-sim-scene {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #2d5016 0%, #4a7c23 30%, #6ba32d 60%, #8BC34A 100%);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .camera-sim-emoji {
+      font-size: 80px;
+      animation: cameraSimFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+    @keyframes cameraSimFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .camera-sim-hint {
+      position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      text-align: center;
+      z-index: 3;
+      animation: hintBlink 2s ease-in-out infinite;
+    }
+
+    /* Camera top bar */
+    .camera-top-bar {
+      position: absolute; top: 0; left: 0; width: 100%;
+      padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    }
+    .camera-close-btn {
+      width: 36px; height: 36px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .camera-close-btn:hover { background: rgba(0,0,0,0.6); }
+    .camera-close-btn svg { width: 18px; height: 18px; }
+    .camera-flash-label {
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Camera bottom bar */
+    .camera-bottom-bar {
+      background: #000;
+      padding: 20px 0 28px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px;
+      flex-shrink: 0;
+    }
+    .camera-capture-btn {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s ease;
+    }
+    .camera-capture-btn::after {
+      content: '';
+      position: absolute;
+      top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border-radius: 50%;
+      background: #fff;
+      transition: background 0.1s ease;
+    }
+    .camera-capture-btn:hover::after { background: #e0e0e0; }
+    .camera-capture-btn:active { transform: scale(0.9); }
+    .camera-capture-btn:active::after { background: #ccc; }
+
+    .camera-gallery-btn, .camera-switch-btn {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .camera-gallery-btn:hover, .camera-switch-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Camera flash animation */
+    .camera-flash {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: #fff;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.05s ease;
+    }
+    .camera-flash.flash-active {
+      opacity: 1;
+    }
+
+    /* Preview mode after capture */
+    .camera-preview-mode .camera-sim-scene {
+      display: none;
+    }
+    .camera-preview-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .camera-preview-mode .camera-preview-img {
+      display: block;
+    }
+    .camera-preview-mode .camera-viewfinder-grid,
+    .camera-preview-mode .camera-bracket,
+    .camera-preview-mode .camera-sim-hint {
+      display: none;
+    }
+
+    /* Preview bottom bar */
+    .camera-preview-bar {
+      background: #000;
+      padding: 16px 24px 28px;
+      display: none;
+      align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .camera-preview-mode .camera-bottom-bar {
+      display: none;
+    }
+    .camera-preview-mode .camera-preview-bar {
+      display: flex;
+    }
+    .camera-retake-btn {
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .camera-retake-btn:hover { background: rgba(255,255,255,0.1); }
+    .camera-confirm-btn {
+      background: linear-gradient(180deg, #4AEAB0 0%, #1DB88A 100%);
+      border: 2px solid #0A5C44;
+      border-radius: 4px;
+      padding: 10px 24px;
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      box-shadow: 0px 4px 0px #0A5C44;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .camera-confirm-btn:hover { transform: translateY(-1px); box-shadow: 0px 5px 0px #0A5C44; }
+    .camera-confirm-btn:active { transform: translateY(2px); box-shadow: 0px 2px 0px #0A5C44; }
+
+    /* --- Checkpoint bottom section (tabs + items) --- */
+    .checkpoint-detail-bottom {
+      flex: 1;
+      background: linear-gradient(180deg, #E0F7FA 0%, #F9FAFB 100%);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Checkpoint tab bar */
+    .checkpoint-detail-tabs {
+      display: flex;
+      border-bottom: 0.56px solid #E5E7EB;
+      flex-shrink: 0;
+    }
+    .checkpoint-detail-tab {
+      flex: 1;
+      height: 52px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 700;
+      color: #99A1AF;
+      text-align: center;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .checkpoint-detail-tab.active {
+      color: #7CB342;
+    }
+    .checkpoint-detail-tab.active::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      height: 3.94px;
+      background: #7CB342;
+    }
+    .checkpoint-detail-tab:hover:not(.active) { color: #6A7282; }
+
+    /* Checkpoint tab content area */
+    .checkpoint-detail-tab-content {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .checkpoint-detail-tab-content::-webkit-scrollbar { width: 0; display: none; }
+    .checkpoint-detail-tab-panel {
+      display: none;
+    }
+    .checkpoint-detail-tab-panel.active {
+      display: block;
+    }
+
+    /* --- Checkpoint detail popup (small overlay) --- */
+    .checkpoint-popup-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(14,14,14,0.55);
+      z-index: 250;
+      display: none; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .checkpoint-popup-backdrop.active {
+      display: flex; opacity: 1;
+    }
+    .checkpoint-popup {
+      width: 300px; max-width: 85%;
+      background: #FFFDF7;
+      border: 3px solid #5C3A1E;
+      border-radius: 4px;
+      box-shadow: 6px 6px 0px rgba(0,0,0,0.30);
+      overflow: hidden;
+      transform: scale(0.8) translateY(20px);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+      position: relative;
+    }
+    .checkpoint-popup-backdrop.active .checkpoint-popup {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    /* Scanline */
+    .checkpoint-popup::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(92,58,30,0.018) 2px, rgba(92,58,30,0.018) 3px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .checkpoint-popup-close {
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: #F5E6D0;
+      border: 2px solid #5C3A1E;
+      border-radius: 2px;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+      cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .checkpoint-popup-close:hover { background: #EDD5B5; transform: scale(1.08); }
+    .checkpoint-popup-close:active { transform: scale(0.92) translateY(1px); }
+
+    .checkpoint-popup-body {
+      padding: 20px;
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; z-index: 2;
+    }
+    .checkpoint-popup-icon {
+      width: 80px; height: 80px;
+      margin-bottom: 12px;
+    }
+    .checkpoint-popup-icon img {
+      width: 80px; height: 80px;
+    }
+    .checkpoint-popup-name {
+      font-family: 'Pixelify Sans', cursive; font-size: 18px; font-weight: 700;
+      color: #1E2939;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .checkpoint-popup-hint {
+      font-family: 'Pixelify Sans', cursive; font-size: 13px; font-weight: 400;
+      color: #6A7282;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .checkpoint-popup-dist-row {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .checkpoint-popup-dist-row img {
+      width: 14px; height: 14px;
+    }
+    .checkpoint-popup-dist-row span {
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 700;
+      color: #7CB342;
+    }
+    .checkpoint-popup-status {
+      width: 100%; height: 40px;
+      border-radius: 3px;
+      border: 2px solid;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; font-weight: 700;
+    }
+    .checkpoint-popup-status.unlocked {
+      background: linear-gradient(180deg, #4AEAB0 0%, #1DB88A 100%);
+      border-color: #0A5C44;
+      box-shadow: 0px 3px 0px #074D38;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .checkpoint-popup-status.locked-status {
+      background: #E5E7EB;
+      border-color: #C5C9D2;
+      color: #99A1AF;
+    }
+
+    /* ===================================================
+       WEATHER RECOMMENDATION POPUP — Pixel Style
+       =================================================== */
+    .weather-popup-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(14,14,14,0.60);
+      z-index: 200;
+      display: none; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .weather-popup-backdrop.active {
+      display: flex; opacity: 1;
+    }
+
+    .weather-popup {
+      width: 340px; max-width: 88%;
+      background: #FFFDF7;
+      border: 3px solid #5C3A1E;
+      border-radius: 4px;
+      box-shadow: 6px 6px 0px rgba(0,0,0,0.30);
+      overflow: hidden;
+      transform: translateY(40px) scale(0.88);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+      position: relative;
+      image-rendering: auto;
+    }
+    .weather-popup-backdrop.active .weather-popup {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    /* Pixel scanline texture on popup */
+    .weather-popup::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 2px,
+        rgba(92,58,30,0.018) 2px, rgba(92,58,30,0.018) 3px
+      );
+      pointer-events: none; z-index: 1;
+    }
+
+    /* Close button — pixel X */
+    .weather-popup-close {
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: #F5E6D0;
+      border: 2px solid #5C3A1E;
+      border-radius: 2px;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+      cursor: pointer; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .weather-popup-close:hover { background: #EDD5B5; transform: scale(1.08); }
+    .weather-popup-close:active { transform: scale(0.92) translateY(1px); box-shadow: 1px 1px 0px rgba(0,0,0,0.2); }
+    .weather-popup-close svg { width: 12px; height: 12px; }
+
+    /* --- Hero route image area --- */
+    .weather-hero {
+      position: relative;
+      width: 100%; height: 160px;
+      overflow: hidden;
+      background: #2A2A2A;
+    }
+    .weather-hero-img {
+      width: 100%; height: 230px;
+      object-fit: cover;
+      position: absolute; left: 0; top: -40px;
+      transition: transform 8s ease-out;
+    }
+    .weather-popup-backdrop.active .weather-hero-img {
+      transform: scale(1.06);
+    }
+    /* Gradient overlay at bottom of hero */
+    .weather-hero::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+      background: linear-gradient(0deg, #FFFDF7 0%, transparent 100%);
+    }
+
+    /* Difficulty badge on hero */
+    .weather-hero-badge {
+      position: absolute; top: 10px; left: 10px;
+      height: 26px; padding: 0 10px;
+      border: 2px solid #5C3A1E;
+      border-radius: 2px;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.25);
+      font-family: 'Pixelify Sans', cursive; font-size: 12px; font-weight: 700;
+      color: #3D2409;
+      display: flex; align-items: center;
+      z-index: 2;
+    }
+    .weather-hero-badge.badge-easy { background: #FFD54F; }
+    .weather-hero-badge.badge-medium { background: #FF8A50; }
+    .weather-hero-badge.badge-hard { background: #FF5252; color: white; }
+
+    /* Live weather tag on hero */
+    .weather-hero-live {
+      position: absolute; top: 10px; right: 42px;
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.55);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 2px;
+      padding: 3px 8px; z-index: 2;
+    }
+    .weather-hero-live-dot {
+      width: 6px; height: 6px;
+      background: #4ADE80; border-radius: 0;
+      animation: pixelBlink 1.5s steps(2) infinite;
+    }
+    @keyframes pixelBlink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .weather-hero-live span {
+      font-family: 'Pixelify Sans', cursive; font-size: 9px; font-weight: 600;
+      color: #fff; letter-spacing: 0.5px;
+    }
+
+    /* --- Popup body content --- */
+    .weather-popup-body {
+      padding: 12px 16px 14px;
+      position: relative; z-index: 2;
+    }
+
+    /* Route name — hero text */
+    .weather-rec-name {
+      font-family: 'Pixelify Sans', cursive; font-size: 22px; font-weight: 700;
+      color: #2A1A08;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .weather-rec-reason {
+      font-family: 'Jersey 25', cursive; font-size: 15px; font-weight: 400;
+      color: #7A6B5A;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    /* Weather strip — compact inline row */
+    .weather-strip {
+      display: flex; gap: 0;
+      background: #F5E6D0;
+      border: 2px solid #C5A87A;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .weather-strip-item {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 7px 4px;
+      border-right: 1.5px solid #C5A87A;
+    }
+    .weather-strip-item:last-child { border-right: none; }
+    .weather-strip-icon {
+      font-size: 16px; line-height: 1;
+    }
+    .weather-strip-val {
+      font-family: 'Pixelify Sans', cursive; font-size: 13px; font-weight: 700;
+      color: #3D2409;
+    }
+    .weather-strip-label {
+      font-family: 'Jersey 20', cursive; font-size: 10px;
+      color: #8B7355;
+    }
+
+    /* Go explore button */
+    .weather-go-btn {
+      width: 100%; height: 44px;
+      background: linear-gradient(180deg, #FEC60B 0%, #D95900 100%);
+      border: 2.5px solid #5C3A1E;
+      border-radius: 3px;
+      box-shadow: 0px 3px 0px #3D1F0A;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+      position: relative; overflow: hidden;
+    }
+    .weather-go-btn::before {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      animation: btnShine 3s ease-in-out infinite;
+    }
+    @keyframes btnShine {
+      0%,70%,100% { left: -100%; }
+      35% { left: 100%; }
+    }
+    .weather-go-btn:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0px 4px 0px #3D1F0A; }
+    .weather-go-btn:active { transform: translateY(2px); box-shadow: 0px 1px 0px #3D1F0A; filter: brightness(0.95); }
+    .weather-go-btn span {
+      font-family: 'Pixelify Sans', cursive; font-size: 16px; font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      position: relative; z-index: 1;
+    }
+    .weather-go-btn svg {
+      position: relative; z-index: 1;
+    }
+
+    /* Source tip */
+    .weather-popup-tip {
+      font-family: 'Jersey 20', cursive; font-size: 11px; font-weight: 400;
+      color: #B8A992;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .weather-popup-tip em { font-style: normal; color: #C5A87A; }
+
+    /* --- Loading state — pixel style --- */
+    .weather-popup-loading {
+      padding: 50px 20px;
+      text-align: center;
+    }
+    .weather-popup-loading .pixel-loader {
+      display: flex; justify-content: center; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .weather-popup-loading .pixel-loader-block {
+      width: 10px; height: 10px;
+      background: #DBC693;
+      border: 1px solid #5C3A1E;
+      animation: pixelLoaderBounce 0.6s ease-in-out infinite alternate;
+    }
+    .weather-popup-loading .pixel-loader-block:nth-child(2) { animation-delay: 0.15s; background: #F5C542; }
+    .weather-popup-loading .pixel-loader-block:nth-child(3) { animation-delay: 0.3s; background: #FF8A50; }
+    @keyframes pixelLoaderBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-12px); }
+    }
+    .weather-popup-loading span {
+      font-family: 'Pixelify Sans', cursive; font-size: 14px; color: #7A6B5A;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 768px) {
+      .app {
+        max-width: 402px; height: 874px;
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        border-radius: 20px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        overflow: hidden;
+      }
+      .route-detail-backdrop {
+        position: absolute;
+        border-radius: 20px;
+      }
+      .checkpoint-popup-backdrop {
+        position: absolute;
+      }
+      .checkpoint-detail-backdrop {
+        position: absolute;
+        border-radius: 20px;
+      }
+      .camera-overlay {
+        position: absolute;
+        border-radius: 20px;
+      }
+    }
+    @media (max-width: 767px) {
+      .app { max-width: 100%; height: 100vh; height: 100dvh; }
+      .card-base, .partner-card { padding: 24px; }
+    }
+    @media (max-height: 700px) {
+      .card-base { top: 12%; height: 76%; padding: 20px; }
+      .partner-card { top: 8%; height: 68%; padding: 20px 20px 16px; }
+      .partner-btn-row { bottom: 12px; }
+      .partner-back-btn, .partner-start-btn { height: 50px; }
+      .card-icon { width: 55px; height: 62px; }
+      .card-icon-emoji { font-size: 45px; }
+      .card-title { font-size: 24px; }
+      .form-input { height: 48px; }
+      .next-btn, .back-btn, .create-btn { height: 50px; }
+      .partner-pet-img { width: 120px; height: 120px; }
+      .partner-info { margin: 0 16px 16px; padding: 16px; }
+      .main-pet-sprite { width: 120px; height: 142px; top: 180px; }
+      .step-counter { top: 370px; }
+      .cards-panel { top: auto; bottom: 0; height: 260px; }
+      .collect-card { width: 120px; height: 210px; }
+      .card-image-box { height: 95px; }
+      .card-species-name { top: 130px; }
+      .card-species-icons { top: 152px; }
+      .card-translated-btn { top: 176px; width: 90px; }
+    }
+    @media (max-height: 600px) {
+      .card-base { top: 8%; height: 82%; padding: 16px; }
+      .partner-card { top: 5%; height: 72%; padding: 14px 14px 10px; }
+      .partner-btn-row { bottom: 8px; }
+      .partner-back-btn, .partner-start-btn { height: 44px; }
+      .card-icon { width: 45px; height: 50px; }
+      .card-icon-emoji { font-size: 36px; }
+      .card-header { margin-bottom: 12px; }
+      .form-fields { gap: 10px; }
+      .form-input { height: 42px; font-size: 14px; }
+      .partner-pet-img { width: 100px; height: 100px; }
+      .main-pet-sprite { width: 100px; height: 120px; top: 150px; }
+      .step-counter { top: 310px; }
+      .cards-panel { top: auto; bottom: 0; height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- PAGE 1: LANDING -->
+    <div id="page-landing" class="page visible page-landing">
+      <img class="landing-bg" src="./assets/CodeBuddyAssets/0_137/1.png" alt="Pixel art landscape">
+      <div class="pixel-sparkle"></div><div class="pixel-sparkle"></div><div class="pixel-sparkle"></div>
+      <div class="pixel-sparkle"></div><div class="pixel-sparkle"></div><div class="pixel-sparkle"></div>
+      <img class="landing-title" src="./assets/CodeBuddyAssets/0_137/3.png" alt="Have you walked">
+      <img class="landing-start-btn" id="startBtn" src="./assets/CodeBuddyAssets/0_137/2.png" alt="Start walking" role="button" tabindex="0">
+      <div class="tap-hint">▼ Tap to Start ▼</div>
+    </div>
+
+    <!-- PAGE 2: REGISTRATION -->
+    <div id="page-register" class="page hidden page-register">
+      <img class="register-bg" src="./assets/CodeBuddyAssets/0_102/6.png" alt="Sunset beach">
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step inactive"></div>
+        <div class="progress-step inactive"></div>
+      </div>
+      <div class="register-card card-base">
+        <div class="card-header">
+          <img class="card-icon" src="./assets/CodeBuddyAssets/0_102/5.png" alt="Backpack">
+          <div class="card-title card-title-warm">Who Are You</div>
+          <div class="card-subtitle">Let us know you</div>
+        </div>
+        <div class="form-fields">
+          <div class="form-group">
+            <label class="form-label" for="school">School</label>
+            <input class="form-input register-input" type="text" id="school" placeholder="Enter your school name...">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classInput">Class</label>
+            <input class="form-input register-input" type="text" id="classInput" placeholder="1A">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="name">Name</label>
+            <input class="form-input register-input" type="text" id="name" placeholder="Enter your name...">
+          </div>
+        </div>
+        <button class="next-btn" id="nextBtn" type="button">
+          <span class="next-btn-text">NEXT</span>
+          <svg class="next-btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.99902 17.9995L14.999 11.9995L8.99902 5.99951" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: BODY DATA -->
+    <div id="page-bodydata" class="page hidden" style="background:white">
+      <img class="bodydata-bg" src="./assets/CodeBuddyAssets/0_141/6.png" alt="Night forest">
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step inactive"></div>
+      </div>
+      <div class="bodydata-card card-base">
+        <div class="card-header">
+          <div class="card-icon-emoji">📏</div>
+          <div class="card-title card-title-cool">Body Data</div>
+          <div class="card-subtitle">to create your own partner</div>
+        </div>
+        <div class="form-fields">
+          <div class="form-group">
+            <label class="form-label" for="age">Age</label>
+            <div class="input-with-suffix">
+              <input class="form-input bodydata-input" type="number" id="age" placeholder="Enter your age..." min="5" max="20">
+              <span class="input-suffix">year</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="height">Height</label>
+            <div class="input-with-suffix">
+              <input class="form-input bodydata-input" type="number" id="height" placeholder="Enter your height..." min="80" max="220">
+              <span class="input-suffix">cm</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="weight">Weight</label>
+            <div class="input-with-suffix">
+              <input class="form-input bodydata-input" type="number" id="weight" placeholder="Enter your weight..." min="15" max="150">
+              <span class="input-suffix">kg</span>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="back-btn" id="backBtn" type="button">
+            <svg class="back-btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14.999 17.9995L8.99902 11.9995L14.999 5.99951" stroke="#364153" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="back-btn-text">Back</span>
+          </button>
+          <button class="create-btn" id="createBtn" type="button">
+            <span class="create-btn-text">Create</span>
+            <svg class="create-btn-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.99902 17.9995L14.999 11.9995L8.99902 5.99951" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: PARTNER -->
+    <div id="page-partner" class="page hidden page-partner">
+      <img class="partner-bg" src="./assets/CodeBuddyAssets/0_191/6.png" alt="Pixel landscape">
+      <div class="progress-bar">
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step active"></div>
+      </div>
+      <div class="partner-card">
+        <div class="card-header">
+          <div class="card-title card-title-warm">Your own partner</div>
+          <div class="card-subtitle">Base on your data</div>
+        </div>
+        <div class="partner-content">
+          <div class="partner-pet-container">
+            <img class="partner-pet-img" id="partnerPetImg" src="./assets/CodeBuddyAssets/1_4737/1.png" alt="Your pixel pet">
+            <!-- Regenerate button -->
+            <button class="regen-btn" id="regenBtn" type="button" aria-label="Regenerate pet">
+              <span class="regen-tooltip">Regenerate!</span>
+              <svg class="regen-icon" viewBox="0 0 24 24">
+                <path d="M1 4v6h6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <path d="M23 20v-6h-6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </button>
+          </div>
+          <div class="partner-info">
+            <div class="partner-name-box">
+              <div class="partner-name" id="partnerName">User Name</div>
+            </div>
+            <div class="partner-class">Explorer</div>
+            <div class="partner-traits" id="partnerTraits">
+              <div class="partner-trait">👤 Creative little genius</div>
+              <div class="partner-trait">🌟 Agile type</div>
+              <div class="partner-trait">📊 Lv.0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Buttons outside the card, on the page background -->
+      <div class="partner-btn-row">
+        <button class="partner-back-btn" id="partnerBackBtn" type="button">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14.999 17.9995L8.99902 11.9995L14.999 5.99951" stroke="#364153" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="back-btn-text">Back</span>
+        </button>
+        <button class="partner-start-btn" id="partnerStartBtn" type="button">
+          <span class="partner-start-text">Start</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: MAIN GAMEPLAY -->
+    <div id="page-main" class="page hidden page-main">
+      <!-- Full-page ocean background (clean — no UI baked in) -->
+      <img class="main-bg" src="./assets/CodeBuddyAssets/25_1896/45.png" alt="Underwater world">
+
+      <!-- Left triangle toggle → status bar -->
+      <button class="tri-toggle tri-toggle-left" id="triToggleLeft" aria-label="Toggle status bar"></button>
+
+      <!-- Right triangle toggle → sidebar + settings -->
+      <button class="tri-toggle tri-toggle-right" id="triToggleRight" aria-label="Toggle sidebar"></button>
+
+      <!-- Settings icon (top-right, collapses with sidebar) -->
+      <button class="main-settings-btn" id="mainSettingsBtn" aria-label="Settings">
+        <img src="./assets/CodeBuddyAssets/0_228/1.svg" alt="Settings">
+      </button>
+
+      <!-- Status bar (top-left, collapsible via left triangle) -->
+      <div class="status-bar" id="statusBar">
+        <div class="status-bar-panel">
+          <div class="status-username" id="mainUsername">User name</div>
+          <div class="status-level-row">
+            <span class="status-lv" id="mainLevel">Lv.5</span>
+            <div class="status-exp-bar">
+              <div class="status-exp-fill" id="mainExpFill" style="width: 30%"></div>
+            </div>
+          </div>
+          <div class="status-exp-row">
+            <span class="status-exp-label">Today Exp</span>
+            <span class="status-exp-value">
+              <span class="status-exp-current" id="mainExpCurrent">30</span><span class="status-exp-max">/100</span>
+            </span>
+          </div>
+          <div class="status-hearts" id="statusHearts">
+            <!-- Hearts rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet sprite (single, from Page 4 selection) -->
+      <img class="main-pet-sprite" id="mainPetSprite" src="./assets/CodeBuddyAssets/0_228/52.png" alt="Your pet">
+
+      <!-- Step counter -->
+      <div class="step-counter">
+        <div class="step-counter-frame">
+          <div class="step-frame-outer"></div>
+          <div class="step-frame-inner">
+            <img class="step-icon" src="./assets/CodeBuddyAssets/25_1896/38.svg" alt="Steps">
+            <span class="step-count" id="mainStepCount">1922,0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar (collapsible via right triangle) -->
+      <div class="main-sidebar" id="mainSidebar">
+        <div class="sidebar-item" data-action="find">
+          <img class="sidebar-item-icon" src="./assets/CodeBuddyAssets/0_228/58.png" alt="Find">
+          <span class="sidebar-item-label">Find</span>
+        </div>
+        <div class="sidebar-item" data-action="shop">
+          <img class="sidebar-item-icon" src="./assets/CodeBuddyAssets/0_228/57.svg" alt="Shop">
+          <span class="sidebar-item-label">Shop</span>
+        </div>
+        <div class="sidebar-item" data-action="achieve">
+          <img class="sidebar-item-icon" src="./assets/CodeBuddyAssets/0_228/53.svg" alt="Achieve">
+          <span class="sidebar-item-label">Achieve</span>
+        </div>
+        <div class="sidebar-item" data-action="school">
+          <img class="sidebar-item-icon" src="./assets/CodeBuddyAssets/0_228/59.png" alt="School">
+          <span class="sidebar-item-label">School</span>
+        </div>
+      </div>
+
+      <!-- Cards Collection Panel (bottom) -->
+      <div class="cards-panel" id="cardsPanel">
+        <div class="cards-panel-header">
+          <span class="cards-panel-title">Cards collection</span>
+        </div>
+        <div class="cards-scroll" id="cardsScroll">
+          <!-- Animal card: White Heron -->
+          <div class="collect-card card-animal" data-card-id="1" data-exp="15">
+            <div class="card-number">#00001</div>
+            <div class="card-image-box">
+              <img src="./assets/CodeBuddyAssets/0_342/5.png" alt="White Heron">
+            </div>
+            <div class="card-species-name">White Heron</div>
+            <div class="card-species-icons">
+              <img src="./assets/CodeBuddyAssets/0_342/2.svg" alt="type">
+              <img src="./assets/CodeBuddyAssets/0_342/3.svg" alt="type">
+            </div>
+            <button class="card-translated-btn" data-card-id="1"><span>Translated</span></button>
+          </div>
+
+          <!-- Plant card: Rhododendron -->
+          <div class="collect-card card-plant" data-card-id="2" data-exp="10">
+            <div class="card-number">#00002</div>
+            <div class="card-image-box">
+              <img src="./assets/CodeBuddyAssets/0_342/4.png" alt="Rhododendron">
+            </div>
+            <div class="card-species-name">Rhododendron</div>
+            <div class="card-species-icons">
+              <img src="./assets/CodeBuddyAssets/0_342/1.svg" alt="type">
+            </div>
+            <button class="card-translated-btn" data-card-id="2"><span>Translated</span></button>
+          </div>
+
+          <!-- Unknown card -->
+          <div class="collect-card card-unknown" data-card-id="3" data-exp="0">
+            <div class="card-number">#0000？</div>
+            <div class="card-image-box">
+              <img src="./assets/CodeBuddyAssets/0_342/6.png" alt="Unknown">
+              <div class="card-unknown-overlay"></div>
+            </div>
+            <div class="card-species-name" style="top:164px;">Unknown</div>
+            <button class="card-translated-btn" data-card-id="3" disabled style="opacity:0.3; pointer-events:none;"><span>Translated</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: FIND — Map Discovery -->
+    <div id="page-find" class="page hidden page-find">
+      <!-- Sticky header -->
+      <div class="find-header">
+        <div class="find-header-top">
+          <button class="find-back-btn" id="findBackBtn" aria-label="Back">
+            <img src="./assets/CodeBuddyAssets/0_581/1.svg" alt="Back">
+          </button>
+          <div class="find-title-block">
+            <div class="find-title">Find</div>
+            <div class="find-subtitle">Discovering Hong Kong's biodiversity</div>
+          </div>
+          <div class="find-progress-badge">
+            <img src="./assets/CodeBuddyAssets/0_581/2.svg" alt="Progress">
+            <span id="findProgress">0/5</span>
+          </div>
+        </div>
+        <!-- Difficulty tabs -->
+        <div class="find-tabs" id="findTabs">
+          <button class="find-tab active" data-filter="all">ALL</button>
+          <button class="find-tab" data-filter="easy">EASY</button>
+          <button class="find-tab" data-filter="medium">MEDIUM</button>
+          <button class="find-tab" data-filter="hard">HARD</button>
+        </div>
+      </div>
+
+      <!-- Location cards -->
+      <div class="find-cards" id="findCards">
+        <!-- Card 1: Yuen Chau Kok Park — EASY -->
+        <div class="find-card" data-difficulty="easy">
+          <div class="find-card-image">
+            <img src="./assets/CodeBuddyAssets/0_581/12.png" alt="Yuen Chau Kok Park">
+            <div class="find-difficulty-badge badge-easy">EASY</div>
+            <img class="find-card-chevron" src="./assets/CodeBuddyAssets/0_581/9.svg" alt="">
+          </div>
+          <div class="find-card-info">
+            <div class="find-card-name">Yuen Chau Kok Park</div>
+            <div class="find-card-desc">Yuen Chau Kok Park in Sha Tin is built around a hill that offers a modest hike for those pressed for time or feeling a little intimidated by the mountains.</div>
+            <div class="find-card-footer">
+              <img src="./assets/CodeBuddyAssets/0_581/2.svg" alt="Distance">
+              <div class="find-card-species"><span class="text-gray">Contains over </span><span class="text-gold">10</span><span class="text-gray"> kinds of animals and plants</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Pak Shek Kok Promenade — EASY -->
+        <div class="find-card" data-difficulty="easy">
+          <div class="find-card-image">
+            <img src="./assets/CodeBuddyAssets/0_581/14.png" alt="Pak Shek Kok Promenade">
+            <div class="find-difficulty-badge badge-easy">EASY</div>
+            <img class="find-card-chevron" src="./assets/CodeBuddyAssets/0_581/9.svg" alt="">
+          </div>
+          <div class="find-card-info">
+            <div class="find-card-name">Pak Shek Kok Promenade</div>
+            <div class="find-card-desc">The Pak Shek Kok waterfront promenade stretches approximately 2 kilometers, featuring a 9.5-meter-wide pedestrian walkway along the coast.</div>
+            <div class="find-card-footer">
+              <img src="./assets/CodeBuddyAssets/0_581/3.svg" alt="Distance">
+              <div class="find-card-species"><span class="text-gray">Contains over </span><span class="text-gold">10</span><span class="text-gray"> kinds of animals and plants</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Hung Mui Kuk Hiking Trail — MEDIUM -->
+        <div class="find-card" data-difficulty="medium">
+          <div class="find-card-image">
+            <img src="./assets/CodeBuddyAssets/0_581/13.png" alt="Hung Mui Kuk Hiking Trail">
+            <div class="find-difficulty-badge badge-medium">MEDIUM</div>
+            <img class="find-card-chevron" src="./assets/CodeBuddyAssets/0_581/9.svg" alt="">
+          </div>
+          <div class="find-card-info">
+            <div class="find-card-name">Hung Mui Kuk Hiking Trail</div>
+            <div class="find-card-desc">This area used to be famous for its abundant bayberry trees during spring and summer, hence its name.</div>
+            <div class="find-card-footer">
+              <img src="./assets/CodeBuddyAssets/0_581/4.svg" alt="Distance">
+              <div class="find-card-species"><span class="text-gray">Contains over </span><span class="text-gold">10</span><span class="text-gray"> kinds of animals and plants</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Tao Fong Shan — LOCKED -->
+        <div class="find-card" data-difficulty="hard" data-locked="true">
+          <div class="find-card-image">
+            <img src="./assets/CodeBuddyAssets/0_581/15.png" alt="Tao Fong Shan" style="opacity: 0.35;">
+            <div class="find-card-locked-overlay">
+              <img class="lock-icon" src="./assets/CodeBuddyAssets/0_581/10.svg" alt="Locked">
+              <div class="lock-text">Need 5.5km to open</div>
+            </div>
+          </div>
+          <div class="find-card-info">
+            <div class="find-card-name">Tao Fong Shan</div>
+            <div class="find-card-desc">Built in 1930, the complex is now a Grade II historic building in Hong Kong, and a 12-meter-high cross stands on its east side, is a landmark of the area.</div>
+            <div class="find-card-footer">
+              <img src="./assets/CodeBuddyAssets/0_581/5.svg" alt="Distance">
+              <div class="find-card-species"><span class="text-gray">Contains over </span><span class="text-gold">10</span><span class="text-gray"> kinds of animals and plants</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Recommendation Popup -->
+      <div class="weather-popup-backdrop" id="weatherPopupBackdrop">
+        <div class="weather-popup" id="weatherPopup">
+          <!-- Close button — pixel X -->
+          <button class="weather-popup-close" id="weatherPopupClose" aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M10 2L2 10" stroke="#5C3A1E" stroke-width="2.5" stroke-linecap="square"/>
+              <path d="M2 2L10 10" stroke="#5C3A1E" stroke-width="2.5" stroke-linecap="square"/>
+            </svg>
+          </button>
+
+          <!-- Loading state — pixel blocks -->
+          <div class="weather-popup-loading" id="weatherLoading">
+            <div class="pixel-loader">
+              <div class="pixel-loader-block"></div>
+              <div class="pixel-loader-block"></div>
+              <div class="pixel-loader-block"></div>
+            </div>
+            <span>Checking HK weather...</span>
+          </div>
+
+          <!-- Content (hidden until loaded) -->
+          <div id="weatherContent" style="display:none;">
+            <!-- Hero route image -->
+            <div class="weather-hero">
+              <img class="weather-hero-img" id="weatherRecImg" src="./assets/CodeBuddyAssets/0_581/12.png" alt="">
+              <span class="weather-hero-badge badge-easy" id="weatherRecDifficulty">EASY</span>
+              <div class="weather-hero-live">
+                <div class="weather-hero-live-dot"></div>
+                <span>LIVE</span>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div class="weather-popup-body">
+              <!-- Route name + reason -->
+              <div class="weather-rec-name" id="weatherRecName">Yuen Chau Kok Park</div>
+              <div class="weather-rec-reason" id="weatherRecReason">Perfect weather for a gentle hill walk!</div>
+
+              <!-- Weather strip -->
+              <div class="weather-strip">
+                <div class="weather-strip-item">
+                  <span class="weather-strip-icon" id="weatherIcon">🌤</span>
+                  <span class="weather-strip-val" id="weatherTemp">--°C</span>
+                </div>
+                <div class="weather-strip-item">
+                  <span class="weather-strip-icon">💧</span>
+                  <span class="weather-strip-val" id="weatherHumidity">--%</span>
+                </div>
+                <div class="weather-strip-item">
+                  <span class="weather-strip-icon" id="weatherUVIcon">☀️</span>
+                  <span class="weather-strip-val" id="weatherUV">--</span>
+                </div>
+              </div>
+
+              <!-- Go explore button -->
+              <button class="weather-go-btn" id="weatherRecCard">
+                <span>Go Explore!</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"/>
+                </svg>
+              </button>
+
+
+              <div class="weather-popup-tip">⚡ Live from <em>Hong Kong Observatory</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route Detail Page (outside page-find, direct child of .app) -->
+    <div class="route-detail-backdrop" id="routeDetailBackdrop">
+      <div class="route-detail-page" id="routeDetailPage">
+          <!-- Map area (top) -->
+          <div class="route-detail-map">
+            <img class="route-detail-map-img" id="routeDetailMapImg" src="./assets/CodeBuddyAssets/35_1301/19.png" alt="Route Map">
+
+            <!-- Route path markers (percentages for responsive positioning) -->
+            <div class="route-map-marker clickable" style="left:13.7%; top:72.2%;" data-marker-id="1" id="routeMarker1"><img src="./assets/CodeBuddyAssets/35_1301/1.svg"></div>
+            <div class="route-map-marker clickable" style="left:14.9%; top:46.8%;" data-marker-id="2" id="routeMarker2"><img src="./assets/CodeBuddyAssets/35_1301/2.svg"></div>
+            <div class="route-map-marker clickable" style="left:45.0%; top:40.3%;" data-marker-id="3" id="routeMarker3"><img src="./assets/CodeBuddyAssets/35_1301/3.svg"></div>
+            <div class="route-map-marker clickable" style="left:63.4%; top:11.5%;" data-marker-id="4" id="routeMarker4"><img src="./assets/CodeBuddyAssets/35_1301/4.svg"></div>
+            <div class="route-map-marker clickable" style="left:69.7%; top:26.2%;" data-marker-id="5" id="routeMarker5"><img src="./assets/CodeBuddyAssets/35_1301/5.svg"></div>
+            <div class="route-map-marker clickable" style="left:66.4%; top:45.2%;" data-marker-id="6" id="routeMarker6"><img src="./assets/CodeBuddyAssets/35_1304/1.svg"></div>
+            <div class="route-map-marker clickable" style="left:49.3%; top:53.2%;" data-marker-id="7" id="routeMarker7"><img src="./assets/CodeBuddyAssets/35_1301/7.svg"></div>
+            <div class="route-map-marker clickable" style="left:65.4%; top:34.0%;" data-marker-id="8" id="routeMarker8"><img src="./assets/CodeBuddyAssets/35_1301/8.svg"></div>
+
+            <!-- Location pin -->
+            <div class="route-map-pin" style="left:69.7%; top:23.7%;"><img src="./assets/CodeBuddyAssets/35_1301/18.svg"></div>
+
+            <!-- Back button -->
+            <button class="route-detail-back" id="routeDetailBack" aria-label="Back">
+              <img src="./assets/CodeBuddyAssets/35_1301/17.svg" alt="Back">
+            </button>
+
+            <!-- Today's Walk badge -->
+            <div class="route-detail-walk-badge">
+              <div class="route-detail-walk-label">Today's Walk</div>
+              <div class="route-detail-walk-value" id="routeDetailWalk">1.2km</div>
+            </div>
+
+            <!-- Route name label -->
+            <div class="route-detail-name-label">
+              <span id="routeDetailNameLabel">Yuen Chau Kok Park</span>
+            </div>
+          </div>
+
+          <!-- Bottom section -->
+          <div class="route-detail-bottom">
+            <!-- Tab bar -->
+            <div class="route-detail-tabs" id="routeDetailTabs">
+              <button class="route-detail-tab active" data-tab="items">Items to be unlocked</button>
+              <button class="route-detail-tab" data-tab="discussion">Discussion Area</button>
+            </div>
+
+            <!-- Tab content -->
+            <div class="route-detail-tab-content">
+              <!-- Items panel -->
+              <div class="route-detail-tab-panel active" id="routeTabItems">
+                <div class="route-checkpoint-grid" id="routeCheckpointGrid">
+                  <!-- Card A: Unlocked -->
+                  <div class="route-checkpoint-card" data-checkpoint="A">
+                    <div class="route-checkpoint-icon"><img src="./assets/CodeBuddyAssets/35_1301/9.svg" alt="Item A"></div>
+                    <div class="route-checkpoint-name">Mysterious items A</div>
+                    <div class="route-checkpoint-hint">This area was discovered</div>
+                    <div class="route-checkpoint-dist">
+                      <img src="./assets/CodeBuddyAssets/35_1301/10.svg" alt="">
+                      <span>120m</span>
+                    </div>
+                  </div>
+
+                  <!-- Card B: Unlocked -->
+                  <div class="route-checkpoint-card" data-checkpoint="B">
+                    <div class="route-checkpoint-icon"><img src="./assets/CodeBuddyAssets/35_1301/11.svg" alt="Item B"></div>
+                    <div class="route-checkpoint-name">Mysterious items B</div>
+                    <div class="route-checkpoint-hint">This area was discovered</div>
+                    <div class="route-checkpoint-dist">
+                      <img src="./assets/CodeBuddyAssets/35_1301/12.svg" alt="">
+                      <span>350m</span>
+                    </div>
+                  </div>
+
+                  <!-- Card C: Locked -->
+                  <div class="route-checkpoint-card locked" data-checkpoint="C" data-locked="true">
+                    <div class="route-checkpoint-lock"><img src="./assets/CodeBuddyAssets/35_1301/14.svg" alt="Locked"></div>
+                    <div class="route-checkpoint-icon"><img src="./assets/CodeBuddyAssets/35_1301/13.svg" alt="Item C"></div>
+                    <div class="route-checkpoint-name">Mysterious items C</div>
+                    <div class="route-checkpoint-hint">Discover in this area</div>
+                    <div class="route-checkpoint-dist">
+                      <img src="./assets/CodeBuddyAssets/35_1301/10.svg" alt="">
+                      <span>580m</span>
+                    </div>
+                  </div>
+
+                  <!-- Card D: Locked -->
+                  <div class="route-checkpoint-card locked" data-checkpoint="D" data-locked="true">
+                    <div class="route-checkpoint-lock"><img src="./assets/CodeBuddyAssets/35_1301/16.svg" alt="Locked"></div>
+                    <div class="route-checkpoint-icon"><img src="./assets/CodeBuddyAssets/35_1301/15.svg" alt="Item D"></div>
+                    <div class="route-checkpoint-name">Mysterious items D</div>
+                    <div class="route-checkpoint-hint">Discover in this area</div>
+                    <div class="route-checkpoint-dist">
+                      <img src="./assets/CodeBuddyAssets/35_1301/10.svg" alt="">
+                      <span>720m</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Discussion panel -->
+              <div class="route-detail-tab-panel" id="routeTabDiscussion">
+                <div class="route-discussion-empty">
+                  <div class="route-discussion-empty-icon">💬</div>
+                  <div class="route-discussion-empty-text">No discussions yet</div>
+                  <div class="route-discussion-empty-sub">Walk the route and share your discoveries!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkpoint Detail Page (full-screen zoomed view of a specific checkpoint) -->
+    <div class="checkpoint-detail-backdrop" id="checkpointDetailBackdrop">
+      <div class="checkpoint-detail-page" id="checkpointDetailPage">
+          <!-- Zoomed map area (top) -->
+          <div class="checkpoint-detail-map">
+            <img class="checkpoint-detail-map-img" id="checkpointDetailMapImg" src="./assets/CodeBuddyAssets/35_2107/11.png" alt="Checkpoint Map">
+
+            <!-- Back button -->
+            <button class="checkpoint-detail-back" id="checkpointDetailBack" aria-label="Back">
+              <img src="./assets/CodeBuddyAssets/35_2107/9.svg" alt="Back">
+            </button>
+
+            <!-- Today's Walk badge -->
+            <div class="checkpoint-detail-walk-badge">
+              <div class="checkpoint-detail-walk-label">Today's Walk</div>
+              <div class="checkpoint-detail-walk-value" id="checkpointDetailWalk">1.2km</div>
+            </div>
+
+            <!-- "I got here!" action button -->
+            <button class="checkpoint-detail-arrived-btn" id="checkpointDetailArrivedBtn">
+              <span>&nbsp;&nbsp;I got here!</span>
+              <img src="./assets/CodeBuddyAssets/35_2107/10.svg" alt="">
+            </button>
+          </div>
+
+          <!-- Bottom section -->
+          <div class="checkpoint-detail-bottom">
+            <!-- Tab bar -->
+            <div class="checkpoint-detail-tabs" id="checkpointDetailTabs">
+              <button class="checkpoint-detail-tab active" data-tab="items">Items to be unlocked</button>
+              <button class="checkpoint-detail-tab" data-tab="discussion">Discussion Area</button>
+            </div>
+
+            <!-- Tab content -->
+            <div class="checkpoint-detail-tab-content">
+              <!-- Items panel -->
+              <div class="checkpoint-detail-tab-panel active" id="cpDetailTabItems">
+                <div class="route-checkpoint-grid" id="cpDetailCheckpointGrid">
+                  <!-- Cards will be dynamically populated -->
+                </div>
+              </div>
+
+              <!-- Discussion panel -->
+              <div class="checkpoint-detail-tab-panel" id="cpDetailTabDiscussion">
+                <div class="route-discussion-empty">
+                  <div class="route-discussion-empty-icon">💬</div>
+                  <div class="route-discussion-empty-text">No discussions yet</div>
+                  <div class="route-discussion-empty-sub">Walk the route and share your discoveries!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Checkpoint Detail Popup (outside route detail, direct child of .app) -->
+    <div class="checkpoint-popup-backdrop" id="checkpointPopupBackdrop">
+      <div class="checkpoint-popup" id="checkpointPopup">
+        <button class="checkpoint-popup-close" id="checkpointPopupClose" aria-label="Close">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M10 2L2 10" stroke="#5C3A1E" stroke-width="2.5" stroke-linecap="square"/>
+            <path d="M2 2L10 10" stroke="#5C3A1E" stroke-width="2.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+        <div class="checkpoint-popup-body">
+          <div class="checkpoint-popup-icon" id="checkpointPopupIcon"><img src="./assets/CodeBuddyAssets/35_1301/9.svg" alt=""></div>
+          <div class="checkpoint-popup-name" id="checkpointPopupName">Mysterious items A</div>
+          <div class="checkpoint-popup-hint" id="checkpointPopupHint">This area was discovered</div>
+          <div class="checkpoint-popup-dist-row">
+            <img id="checkpointPopupDistIcon" src="./assets/CodeBuddyAssets/35_1301/10.svg" alt="">
+            <span id="checkpointPopupDist">120m</span>
+          </div>
+          <div class="checkpoint-popup-status unlocked" id="checkpointPopupStatus">✓ Discovered</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camera Overlay (pixel-style camera simulator for check-in) -->
+    <div class="camera-overlay" id="cameraOverlay">
+      <div class="camera-page" id="cameraPage">
+        <!-- Viewfinder -->
+        <div class="camera-viewfinder" id="cameraViewfinder">
+          <!-- Flash effect -->
+          <div class="camera-flash" id="cameraFlash"></div>
+
+          <!-- Simulated scene -->
+          <div class="camera-sim-scene" id="cameraSimScene">
+            <div class="camera-sim-emoji">🌿</div>
+          </div>
+          <div class="camera-sim-hint" id="cameraSimHint">Point at the checkpoint & snap!</div>
+
+          <!-- Preview image (after capture) -->
+          <img class="camera-preview-img" id="cameraPreviewImg" src="" alt="Captured photo">
+
+          <!-- Grid overlay -->
+          <div class="camera-viewfinder-grid"></div>
+
+          <!-- Corner brackets -->
+          <div class="camera-bracket camera-bracket-tl"></div>
+          <div class="camera-bracket camera-bracket-tr"></div>
+          <div class="camera-bracket camera-bracket-bl"></div>
+          <div class="camera-bracket camera-bracket-br"></div>
+
+          <!-- Top bar -->
+          <div class="camera-top-bar">
+            <button class="camera-close-btn" id="cameraCloseBtn" aria-label="Close Camera">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18" stroke="white" stroke-width="2.5" stroke-linecap="square"/>
+                <path d="M6 6L18 18" stroke="white" stroke-width="2.5" stroke-linecap="square"/>
+              </svg>
+            </button>
+            <div class="camera-flash-label">📸 Check-in Photo</div>
+          </div>
+        </div>
+
+        <!-- Capture bottom bar -->
+        <div class="camera-bottom-bar" id="cameraBottomBar">
+          <button class="camera-gallery-btn" aria-label="Gallery">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="white"/>
+              <path d="M21 15L16 10L5 21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="camera-capture-btn" id="cameraCaptureBtn" aria-label="Take Photo"></button>
+          <button class="camera-switch-btn" aria-label="Switch Camera">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M20 7L16 3L12 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 3V15C16 16.1046 15.1046 17 14 17H4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 17L8 21L12 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Preview bottom bar (shown after capture) -->
+        <div class="camera-preview-bar" id="cameraPreviewBar">
+          <button class="camera-retake-btn" id="cameraRetakeBtn">↺ Retake</button>
+          <button class="camera-confirm-btn" id="cameraConfirmBtn">✓ Use Photo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HATCHING OVERLAY -->
+    <div id="hatchOverlay" class="hatch-overlay">
+      <div class="hatch-prompt" id="hatchPrompt">Press the egg to open</div>
+      <div class="hatch-scene" id="hatchScene">
+        <div class="egg-whole" id="eggWhole"></div>
+        <div class="egg-top" id="eggTop"></div>
+        <div class="egg-bottom" id="eggBottom"></div>
+        <img class="egg-pet-reveal" id="eggPetReveal" src="" alt="Your new pet">
+      </div>
+      <div class="hatch-text">Hatching your partner<span class="hatch-dots" id="hatchDots"></span></div>
+      <div class="hatch-subtext" id="hatchSubtext">Warming up the egg...</div>
+      <div class="hatch-click-count" id="hatchClickCount"></div>
+      <div class="hatch-bar-container">
+        <div class="hatch-bar-fill" id="hatchBarFill"></div>
+      </div>
+    </div>
+
+    <!-- PIXEL TRANSITION -->
+    <div class="transition-overlay" id="transitionOverlay"></div>
+  </div>
+
+  <script>
+    // ===== DOM =====
+    const app = document.getElementById('app');
+    const pageLanding = document.getElementById('page-landing');
+    const pageRegister = document.getElementById('page-register');
+    const pageBodydata = document.getElementById('page-bodydata');
+    const pagePartner = document.getElementById('page-partner');
+    const pageMain = document.getElementById('page-main');
+    const pageFind = document.getElementById('page-find');
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const createBtn = document.getElementById('createBtn');
+    const partnerBackBtn = document.getElementById('partnerBackBtn');
+    const partnerStartBtn = document.getElementById('partnerStartBtn');
+    const regenBtn = document.getElementById('regenBtn');
+    const transitionOverlay = document.getElementById('transitionOverlay');
+    const hatchOverlay = document.getElementById('hatchOverlay');
+    const partnerPetImg = document.getElementById('partnerPetImg');
+    const partnerNameEl = document.getElementById('partnerName');
+    const partnerTraitsEl = document.getElementById('partnerTraits');
+    const registerInputs = document.querySelectorAll('.register-input');
+    const bodydataInputs = document.querySelectorAll('.bodydata-input');
+
+    // Page 5 DOM
+    const mainSidebar = document.getElementById('mainSidebar');
+    const mainSettingsBtn = document.getElementById('mainSettingsBtn');
+    const triToggleLeft = document.getElementById('triToggleLeft');
+    const triToggleRight = document.getElementById('triToggleRight');
+    const statusBar = document.getElementById('statusBar');
+    const mainPetSprite = document.getElementById('mainPetSprite');
+    const mainStepCount = document.getElementById('mainStepCount');
+    const mainUsername = document.getElementById('mainUsername');
+    const mainLevel = document.getElementById('mainLevel');
+    const mainExpFill = document.getElementById('mainExpFill');
+    const mainExpCurrent = document.getElementById('mainExpCurrent');
+    const statusHearts = document.getElementById('statusHearts');
+    const cardsScroll = document.getElementById('cardsScroll');
+
+    // Hatch elements
+    const eggWhole = document.getElementById('eggWhole');
+    const eggTop = document.getElementById('eggTop');
+    const eggBottom = document.getElementById('eggBottom');
+    const eggPetReveal = document.getElementById('eggPetReveal');
+    const hatchDots = document.getElementById('hatchDots');
+    const hatchSubtext = document.getElementById('hatchSubtext');
+    const hatchBarFill = document.getElementById('hatchBarFill');
+    const hatchScene = document.getElementById('hatchScene');
+    const hatchPrompt = document.getElementById('hatchPrompt');
+    const hatchClickCount = document.getElementById('hatchClickCount');
+
+    // ===== PET DATA =====
+    const PETS = [
+      {
+        id: 'bunny', img: './assets/CodeBuddyAssets/1_4732/1.png',
+        name: 'Pixel Bunny',
+        traits: ['👤 Creative little genius', '🌟 Agile type', '📊 Lv.0'],
+        color: '#F9A8D4'
+      },
+      {
+        id: 'octo-purple', img: './assets/CodeBuddyAssets/1_4733/1.png',
+        name: 'Inky',
+        traits: ['👤 Curious explorer', '🌟 Wise type', '📊 Lv.0'],
+        color: '#C084FC'
+      },
+      {
+        id: 'cat-dark', img: './assets/CodeBuddyAssets/1_4734/1.png',
+        name: 'Shadow Cat',
+        traits: ['👤 Mysterious thinker', '🌟 Stealth type', '📊 Lv.0'],
+        color: '#8B5CF6'
+      },
+      {
+        id: 'hamster', img: './assets/CodeBuddyAssets/1_4735/1.png',
+        name: 'Sunny',
+        traits: ['👤 Cheerful buddy', '🌟 Energy type', '📊 Lv.0'],
+        color: '#FCD34D'
+      },
+      {
+        id: 'frog', img: './assets/CodeBuddyAssets/1_4736/1.png',
+        name: 'Leapy',
+        traits: ['👤 Nature guardian', '🌟 Swift type', '📊 Lv.0'],
+        color: '#6EE7B7'
+      },
+      {
+        id: 'octo-blue', img: './assets/CodeBuddyAssets/1_4737/1.png',
+        name: 'Bubbles',
+        traits: ['👤 Creative little genius', '🌟 Agile type', '📊 Lv.0'],
+        color: '#67E8F9'
+      },
+      {
+        id: 'cat-orange', img: './assets/CodeBuddyAssets/1_4738/1.png',
+        name: 'Blaze',
+        traits: ['👤 Brave adventurer', '🌟 Power type', '📊 Lv.0'],
+        color: '#FB923C'
+      }
+    ];
+
+    let currentPetIndex = -1;
+    const userData = { school: '', class: '', name: '', age: '', height: '', weight: '' };
+
+    // ===== RANDOM PET (no consecutive repeats) =====
+    function getRandomPet() {
+      let idx;
+      do { idx = Math.floor(Math.random() * PETS.length); } while (idx === currentPetIndex);
+      currentPetIndex = idx;
+      return PETS[idx];
+    }
+
+    // ===== TRANSITION PIXELS =====
+    (function() {
+      const cols = 8, rows = 16;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const px = document.createElement('div');
+          px.classList.add('transition-pixel');
+          const dist = Math.sqrt(Math.pow(r-rows/2,2)+Math.pow(c-cols/2,2));
+          const max = Math.sqrt(Math.pow(rows/2,2)+Math.pow(cols/2,2));
+          px.style.transitionDelay = ((dist/max)*0.4).toFixed(3)+'s';
+          transitionOverlay.appendChild(px);
+        }
+      }
+    })();
+
+    let isTransitioning = false;
+    function navigateTo(from, to, dir='forward') {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      transitionOverlay.classList.remove('reverse');
+      transitionOverlay.classList.add('active');
+      setTimeout(() => {
+        from.classList.remove('visible');
+        from.classList.add(dir==='forward' ? 'hidden-left' : 'hidden');
+        to.classList.remove('hidden','hidden-left');
+        to.classList.add('visible');
+        setTimeout(() => {
+          transitionOverlay.classList.remove('active');
+          transitionOverlay.classList.add('reverse');
+          setTimeout(() => { transitionOverlay.classList.remove('reverse'); isTransitioning = false; }, 600);
+        }, 100);
+      }, 550);
+    }
+
+    // ===== P1 → P2 =====
+    function goToRegister() {
+      navigateTo(pageLanding, pageRegister, 'forward');
+      setTimeout(() => document.getElementById('school').focus(), 800);
+    }
+    startBtn.addEventListener('click', goToRegister);
+    startBtn.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); goToRegister(); }});
+
+    // ===== FORM VALIDATION =====
+    function validateRegister() {
+      const ok = ['school','classInput','name'].every(id => document.getElementById(id).value.trim());
+      nextBtn.classList.toggle('active', ok);
+    }
+    function validateBodydata() {
+      const ok = ['age','height','weight'].every(id => document.getElementById(id).value.trim());
+      createBtn.classList.toggle('active', ok);
+    }
+    registerInputs.forEach(i => { i.addEventListener('input', validateRegister); });
+    bodydataInputs.forEach(i => {
+      i.addEventListener('input', validateBodydata);
+      i.addEventListener('wheel', e => e.preventDefault(), {passive:false});
+    });
+
+    // ===== P2 → P3 =====
+    nextBtn.addEventListener('click', () => {
+      if (!nextBtn.classList.contains('active')) return;
+      userData.school = document.getElementById('school').value.trim();
+      userData.class = document.getElementById('classInput').value.trim();
+      userData.name = document.getElementById('name').value.trim();
+      navigateTo(pageRegister, pageBodydata, 'forward');
+      setTimeout(() => document.getElementById('age').focus(), 800);
+    });
+
+    // ===== P3 → P2 (Back) =====
+    backBtn.addEventListener('click', () => navigateTo(pageBodydata, pageRegister, 'backward'));
+
+    // ===== P3 → Hatch → P4 =====
+    createBtn.addEventListener('click', () => {
+      if (!createBtn.classList.contains('active')) return;
+      userData.age = document.getElementById('age').value.trim();
+      userData.height = document.getElementById('height').value.trim();
+      userData.weight = document.getElementById('weight').value.trim();
+      startHatchAnimation();
+    });
+
+    // ===== EGG HATCHING ANIMATION (Interactive click-to-crack) =====
+    let hatchPet = null;
+    let hatchClicks = 0;
+    let hatchDotsInterval = null;
+    let hatchClickable = false;
+
+    function startHatchAnimation() {
+      hatchPet = getRandomPet();
+      hatchClicks = 0;
+      hatchClickable = false;
+
+      // Reset hatch state
+      eggWhole.style.opacity = '1';
+      eggWhole.className = 'egg-whole';
+      eggTop.style.opacity = '0';
+      eggTop.className = 'egg-top';
+      eggBottom.style.opacity = '0';
+      eggPetReveal.className = 'egg-pet-reveal';
+      eggPetReveal.src = hatchPet.img;
+      hatchBarFill.style.width = '0%';
+      hatchDots.textContent = '';
+      hatchSubtext.textContent = 'Warming up the egg...';
+      hatchPrompt.classList.remove('visible');
+      hatchPrompt.textContent = 'Press the egg to open';
+      hatchClickCount.classList.remove('visible');
+      hatchClickCount.textContent = '';
+
+      // Remove old particles
+      hatchScene.querySelectorAll('.hatch-particle').forEach(p => p.remove());
+
+      hatchOverlay.classList.add('active');
+
+      // Dots animation
+      let dotCount = 0;
+      hatchDotsInterval = setInterval(() => {
+        dotCount = (dotCount + 1) % 4;
+        hatchDots.textContent = '.'.repeat(dotCount);
+      }, 350);
+
+      // --- Phase 1: Auto warm-up (1.5s) ---
+      hatchSubtext.textContent = 'Warming up the egg...';
+      animateBarTo(hatchBarFill, 0, 25, 1500);
+
+      setTimeout(() => {
+        // Egg wobbles slightly
+        eggWhole.classList.add('shaking');
+        hatchSubtext.textContent = 'Something is moving...';
+      }, 800);
+
+      setTimeout(() => {
+        eggWhole.classList.remove('shaking');
+        // --- Phase 2: Interactive — wait for 3 clicks ---
+        hatchClickable = true;
+        eggWhole.classList.add('clickable');
+        hatchSubtext.textContent = 'Tap the egg!';
+        hatchPrompt.classList.add('visible');
+        hatchClickCount.textContent = '0 / 3';
+        hatchClickCount.classList.add('visible');
+      }, 1500);
+    }
+
+    // --- Egg click handler ---
+    eggWhole.addEventListener('click', onEggClick);
+    eggWhole.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      onEggClick();
+    });
+
+    function onEggClick() {
+      if (!hatchClickable) return;
+      hatchClicks++;
+
+      // Hit shake animation (restart by removing/re-adding class)
+      eggWhole.classList.remove('hit-shake');
+      void eggWhole.offsetWidth; // force reflow
+      eggWhole.classList.add('hit-shake');
+
+      // Spawn small crack particles on each hit
+      spawnHatchParticles(hatchPet.color, 5);
+
+      if (hatchClicks === 1) {
+        // --- Click 1: Small crack ---
+        eggWhole.classList.add('crack-1');
+        hatchSubtext.textContent = 'Keep going!';
+        hatchClickCount.textContent = '1 / 3';
+        animateBarTo(hatchBarFill, 25, 50, 400);
+
+      } else if (hatchClicks === 2) {
+        // --- Click 2: Bigger crack ---
+        eggWhole.classList.remove('crack-1');
+        eggWhole.classList.add('crack-2');
+        hatchSubtext.textContent = 'Almost there!';
+        hatchClickCount.textContent = '2 / 3';
+        animateBarTo(hatchBarFill, 50, 75, 400);
+
+      } else if (hatchClicks === 3) {
+        // --- Click 3: CRACK OPEN! ---
+        hatchClickable = false;
+        eggWhole.classList.remove('clickable', 'crack-2');
+        eggWhole.classList.add('crack-3');
+        hatchClickCount.textContent = '3 / 3';
+        hatchPrompt.classList.remove('visible');
+        animateBarTo(hatchBarFill, 75, 100, 800);
+
+        // Delay for dramatic effect, then split
+        setTimeout(() => {
+          hatchSubtext.textContent = 'Here it comes!';
+          // CRACK OPEN — hide whole egg, show halves
+          eggWhole.style.opacity = '0';
+          eggTop.style.opacity = '1';
+          eggBottom.style.opacity = '1';
+          // Big burst of particles
+          spawnHatchParticles(hatchPet.color, 12);
+          hatchClickCount.classList.remove('visible');
+        }, 300);
+
+        setTimeout(() => {
+          eggTop.classList.add('fly-off');
+        }, 600);
+
+        setTimeout(() => {
+          // Show pet!
+          eggPetReveal.classList.add('show');
+          hatchSubtext.textContent = 'A new friend appears!';
+          spawnHatchParticles(hatchPet.color, 12);
+        }, 900);
+
+        setTimeout(() => {
+          // Transition to partner page
+          clearInterval(hatchDotsInterval);
+          partnerPetImg.src = hatchPet.img;
+          partnerNameEl.textContent = userData.name || 'Explorer';
+          updateTraits(hatchPet);
+
+          pageBodydata.classList.remove('visible');
+          pageBodydata.classList.add('hidden-left');
+          pagePartner.classList.remove('hidden', 'hidden-left');
+          pagePartner.classList.add('visible');
+
+          setTimeout(() => { hatchOverlay.classList.remove('active'); }, 500);
+        }, 2400);
+      }
+    }
+
+    function spawnHatchParticles(color, count) {
+      count = count || 12;
+      const colors = [color, '#FFD54F', '#FFFFFF', '#FFA726', color];
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.classList.add('hatch-particle');
+        p.style.background = colors[i % colors.length];
+        p.style.left = (80 + Math.random()*40) + 'px';
+        p.style.top = (80 + Math.random()*40) + 'px';
+        p.style.width = (4+Math.random()*8)+'px';
+        p.style.height = p.style.width;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 40 + Math.random()*80;
+        const x = Math.cos(angle)*dist;
+        const y = Math.sin(angle)*dist;
+        p.style.setProperty('--particle-end', `translate(${x}px, ${y}px)`);
+        p.style.animationDelay = (Math.random()*0.15)+'s';
+        hatchScene.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+      }
+    }
+
+    // Animate progress bar from fromPct% to toPct% over duration ms
+    function animateBarTo(el, fromPct, toPct, duration) {
+      const start = performance.now();
+      function update(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        const pct = fromPct + (toPct - fromPct) * eased;
+        el.style.width = pct + '%';
+        if (t < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    function animateBar(el, duration) {
+      const start = performance.now();
+      function update(now) {
+        const p = Math.min((now-start)/duration, 1);
+        el.style.width = ((1-Math.pow(1-p,3))*100)+'%';
+        if (p < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    function updateTraits(pet) {
+      partnerTraitsEl.innerHTML = pet.traits.map(t =>
+        `<div class="partner-trait">${t}</div>`
+      ).join('');
+    }
+
+    // ===== REGENERATE PET =====
+    let isRegenerating = false;
+    regenBtn.addEventListener('click', () => {
+      if (isRegenerating) return;
+      isRegenerating = true;
+
+      const pet = getRandomPet();
+
+      // Spin icon
+      regenBtn.classList.add('spinning');
+
+      // Animate pet out
+      partnerPetImg.classList.add('switching');
+
+      setTimeout(() => {
+        // Switch image
+        partnerPetImg.src = pet.img;
+        updateTraits(pet);
+
+        // Animate pet in
+        setTimeout(() => {
+          partnerPetImg.classList.remove('switching');
+          regenBtn.classList.remove('spinning');
+          isRegenerating = false;
+        }, 50);
+      }, 400);
+    });
+
+    // ===== P4 → P3 (Back) =====
+    partnerBackBtn.addEventListener('click', () => navigateTo(pagePartner, pageBodydata, 'backward'));
+
+    // ===== P4 → P5 (Start → Main) =====
+    partnerStartBtn.addEventListener('click', () => {
+      // Set up main page with user data
+      initMainPage();
+      navigateTo(pagePartner, pageMain, 'forward');
+    });
+
+    // ===== PAGE 5: MAIN PAGE LOGIC =====
+    let petState = {
+      level: 0,
+      exp: 0,
+      expMax: 100,
+      hearts: [2, 2, 2, 1, 0], // 2=full, 1=half, 0=empty
+      steps: 0
+    };
+
+    let stepInterval = null;
+
+    function initMainPage() {
+      // Set username
+      mainUsername.textContent = userData.name || 'Explorer';
+
+      // Set pet sprite to selected pet
+      const currentPet = PETS[currentPetIndex] || PETS[0];
+      mainPetSprite.src = currentPet.img;
+
+      // Reset toggle states — start fully expanded
+      statusBarVisible = true;
+      sidebarVisible = true;
+      statusBar.classList.remove('collapsed');
+      triToggleLeft.classList.remove('pointing-right');
+      mainSidebar.classList.remove('collapsed');
+      mainSettingsBtn.classList.remove('collapsed');
+      triToggleRight.classList.remove('pointing-left');
+
+      // Set initial level
+      petState.level = 0;
+      petState.exp = 0;
+      updateStatusDisplay();
+
+      // Render hearts
+      renderHearts();
+
+      // Start step counter simulation
+      petState.steps = 0;
+      mainStepCount.textContent = '0';
+      startStepSimulation();
+    }
+
+    function updateStatusDisplay() {
+      mainLevel.textContent = 'Lv.' + petState.level;
+      const pct = Math.min((petState.exp / petState.expMax) * 100, 100);
+      mainExpFill.style.width = pct + '%';
+      mainExpCurrent.textContent = petState.exp;
+    }
+
+    function renderHearts() {
+      statusHearts.innerHTML = '';
+      const heartStates = petState.hearts;
+      heartStates.forEach((state, i) => {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'heart-icon');
+        svg.setAttribute('viewBox', '0 0 16 14');
+        svg.setAttribute('fill', 'none');
+        if (state === 2) {
+          // Full heart
+          svg.innerHTML = '<path d="M8 13L1.5 7C-0.5 5-0.5 2 1.5 1C3.5 0 5.5 0.5 8 3C10.5 0.5 12.5 0 14.5 1C16.5 2 16.5 5 14.5 7L8 13Z" fill="#E91E8B"/>';
+        } else if (state === 1) {
+          // Half heart
+          svg.innerHTML = '<path d="M8 13L1.5 7C-0.5 5-0.5 2 1.5 1C3.5 0 5.5 0.5 8 3C10.5 0.5 12.5 0 14.5 1C16.5 2 16.5 5 14.5 7L8 13Z" fill="#E5E7EB"/><path d="M8 13L1.5 7C-0.5 5-0.5 2 1.5 1C3.5 0 5.5 0.5 8 3V13Z" fill="#E91E8B"/>';
+        } else {
+          // Empty heart
+          svg.innerHTML = '<path d="M8 13L1.5 7C-0.5 5-0.5 2 1.5 1C3.5 0 5.5 0.5 8 3C10.5 0.5 12.5 0 14.5 1C16.5 2 16.5 5 14.5 7L8 13Z" fill="#E5E7EB"/>';
+        }
+        statusHearts.appendChild(svg);
+      });
+    }
+
+    function startStepSimulation() {
+      if (stepInterval) clearInterval(stepInterval);
+      // Simulate walking — add random steps every 2 seconds
+      stepInterval = setInterval(() => {
+        const add = Math.floor(Math.random() * 15) + 5;
+        petState.steps += add;
+        mainStepCount.textContent = petState.steps.toLocaleString();
+      }, 2000);
+    }
+
+    // --- Left triangle: toggle status bar ---
+    let statusBarVisible = true;
+    triToggleLeft.addEventListener('click', () => {
+      statusBarVisible = !statusBarVisible;
+      if (statusBarVisible) {
+        statusBar.classList.remove('collapsed');
+        triToggleLeft.classList.remove('pointing-right');
+      } else {
+        statusBar.classList.add('collapsed');
+        triToggleLeft.classList.add('pointing-right');
+      }
+    });
+
+    // --- Right triangle: toggle sidebar + settings (pet stays visible) ---
+    let sidebarVisible = true;
+    triToggleRight.addEventListener('click', () => {
+      sidebarVisible = !sidebarVisible;
+      if (sidebarVisible) {
+        mainSidebar.classList.remove('collapsed');
+        mainSettingsBtn.classList.remove('collapsed');
+        triToggleRight.classList.remove('pointing-left');
+      } else {
+        mainSidebar.classList.add('collapsed');
+        mainSettingsBtn.classList.add('collapsed');
+        triToggleRight.classList.add('pointing-left');
+      }
+    });
+
+    // --- Sidebar item clicks ---
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const action = item.dataset.action;
+        if (action === 'find') {
+          // Navigate to Find page
+          navigateTo(pageMain, pageFind, 'forward');
+          // Scroll to top when entering
+          pageFind.scrollTop = 0;
+          // Reset filter to ALL
+          resetFindFilters();
+          // Show weather recommendation popup (once per visit to Find)
+          if (!weatherPopupShown) {
+            setTimeout(() => openWeatherPopup(), 700);
+          }
+        } else {
+          showPixelConfirm(`${action.charAt(0).toUpperCase() + action.slice(1)} coming soon! 🚀`);
+        }
+      });
+    });
+
+    // --- Translated Button → Ability Transfer Animation ---
+    document.querySelectorAll('.card-translated-btn:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = btn.closest('.collect-card');
+        const cardId = btn.dataset.cardId;
+        const expGain = parseInt(card.dataset.exp) || 10;
+
+        if (btn.classList.contains('used')) return;
+
+        // Mark as used
+        btn.classList.add('used');
+        btn.querySelector('span').textContent = 'Done ✓';
+
+        // Get positions for particle animation
+        const btnRect = btn.getBoundingClientRect();
+        const petRect = mainPetSprite.getBoundingClientRect();
+        const appRect = app.getBoundingClientRect();
+
+        const startX = btnRect.left + btnRect.width / 2;
+        const startY = btnRect.top + btnRect.height / 2;
+        const endX = petRect.left + petRect.width / 2;
+        const endY = petRect.top + petRect.height / 2;
+
+        // Get card color based on type
+        let particleColor = '#FFD700';
+        if (card.classList.contains('card-animal')) particleColor = '#D19A43';
+        if (card.classList.contains('card-plant')) particleColor = '#ED9B9B';
+
+        // Spawn transfer particles
+        const particleCount = 10;
+        for (let i = 0; i < particleCount; i++) {
+          const p = document.createElement('div');
+          p.classList.add('transfer-particle');
+
+          const delay = i * 80;
+          const duration = 700 + Math.random() * 300;
+
+          // Start position with slight randomness
+          const sx = startX + (Math.random() - 0.5) * 30;
+          const sy = startY + (Math.random() - 0.5) * 20;
+
+          p.style.left = sx + 'px';
+          p.style.top = sy + 'px';
+          p.style.background = i % 3 === 0 ? '#FFD700' : i % 3 === 1 ? particleColor : '#FFFFFF';
+          p.style.width = (6 + Math.random() * 6) + 'px';
+          p.style.height = p.style.width;
+          p.style.boxShadow = `0 0 6px ${particleColor}`;
+
+          // Calculate trajectory
+          const dx = endX - sx;
+          const dy = endY - sy;
+          const midX = dx * 0.5 + (Math.random() - 0.5) * 60;
+          const midY = dy * 0.3 - 40 - Math.random() * 40;
+
+          p.style.setProperty('--mid-x', midX + 'px');
+          p.style.setProperty('--mid-y', midY + 'px');
+          p.style.setProperty('--end-x', dx + 'px');
+          p.style.setProperty('--end-y', dy + 'px');
+          p.style.setProperty('--duration', duration + 'ms');
+          p.style.animationDelay = delay + 'ms';
+
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), delay + duration + 100);
+        }
+
+        // After particles arrive, update exp and trigger level up
+        setTimeout(() => {
+          // Exp glow effect
+          mainExpFill.classList.add('gaining');
+          setTimeout(() => mainExpFill.classList.remove('gaining'), 1600);
+
+          // Add exp
+          petState.exp += expGain;
+
+          // Check level up
+          if (petState.exp >= petState.expMax) {
+            petState.level++;
+            petState.exp = petState.exp - petState.expMax;
+            triggerLevelUp();
+          }
+
+          updateStatusDisplay();
+
+          // Pet flash effect
+          mainPetSprite.classList.add('level-up');
+          setTimeout(() => mainPetSprite.classList.remove('level-up'), 800);
+
+        }, 900);
+      });
+    });
+
+    function triggerLevelUp() {
+      const toast = document.createElement('div');
+      toast.className = 'level-up-toast';
+      toast.innerHTML = `
+        <div class="lu-title">⬆ Level Up!</div>
+        <div class="lu-sub">Now Lv.${petState.level} — Keep walking! 🌿</div>
+      `;
+      // Append to main page so it's positioned relative to it
+      document.getElementById('page-main').appendChild(toast);
+      setTimeout(() => toast.remove(), 2200);
+
+      // Spawn celebration particles around pet
+      spawnCelebrationParticles();
+    }
+
+    function spawnCelebrationParticles() {
+      const petArea = document.getElementById('page-main');
+      const colors = ['#FFD700', '#FF6B6B', '#4FC3F7', '#81C784', '#FFB74D', '#BA68C8'];
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.style.cssText = `
+          position: absolute;
+          width: ${4 + Math.random() * 8}px;
+          height: ${4 + Math.random() * 8}px;
+          background: ${colors[i % colors.length]};
+          left: ${50 + Math.random() * 50}%;
+          top: ${30 + Math.random() * 40}%;
+          z-index: 50;
+          pointer-events: none;
+          border-radius: 0;
+          image-rendering: pixelated;
+          animation: celebParticle ${0.8 + Math.random() * 0.5}s ease-out forwards;
+          animation-delay: ${Math.random() * 0.3}s;
+        `;
+        petArea.appendChild(p);
+        setTimeout(() => p.remove(), 1500);
+      }
+
+      // Add keyframes if not already added
+      if (!document.getElementById('celebStyle')) {
+        const style = document.createElement('style');
+        style.id = 'celebStyle';
+        style.textContent = `
+          @keyframes celebParticle {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(${(Math.random()-0.5)*100}px, ${-60 - Math.random()*80}px) scale(0) rotate(${Math.random()*360}deg); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+
+    // --- Settings button ---
+    document.getElementById('mainSettingsBtn').addEventListener('click', () => {
+      showPixelConfirm('Settings coming soon! ⚙️');
+    });
+
+    // ===== PAGE 6: FIND PAGE LOGIC =====
+    const findBackBtn = document.getElementById('findBackBtn');
+    const findTabs = document.getElementById('findTabs');
+    const findCards = document.getElementById('findCards');
+
+    // --- Back button: Find → Main ---
+    findBackBtn.addEventListener('click', () => {
+      navigateTo(pageFind, pageMain, 'backward');
+      weatherPopupShown = false; // Reset so popup shows again on next visit
+    });
+
+    // --- Difficulty filter tabs ---
+    findTabs.addEventListener('click', (e) => {
+      const tab = e.target.closest('.find-tab');
+      if (!tab) return;
+
+      // Update active tab
+      findTabs.querySelectorAll('.find-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filter = tab.dataset.filter;
+      const cards = findCards.querySelectorAll('.find-card');
+
+      cards.forEach(card => {
+        if (filter === 'all') {
+          card.classList.remove('filter-hidden');
+        } else {
+          const diff = card.dataset.difficulty;
+          if (diff === filter) {
+            card.classList.remove('filter-hidden');
+          } else {
+            card.classList.add('filter-hidden');
+          }
+        }
+      });
+    });
+
+    function resetFindFilters() {
+      findTabs.querySelectorAll('.find-tab').forEach(t => t.classList.remove('active'));
+      findTabs.querySelector('[data-filter="all"]').classList.add('active');
+      findCards.querySelectorAll('.find-card').forEach(card => card.classList.remove('filter-hidden'));
+    }
+
+    // --- Find card click (for unlocked cards) ---
+    findCards.querySelectorAll('.find-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const locked = card.dataset.locked === 'true';
+        if (locked) {
+          showPixelConfirm('🔒 Walk more to unlock this route!');
+        } else {
+          const name = card.querySelector('.find-card-name').textContent;
+          openRouteDetail(name);
+        }
+      });
+    });
+
+    // ===== ROUTE DETAIL PAGE =====
+    const routeDetailBackdrop = document.getElementById('routeDetailBackdrop');
+    const routeDetailBack = document.getElementById('routeDetailBack');
+    const routeDetailTabs = document.getElementById('routeDetailTabs');
+    const checkpointPopupBackdrop = document.getElementById('checkpointPopupBackdrop');
+    const checkpointPopupClose = document.getElementById('checkpointPopupClose');
+
+    // ===== CHECKPOINT DETAIL PAGE =====
+    const checkpointDetailBackdrop = document.getElementById('checkpointDetailBackdrop');
+    const checkpointDetailBack = document.getElementById('checkpointDetailBack');
+    const checkpointDetailTabs = document.getElementById('checkpointDetailTabs');
+    const checkpointDetailArrivedBtn = document.getElementById('checkpointDetailArrivedBtn');
+    let currentRouteDataForCpDetail = null; // Store current route data for checkpoint detail
+
+    // Route detail data — expandable for future routes
+    const ROUTE_DETAILS = {
+      'Yuen Chau Kok Park': {
+        mapImg: './assets/CodeBuddyAssets/35_1301/19.png',
+        markers: [
+          { svg: './assets/CodeBuddyAssets/35_1301/1.svg', left: 55, top: 378 },
+          { svg: './assets/CodeBuddyAssets/35_1301/2.svg', left: 60, top: 245 },
+          { svg: './assets/CodeBuddyAssets/35_1301/3.svg', left: 181, top: 211 },
+          { svg: './assets/CodeBuddyAssets/35_1301/4.svg', left: 255, top: 60 },
+          { svg: './assets/CodeBuddyAssets/35_1301/5.svg', left: 280, top: 137 },
+          { svg: './assets/CodeBuddyAssets/35_1301/6.svg', left: 267, top: 236 },
+          { svg: './assets/CodeBuddyAssets/35_1301/7.svg', left: 198, top: 278 },
+          { svg: './assets/CodeBuddyAssets/35_1301/8.svg', left: 263, top: 178 }
+        ],
+        pin: { svg: './assets/CodeBuddyAssets/35_1301/18.svg', left: 280, top: 124 },
+        checkpoints: [
+          {
+            id: 'A', icon: './assets/CodeBuddyAssets/35_2107/1.svg',
+            name: 'Mysterious items A', hint: 'This area was discovered',
+            distIcon: './assets/CodeBuddyAssets/35_2107/2.svg', dist: '120m', locked: false
+          },
+          {
+            id: 'B', icon: './assets/CodeBuddyAssets/35_2107/3.svg',
+            name: 'Mysterious items B', hint: 'This area was discovered',
+            distIcon: './assets/CodeBuddyAssets/35_2107/4.svg', dist: '350m', locked: false
+          },
+          {
+            id: 'C', icon: './assets/CodeBuddyAssets/35_2107/5.svg',
+            name: 'Mysterious items C', hint: 'Discover in this area',
+            distIcon: './assets/CodeBuddyAssets/35_2107/2.svg', dist: '580m', locked: true,
+            lockIcon: './assets/CodeBuddyAssets/35_2107/6.svg'
+          },
+          {
+            id: 'D', icon: './assets/CodeBuddyAssets/35_2107/7.svg',
+            name: 'Mysterious items D', hint: 'Discover in this area',
+            distIcon: './assets/CodeBuddyAssets/35_2107/2.svg', dist: '720m', locked: true,
+            lockIcon: './assets/CodeBuddyAssets/35_2107/8.svg'
+          }
+        ],
+        // Marker-to-checkpoint detail mapping: marker ID → checkpoint detail data
+        markerDetails: {
+          '1': {
+            mapImg: './assets/CodeBuddyAssets/35_1406/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_1406/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_1406/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_1406/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1406/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_1406/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1406/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_1406/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1406/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1406/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_1406/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1406/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1406/8.svg'
+              }
+            ]
+          },
+          '2': {
+            mapImg: './assets/CodeBuddyAssets/35_1547/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_1547/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_1547/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_1547/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1547/2.svg', dist: '100m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_1547/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1547/4.svg', dist: '280m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_1547/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1547/2.svg', dist: '490m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1547/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_1547/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1547/2.svg', dist: '650m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1547/8.svg'
+              }
+            ]
+          },
+          '3': {
+            mapImg: './assets/CodeBuddyAssets/35_1687/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_1687/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_1687/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_1687/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1687/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_1687/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1687/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_1687/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1687/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1687/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_1687/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1687/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1687/8.svg'
+              }
+            ]
+          },
+          '4': {
+            mapImg: './assets/CodeBuddyAssets/35_1827/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_1827/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_1827/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_1827/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1827/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_1827/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1827/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_1827/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1827/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1827/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_1827/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1827/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1827/8.svg'
+              }
+            ]
+          },
+          '5': {
+            mapImg: './assets/CodeBuddyAssets/35_1967/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_1967/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_1967/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_1967/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1967/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_1967/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_1967/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_1967/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1967/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1967/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_1967/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_1967/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_1967/8.svg'
+              }
+            ]
+          },
+          '6': {
+            mapImg: './assets/CodeBuddyAssets/35_2107/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_2107/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_2107/10.svg'
+          },
+          '7': {
+            mapImg: './assets/CodeBuddyAssets/35_2247/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_2247/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_2247/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_2247/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_2247/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_2247/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_2247/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_2247/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_2247/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_2247/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_2247/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_2247/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_2247/8.svg'
+              }
+            ]
+          },
+          '8': {
+            mapImg: './assets/CodeBuddyAssets/35_2387/11.png',
+            backIcon: './assets/CodeBuddyAssets/35_2387/9.svg',
+            arrivedIcon: './assets/CodeBuddyAssets/35_2387/10.svg',
+            checkpoints: [
+              {
+                id: 'A', icon: './assets/CodeBuddyAssets/35_2387/1.svg',
+                name: 'Mysterious items A', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_2387/2.svg', dist: '120m', locked: false
+              },
+              {
+                id: 'B', icon: './assets/CodeBuddyAssets/35_2387/3.svg',
+                name: 'Mysterious items B', hint: 'This area was discovered',
+                distIcon: './assets/CodeBuddyAssets/35_2387/4.svg', dist: '350m', locked: false
+              },
+              {
+                id: 'C', icon: './assets/CodeBuddyAssets/35_2387/5.svg',
+                name: 'Mysterious items C', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_2387/2.svg', dist: '580m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_2387/6.svg'
+              },
+              {
+                id: 'D', icon: './assets/CodeBuddyAssets/35_2387/7.svg',
+                name: 'Mysterious items D', hint: 'Discover in this area',
+                distIcon: './assets/CodeBuddyAssets/35_2387/2.svg', dist: '720m', locked: true,
+                lockIcon: './assets/CodeBuddyAssets/35_2387/8.svg'
+              }
+            ]
+          }
+        }
+      }
+      // Future routes will be added here:
+      // 'Pak Shek Kok Promenade': { ... },
+      // 'Hung Mui Kuk Hiking Trail': { ... },
+    };
+
+    function openRouteDetail(routeName) {
+      const data = ROUTE_DETAILS[routeName];
+      if (!data) {
+        showPixelConfirm(`🗺️ ${routeName} — Details coming soon!`);
+        return;
+      }
+
+      // Store current route data for checkpoint detail page access
+      currentRouteDataForCpDetail = data;
+
+      // Set map image
+      document.getElementById('routeDetailMapImg').src = data.mapImg;
+
+      // Set route name label
+      document.getElementById('routeDetailNameLabel').textContent = routeName;
+
+      // Build markers on map
+      const mapArea = document.querySelector('.route-detail-map');
+      // Remove old dynamic markers
+      mapArea.querySelectorAll('.route-map-marker-dynamic, .route-map-pin-dynamic').forEach(el => el.remove());
+      // We use the static markers in HTML for the default route (Yuen Chau Kok)
+      // For future routes, dynamic markers can be generated here
+
+      // Make markers with detail pages clickable
+      mapArea.querySelectorAll('.route-map-marker[data-marker-id]').forEach(marker => {
+        const markerId = marker.dataset.markerId;
+        if (data.markerDetails && data.markerDetails[markerId]) {
+          marker.classList.add('clickable');
+        } else {
+          marker.classList.remove('clickable');
+        }
+      });
+
+      // Build checkpoint cards
+      const grid = document.getElementById('routeCheckpointGrid');
+      grid.innerHTML = data.checkpoints.map(cp => `
+        <div class="route-checkpoint-card ${cp.locked ? 'locked' : ''}" data-checkpoint="${cp.id}" data-locked="${cp.locked}">
+          ${cp.locked && cp.lockIcon ? `<div class="route-checkpoint-lock"><img src="${cp.lockIcon}" alt="Locked"></div>` : ''}
+          <div class="route-checkpoint-icon"><img src="${cp.icon}" alt="Item ${cp.id}"></div>
+          <div class="route-checkpoint-name">${cp.name}</div>
+          <div class="route-checkpoint-hint">${cp.hint}</div>
+          <div class="route-checkpoint-dist">
+            <img src="${cp.distIcon}" alt="">
+            <span>${cp.dist}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Attach click handlers to checkpoint cards
+      grid.querySelectorAll('.route-checkpoint-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const cpId = card.dataset.checkpoint;
+          const cpData = data.checkpoints.find(c => c.id === cpId);
+          if (cpData) openCheckpointPopup(cpData);
+        });
+      });
+
+      // Reset to first tab
+      routeDetailTabs.querySelectorAll('.route-detail-tab').forEach(t => t.classList.remove('active'));
+      routeDetailTabs.querySelector('[data-tab="items"]').classList.add('active');
+      document.getElementById('routeTabItems').classList.add('active');
+      document.getElementById('routeTabDiscussion').classList.remove('active');
+
+      // Show page with slide-in animation
+      // Lock Page 6 scroll
+      pageFind.style.overflow = 'hidden';
+      routeDetailBackdrop.style.display = 'block';
+      requestAnimationFrame(() => {
+        routeDetailBackdrop.classList.add('active');
+      });
+    }
+
+    function closeRouteDetail() {
+      routeDetailBackdrop.classList.remove('active');
+      setTimeout(() => {
+        routeDetailBackdrop.style.display = 'none';
+        // Restore Page 6 scroll
+        pageFind.style.overflow = '';
+      }, 500);
+    }
+
+    // Back button
+    routeDetailBack.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeRouteDetail();
+    });
+
+    // Map marker click delegation — handles all clickable markers robustly
+    document.querySelector('.route-detail-map').addEventListener('click', (e) => {
+      const marker = e.target.closest('.route-map-marker.clickable[data-marker-id]');
+      if (!marker || !currentRouteDataForCpDetail) return;
+      e.stopPropagation();
+      const markerId = marker.dataset.markerId;
+      if (currentRouteDataForCpDetail.markerDetails && currentRouteDataForCpDetail.markerDetails[markerId]) {
+        openCheckpointDetail(markerId, currentRouteDataForCpDetail);
+      }
+    });
+
+    // Tab switching
+    routeDetailTabs.addEventListener('click', (e) => {
+      const tab = e.target.closest('.route-detail-tab');
+      if (!tab) return;
+
+      routeDetailTabs.querySelectorAll('.route-detail-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const tabName = tab.dataset.tab;
+      document.getElementById('routeTabItems').classList.toggle('active', tabName === 'items');
+      document.getElementById('routeTabDiscussion').classList.toggle('active', tabName === 'discussion');
+    });
+
+    // ===== CHECKPOINT DETAIL PAGE LOGIC =====
+    function openCheckpointDetail(markerId, routeData) {
+      const markerData = routeData.markerDetails[markerId];
+      if (!markerData) return;
+
+      // Set zoomed map image
+      document.getElementById('checkpointDetailMapImg').src = markerData.mapImg;
+
+      // Reset "I got here!" button state for new checkpoint
+      checkpointDetailArrivedBtn.classList.remove('checked-in');
+      checkpointDetailArrivedBtn.innerHTML = '<span>&nbsp;&nbsp;I got here!</span><img src="./assets/CodeBuddyAssets/35_2107/10.svg" alt="">';
+
+      // Use marker-specific checkpoints if available, otherwise fall back to route checkpoints
+      const cpList = markerData.checkpoints || routeData.checkpoints;
+
+      // Build checkpoint cards in the detail page
+      const cpGrid = document.getElementById('cpDetailCheckpointGrid');
+      cpGrid.innerHTML = cpList.map(cp => `
+        <div class="route-checkpoint-card ${cp.locked ? 'locked' : ''}" data-checkpoint="${cp.id}" data-locked="${cp.locked}">
+          ${cp.locked && cp.lockIcon ? `<div class="route-checkpoint-lock"><img src="${cp.lockIcon}" alt="Locked"></div>` : ''}
+          <div class="route-checkpoint-icon"><img src="${cp.icon}" alt="Item ${cp.id}"></div>
+          <div class="route-checkpoint-name">${cp.name}</div>
+          <div class="route-checkpoint-hint">${cp.hint}</div>
+          <div class="route-checkpoint-dist">
+            <img src="${cp.distIcon}" alt="">
+            <span>${cp.dist}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Attach click handlers to checkpoint cards (open popup)
+      cpGrid.querySelectorAll('.route-checkpoint-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const cpId = card.dataset.checkpoint;
+          const cpData = cpList.find(c => c.id === cpId);
+          if (cpData) openCheckpointPopup(cpData);
+        });
+      });
+
+      // Reset to first tab
+      checkpointDetailTabs.querySelectorAll('.checkpoint-detail-tab').forEach(t => t.classList.remove('active'));
+      checkpointDetailTabs.querySelector('[data-tab="items"]').classList.add('active');
+      document.getElementById('cpDetailTabItems').classList.add('active');
+      document.getElementById('cpDetailTabDiscussion').classList.remove('active');
+
+      // Show checkpoint detail page with slide-in animation
+      checkpointDetailBackdrop.style.display = 'block';
+      requestAnimationFrame(() => {
+        checkpointDetailBackdrop.classList.add('active');
+      });
+    }
+
+    function closeCheckpointDetail() {
+      checkpointDetailBackdrop.classList.remove('active');
+      setTimeout(() => {
+        checkpointDetailBackdrop.style.display = 'none';
+      }, 500);
+    }
+
+    // Back button — returns to route detail page
+    checkpointDetailBack.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeCheckpointDetail();
+    });
+
+    // Tab switching for checkpoint detail page
+    checkpointDetailTabs.addEventListener('click', (e) => {
+      const tab = e.target.closest('.checkpoint-detail-tab');
+      if (!tab) return;
+
+      checkpointDetailTabs.querySelectorAll('.checkpoint-detail-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const tabName = tab.dataset.tab;
+      document.getElementById('cpDetailTabItems').classList.toggle('active', tabName === 'items');
+      document.getElementById('cpDetailTabDiscussion').classList.toggle('active', tabName === 'discussion');
+    });
+
+    // "I got here!" button action — opens camera for check-in
+    checkpointDetailArrivedBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Don't open camera if already checked in
+      if (checkpointDetailArrivedBtn.classList.contains('checked-in')) return;
+      openCamera();
+    });
+
+    // ===== CAMERA OVERLAY LOGIC =====
+    const cameraOverlay = document.getElementById('cameraOverlay');
+    const cameraPage = document.getElementById('cameraPage');
+    const cameraCloseBtn = document.getElementById('cameraCloseBtn');
+    const cameraCaptureBtn = document.getElementById('cameraCaptureBtn');
+    const cameraRetakeBtn = document.getElementById('cameraRetakeBtn');
+    const cameraConfirmBtn = document.getElementById('cameraConfirmBtn');
+    const cameraFlash = document.getElementById('cameraFlash');
+    const cameraPreviewImg = document.getElementById('cameraPreviewImg');
+
+    // Simulated photo set (pixel-style nature scenes)
+    const SIM_PHOTOS = [
+      'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="402" height="520" viewBox="0 0 402 520"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#2E7D32"/></linearGradient></defs><rect fill="url(#g)" width="402" height="520"/><text x="201" y="220" text-anchor="middle" font-family="Pixelify Sans,sans-serif" font-size="60" fill="rgba(255,255,255,0.9)">🌳</text><text x="201" y="300" text-anchor="middle" font-family="Pixelify Sans,sans-serif" font-size="20" fill="rgba(255,255,255,0.8)">Yuen Chau Kok Park</text><text x="201" y="340" text-anchor="middle" font-family="Pixelify Sans,sans-serif" font-size="14" fill="rgba(255,255,255,0.6)">Check-in Photo 📸</text><rect x="50" y="380" width="302" height="4" rx="2" fill="rgba(255,255,255,0.2)"/><text x="201" y="420" text-anchor="middle" font-family="Pixelify Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.4)">' + new Date().toLocaleDateString() + '</text></svg>')
+    ];
+
+    function openCamera() {
+      // Reset camera to capture mode
+      cameraPage.classList.remove('camera-preview-mode');
+      cameraOverlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        cameraOverlay.classList.add('active');
+      });
+    }
+
+    function closeCamera() {
+      cameraOverlay.classList.remove('active');
+      setTimeout(() => {
+        cameraOverlay.style.display = 'none';
+        cameraPage.classList.remove('camera-preview-mode');
+      }, 350);
+    }
+
+    function capturePhoto() {
+      // Flash effect
+      cameraFlash.classList.add('flash-active');
+      setTimeout(() => {
+        cameraFlash.classList.remove('flash-active');
+      }, 150);
+
+      // After flash, show preview
+      setTimeout(() => {
+        cameraPreviewImg.src = SIM_PHOTOS[0];
+        cameraPage.classList.add('camera-preview-mode');
+      }, 200);
+    }
+
+    function confirmPhoto() {
+      // Close camera
+      closeCamera();
+
+      // Mark as checked in on the "I got here!" button
+      setTimeout(() => {
+        const btn = checkpointDetailArrivedBtn;
+        btn.classList.add('checked-in');
+        btn.innerHTML = '<span>✓ Checked in!</span>';
+
+        showPixelConfirm('📍 Check-in successful! Great exploration!');
+      }, 400);
+    }
+
+    // Camera event listeners
+    cameraCloseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeCamera();
+    });
+
+    cameraCaptureBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      capturePhoto();
+    });
+
+    cameraRetakeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Back to capture mode
+      cameraPage.classList.remove('camera-preview-mode');
+    });
+
+    cameraConfirmBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      confirmPhoto();
+    });
+
+    // --- Checkpoint popup ---
+    function openCheckpointPopup(cpData) {
+      document.getElementById('checkpointPopupIcon').querySelector('img').src = cpData.icon;
+      document.getElementById('checkpointPopupName').textContent = cpData.name;
+      document.getElementById('checkpointPopupHint').textContent = cpData.hint;
+      document.getElementById('checkpointPopupDist').textContent = cpData.dist;
+      document.getElementById('checkpointPopupDistIcon').src = cpData.distIcon;
+
+      const statusEl = document.getElementById('checkpointPopupStatus');
+      if (cpData.locked) {
+        statusEl.className = 'checkpoint-popup-status locked-status';
+        statusEl.textContent = '🔒 Keep walking to unlock';
+      } else {
+        statusEl.className = 'checkpoint-popup-status unlocked';
+        statusEl.textContent = '✓ Discovered';
+      }
+
+      checkpointPopupBackdrop.style.display = 'flex';
+      requestAnimationFrame(() => {
+        checkpointPopupBackdrop.classList.add('active');
+      });
+    }
+
+    function closeCheckpointPopup() {
+      checkpointPopupBackdrop.classList.remove('active');
+      setTimeout(() => {
+        checkpointPopupBackdrop.style.display = 'none';
+      }, 350);
+    }
+
+    checkpointPopupClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeCheckpointPopup();
+    });
+
+    checkpointPopupBackdrop.addEventListener('click', (e) => {
+      if (e.target === checkpointPopupBackdrop) closeCheckpointPopup();
+    });
+
+    // ===== WEATHER RECOMMENDATION POPUP =====
+    const weatherPopupBackdrop = document.getElementById('weatherPopupBackdrop');
+    const weatherPopupClose = document.getElementById('weatherPopupClose');
+    const weatherLoading = document.getElementById('weatherLoading');
+    const weatherContent = document.getElementById('weatherContent');
+    const weatherRecCard = document.getElementById('weatherRecCard');
+    let weatherPopupShown = false; // only show once per session
+
+    // Route data for weather matching
+    const ROUTES = [
+      {
+        name: 'Yuen Chau Kok Park',
+        img: './assets/CodeBuddyAssets/0_581/12.png',
+        difficulty: 'EASY',
+        badgeClass: 'badge-easy',
+        // Best in: mild, warm, any condition — short easy walk
+        idealTempMin: 15, idealTempMax: 35,
+        idealConditions: ['sunny', 'cloudy', 'fine', 'haze', 'partly cloudy'],
+        reason: {
+          hot: 'Short shaded hill walk — great for hot days!',
+          cool: 'Gentle trail with views — perfect weather for it!',
+          rainy: 'Quick sheltered route — manageable even in rain!',
+          default: 'Perfect weather for a gentle hill walk!'
+        }
+      },
+      {
+        name: 'Pak Shek Kok Promenade',
+        img: './assets/CodeBuddyAssets/0_581/14.png',
+        difficulty: 'EASY',
+        badgeClass: 'badge-easy',
+        // Best in: breezy, not too hot — waterfront
+        idealTempMin: 18, idealTempMax: 30,
+        idealConditions: ['sunny', 'fine', 'partly cloudy', 'cloudy', 'windy'],
+        reason: {
+          hot: 'Sea breeze along the coast keeps you cool!',
+          cool: 'Enjoy crisp air on the 2km waterfront path!',
+          rainy: 'Waterfront walk — bring an umbrella and enjoy!',
+          default: 'Lovely coastal breeze on this waterfront walk!'
+        }
+      },
+      {
+        name: 'Hung Mui Kuk Hiking Trail',
+        img: './assets/CodeBuddyAssets/0_581/13.png',
+        difficulty: 'MEDIUM',
+        badgeClass: 'badge-medium',
+        // Best in: cool, dry — more demanding hike
+        idealTempMin: 12, idealTempMax: 26,
+        idealConditions: ['sunny', 'fine', 'cloudy', 'partly cloudy'],
+        reason: {
+          hot: 'Shaded forest trail — cooler under the canopy!',
+          cool: 'Ideal hiking weather! Bayberry trees await 🌿',
+          rainy: 'Trail may be slippery — consider an easier route.',
+          default: 'Great conditions for a nature hike!'
+        }
+      }
+    ];
+
+    function openWeatherPopup() {
+      weatherPopupShown = true;
+      // Reset state
+      weatherLoading.style.display = '';
+      weatherContent.style.display = 'none';
+      // Show popup
+      weatherPopupBackdrop.style.display = 'flex';
+      requestAnimationFrame(() => {
+        weatherPopupBackdrop.classList.add('active');
+      });
+      // Fetch weather
+      fetchHongKongWeather();
+    }
+
+    function closeWeatherPopup() {
+      weatherPopupBackdrop.classList.remove('active');
+      setTimeout(() => {
+        weatherPopupBackdrop.style.display = 'none';
+      }, 400);
+    }
+
+    // Close button
+    weatherPopupClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeWeatherPopup();
+    });
+    // Click backdrop to close
+    weatherPopupBackdrop.addEventListener('click', (e) => {
+      if (e.target === weatherPopupBackdrop) closeWeatherPopup();
+    });
+
+    // Recommended card click → close popup and scroll to that route
+    weatherRecCard.addEventListener('click', () => {
+      const recName = document.getElementById('weatherRecName').textContent;
+      closeWeatherPopup();
+      // Find and highlight the matching card
+      setTimeout(() => {
+        const cards = findCards.querySelectorAll('.find-card');
+        cards.forEach(card => {
+          const cardName = card.querySelector('.find-card-name').textContent;
+          if (cardName === recName) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.style.transition = 'box-shadow 0.3s ease';
+            card.style.boxShadow = '0 0 0 3px #DBC693, 0px 4px 12px rgba(0,0,0,0.15)';
+            setTimeout(() => { card.style.boxShadow = '0px 4px 12px rgba(0,0,0,0.15)'; }, 2000);
+          }
+        });
+      }, 500);
+    });
+
+    // --- Fetch real weather from Hong Kong Observatory ---
+    async function fetchHongKongWeather() {
+      try {
+        // HK Observatory Open Data API — current weather
+        const [weatherRes, uvRes] = await Promise.allSettled([
+          fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en'),
+          fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=FLW&lang=en')
+        ]);
+
+        let temp = null, humidity = null, condition = '', uvIndex = '--', icon = '🌤';
+
+        // Parse current weather
+        if (weatherRes.status === 'fulfilled' && weatherRes.value.ok) {
+          const data = await weatherRes.value.json();
+
+          // Temperature — try to find Sha Tin area first (closest to our routes), fallback to HK Observatory
+          if (data.temperature && data.temperature.data) {
+            const shaTin = data.temperature.data.find(d => d.place === 'Sha Tin');
+            const hkObs = data.temperature.data.find(d => d.place === 'Hong Kong Observatory');
+            temp = shaTin ? shaTin.value : (hkObs ? hkObs.value : data.temperature.data[0].value);
+          }
+
+          // Humidity
+          if (data.humidity && data.humidity.data && data.humidity.data.length > 0) {
+            humidity = data.humidity.data[0].value;
+          }
+
+          // Weather icon and condition
+          if (data.icon && data.icon.length > 0) {
+            const iconCode = data.icon[0];
+            condition = getConditionFromIcon(iconCode);
+            icon = getEmojiFromIcon(iconCode);
+          }
+
+          // UV Index from uvindex field
+          if (data.uvindex && data.uvindex.data && data.uvindex.data.length > 0) {
+            uvIndex = data.uvindex.data[0].value;
+          }
+        }
+
+        // If API fails, use reasonable fallback for HK
+        if (temp === null) {
+          // HK typical March weather fallback
+          temp = 24;
+          humidity = 78;
+          condition = 'partly cloudy';
+          icon = '⛅';
+        }
+
+        // Update UI
+        document.getElementById('weatherTemp').textContent = temp + '°C';
+        document.getElementById('weatherHumidity').textContent = (humidity || '--') + '%';
+        document.getElementById('weatherIcon').textContent = icon;
+        document.getElementById('weatherUV').textContent = uvIndex;
+        document.getElementById('weatherUVIcon').textContent = getUVEmoji(uvIndex);
+
+        // Pick recommended route
+        const rec = pickRecommendedRoute(temp, condition);
+        document.getElementById('weatherRecName').textContent = rec.name;
+        document.getElementById('weatherRecImg').src = rec.img;
+        document.getElementById('weatherRecReason').textContent = rec.reasonText;
+        document.getElementById('weatherRecDifficulty').textContent = rec.difficulty;
+        document.getElementById('weatherRecDifficulty').className = 'weather-hero-badge ' + rec.badgeClass;
+
+        // Show content
+        weatherLoading.style.display = 'none';
+        weatherContent.style.display = '';
+
+      } catch (err) {
+        console.warn('Weather fetch failed, using fallback:', err);
+        // Show fallback data
+        document.getElementById('weatherTemp').textContent = '24°C';
+        document.getElementById('weatherHumidity').textContent = '78%';
+        document.getElementById('weatherIcon').textContent = '⛅';
+        document.getElementById('weatherUV').textContent = '5';
+
+        const rec = ROUTES[0]; // Default to easiest
+        document.getElementById('weatherRecName').textContent = rec.name;
+        document.getElementById('weatherRecImg').src = rec.img;
+        document.getElementById('weatherRecReason').textContent = rec.reason.default;
+        document.getElementById('weatherRecDifficulty').textContent = rec.difficulty;
+        document.getElementById('weatherRecDifficulty').className = 'weather-hero-badge ' + rec.badgeClass;
+
+        weatherLoading.style.display = 'none';
+        weatherContent.style.display = '';
+      }
+    }
+
+    // Map HK Observatory icon codes → condition string
+    function getConditionFromIcon(code) {
+      const map = {
+        50: 'sunny', 51: 'sunny', 52: 'fine', 53: 'partly cloudy',
+        54: 'partly cloudy', 60: 'cloudy', 61: 'cloudy', 62: 'rain',
+        63: 'rain', 64: 'heavy rain', 65: 'thunderstorm',
+        70: 'fine night', 71: 'fine night', 72: 'fine night',
+        73: 'partly cloudy night', 74: 'partly cloudy night',
+        75: 'cloudy night', 76: 'cloudy night',
+        77: 'rain night', 80: 'windy', 81: 'dry', 82: 'humid',
+        83: 'fog', 84: 'mist', 85: 'haze',
+        90: 'hot', 91: 'warm', 92: 'cool', 93: 'cold'
+      };
+      return map[code] || 'fair';
+    }
+
+    // Map icon codes → emoji
+    function getEmojiFromIcon(code) {
+      if ([50,51,52].includes(code)) return '☀️';
+      if ([53,54,73,74].includes(code)) return '⛅';
+      if ([60,61,75,76].includes(code)) return '☁️';
+      if ([62,63,77].includes(code)) return '🌧';
+      if ([64].includes(code)) return '🌧️';
+      if ([65].includes(code)) return '⛈️';
+      if ([70,71,72].includes(code)) return '🌙';
+      if ([80].includes(code)) return '💨';
+      if ([83,84,85].includes(code)) return '🌫';
+      if ([90].includes(code)) return '🔥';
+      if ([92,93].includes(code)) return '🧥';
+      return '🌤';
+    }
+
+    function getUVEmoji(uv) {
+      const v = parseFloat(uv);
+      if (isNaN(v)) return '☀️';
+      if (v <= 2) return '😎';
+      if (v <= 5) return '🧴';
+      if (v <= 7) return '⚠️';
+      return '🔴';
+    }
+
+    function capitalizeFirst(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    // Pick best route based on temperature and weather condition
+    function pickRecommendedRoute(temp, condition) {
+      const condLower = (condition || '').toLowerCase();
+      const isRainy = condLower.includes('rain') || condLower.includes('shower') || condLower.includes('storm');
+      const isHot = temp >= 30;
+      const isCool = temp <= 18;
+
+      let weatherType = 'default';
+      if (isRainy) weatherType = 'rainy';
+      else if (isHot) weatherType = 'hot';
+      else if (isCool) weatherType = 'cool';
+
+      // Score each route
+      let bestRoute = ROUTES[0];
+      let bestScore = -1;
+
+      ROUTES.forEach(route => {
+        let score = 0;
+
+        // Temperature fit
+        if (temp >= route.idealTempMin && temp <= route.idealTempMax) {
+          score += 10;
+        } else {
+          const dist = Math.min(Math.abs(temp - route.idealTempMin), Math.abs(temp - route.idealTempMax));
+          score += Math.max(0, 8 - dist);
+        }
+
+        // Condition match
+        if (route.idealConditions.some(c => condLower.includes(c))) {
+          score += 5;
+        }
+
+        // Rainy day? Prefer easy/sheltered routes
+        if (isRainy && route.difficulty === 'EASY') score += 4;
+        if (isRainy && route.difficulty === 'MEDIUM') score -= 3;
+
+        // Hot day? Prefer shorter/shaded routes
+        if (isHot && route.name.includes('Kok')) score += 3; // Parks are shadier
+        if (isHot && route.difficulty === 'MEDIUM') score -= 2;
+
+        // Cool day? Great for hiking
+        if (isCool && route.difficulty === 'MEDIUM') score += 5;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestRoute = route;
+        }
+      });
+
+      return {
+        name: bestRoute.name,
+        img: bestRoute.img,
+        difficulty: bestRoute.difficulty,
+        badgeClass: bestRoute.badgeClass,
+        reasonText: bestRoute.reason[weatherType] || bestRoute.reason.default
+      };
+    }
+
+    // ===== KEYBOARD =====
+    document.addEventListener('keydown', e => {
+      if (e.key==='Enter') {
+        if (pageRegister.classList.contains('visible') && nextBtn.classList.contains('active')) nextBtn.click();
+        else if (pageBodydata.classList.contains('visible') && createBtn.classList.contains('active')) createBtn.click();
+      }
+    });
+
+    // ===== TOAST =====
+    function showPixelConfirm(msg) {
+      const t = document.createElement('div');
+      t.style.cssText = `
+        position:absolute;bottom:12%;left:50%;
+        transform:translateX(-50%) translateY(20px);
+        background:linear-gradient(180deg,#FFD54F 0%,#FFCA28 100%);
+        border:3px solid #B45309; border-radius:4px;
+        box-shadow:0px 4px 0px #92400E;
+        padding:16px 24px; z-index:60;
+        font-family:'Pixelify Sans',cursive; font-size:16px; font-weight:600;
+        color:#1E2939; text-align:center; opacity:0;
+        transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        white-space:nowrap; max-width:90%;
+      `;
+      t.textContent = msg;
+      app.appendChild(t);
+      requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+      setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>t.remove(),400); }, 3000);
+    }
+
+    // ===== PREVENT ZOOM =====
+    let lastTE = 0;
+    document.addEventListener('touchend', e => { const n=Date.now(); if(n-lastTE<=300) e.preventDefault(); lastTE=n; }, false);
+
+    // ===== PRELOAD =====
+    [
+      './assets/CodeBuddyAssets/0_137/1.png','./assets/CodeBuddyAssets/0_137/2.png','./assets/CodeBuddyAssets/0_137/3.png',
+      './assets/CodeBuddyAssets/0_102/5.png','./assets/CodeBuddyAssets/0_102/6.png',
+      './assets/CodeBuddyAssets/0_141/6.png','./assets/CodeBuddyAssets/0_191/6.png',
+      './assets/CodeBuddyAssets/25_1896/45.png',
+      './assets/CodeBuddyAssets/0_342/4.png','./assets/CodeBuddyAssets/0_342/5.png',
+      './assets/CodeBuddyAssets/0_342/6.png',
+      './assets/CodeBuddyAssets/0_228/52.png',
+      './assets/CodeBuddyAssets/0_581/12.png','./assets/CodeBuddyAssets/0_581/13.png',
+      './assets/CodeBuddyAssets/0_581/14.png','./assets/CodeBuddyAssets/0_581/15.png',
+      './assets/CodeBuddyAssets/35_1301/19.png',
+      './assets/CodeBuddyAssets/35_2107/11.png',
+      './assets/CodeBuddyAssets/35_1406/11.png',
+      './assets/CodeBuddyAssets/35_1547/11.png',
+      './assets/CodeBuddyAssets/35_1687/11.png',
+      './assets/CodeBuddyAssets/35_1827/11.png',
+      './assets/CodeBuddyAssets/35_1967/11.png',
+      './assets/CodeBuddyAssets/35_2247/11.png',
+      './assets/CodeBuddyAssets/35_2387/11.png',
+      ...PETS.map(p => p.img)
+    ].forEach(s => { const i = new Image(); i.src = s; });
+  </script>
+</body>
+</html>
