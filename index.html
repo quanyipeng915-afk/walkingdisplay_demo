@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Have You Walked</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Jersey+20&family=Pixelify+Sans:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --app-scale: 1;
+    }
+
     /* ===== RESET & BASE ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -18,13 +22,21 @@
       background: #1a1a2e;
     }
 
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
     .app {
       position: relative;
-      width: 100%; height: 100%;
-      max-width: 402px;
+      width: 402px;
+      height: 874px;
+      max-width: none;
       margin: 0 auto;
       overflow: hidden;
       background: #000;
+      transform-origin: top center;
     }
 
     /* ===== PAGE SYSTEM ===== */
@@ -2255,6 +2267,8 @@
     /* ===== RESPONSIVE ===== */
     @media (min-width: 768px) {
       .app {
+        transform: none;
+        margin-top: 0;
         max-width: 402px; height: 874px;
         position: absolute; top: 50%; left: 50%;
         transform: translate(-50%,-50%);
@@ -2279,7 +2293,12 @@
       }
     }
     @media (max-width: 767px) {
-      .app { max-width: 100%; height: 100vh; height: 100dvh; }
+      .app {
+        width: 402px;
+        height: 874px;
+        max-width: none;
+        transform: scale(var(--app-scale));
+      }
       .card-base, .partner-card { padding: 24px; }
     }
     @media (max-height: 700px) {
@@ -3036,6 +3055,34 @@
   <script>
     // ===== DOM =====
     const app = document.getElementById('app');
+    const DESIGN_WIDTH = 402;
+    const DESIGN_HEIGHT = 874;
+
+    function fitAppToViewport() {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (viewportWidth >= 768) {
+        document.documentElement.style.setProperty('--app-scale', '1');
+        app.style.marginTop = '0px';
+        return;
+      }
+
+      const widthScale = viewportWidth / DESIGN_WIDTH;
+      const heightScale = viewportHeight / DESIGN_HEIGHT;
+      const appScale = Math.min(widthScale, heightScale);
+
+      document.documentElement.style.setProperty('--app-scale', String(appScale));
+
+      const scaledAppHeight = DESIGN_HEIGHT * appScale;
+      const topGap = Math.max((viewportHeight - scaledAppHeight) / 2, 0);
+      app.style.marginTop = `${topGap}px`;
+    }
+
+    window.addEventListener('resize', fitAppToViewport);
+    window.addEventListener('orientationchange', () => setTimeout(fitAppToViewport, 120));
+    fitAppToViewport();
+
     const pageLanding = document.getElementById('page-landing');
     const pageRegister = document.getElementById('page-register');
     const pageBodydata = document.getElementById('page-bodydata');
