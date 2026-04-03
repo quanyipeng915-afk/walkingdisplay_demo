@@ -8,10 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Jersey+20&family=Pixelify+Sans:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --app-scale: 1;
-    }
-
     /* ===== RESET & BASE ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -25,7 +21,7 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .app {
@@ -36,7 +32,6 @@
       margin: 0 auto;
       overflow: hidden;
       background: #000;
-      transform-origin: top center;
     }
 
     /* ===== PAGE SYSTEM ===== */
@@ -2267,8 +2262,6 @@
     /* ===== RESPONSIVE ===== */
     @media (min-width: 768px) {
       .app {
-        transform: none;
-        margin-top: 0;
         max-width: 402px; height: 874px;
         position: absolute; top: 50%; left: 50%;
         transform: translate(-50%,-50%);
@@ -2294,10 +2287,12 @@
     }
     @media (max-width: 767px) {
       .app {
-        width: 402px;
-        height: 874px;
+        width: min(100vw, calc(100dvh * 402 / 874));
+        aspect-ratio: 402 / 874;
+        height: auto;
         max-width: none;
-        transform: scale(var(--app-scale));
+        max-height: 100dvh;
+        position: relative;
       }
       .card-base, .partner-card { padding: 24px; }
     }
@@ -3055,34 +3050,6 @@
   <script>
     // ===== DOM =====
     const app = document.getElementById('app');
-    const DESIGN_WIDTH = 402;
-    const DESIGN_HEIGHT = 874;
-
-    function fitAppToViewport() {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      if (viewportWidth >= 768) {
-        document.documentElement.style.setProperty('--app-scale', '1');
-        app.style.marginTop = '0px';
-        return;
-      }
-
-      const widthScale = viewportWidth / DESIGN_WIDTH;
-      const heightScale = viewportHeight / DESIGN_HEIGHT;
-      const appScale = Math.min(widthScale, heightScale);
-
-      document.documentElement.style.setProperty('--app-scale', String(appScale));
-
-      const scaledAppHeight = DESIGN_HEIGHT * appScale;
-      const topGap = Math.max((viewportHeight - scaledAppHeight) / 2, 0);
-      app.style.marginTop = `${topGap}px`;
-    }
-
-    window.addEventListener('resize', fitAppToViewport);
-    window.addEventListener('orientationchange', () => setTimeout(fitAppToViewport, 120));
-    fitAppToViewport();
-
     const pageLanding = document.getElementById('page-landing');
     const pageRegister = document.getElementById('page-register');
     const pageBodydata = document.getElementById('page-bodydata');
