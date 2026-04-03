@@ -719,7 +719,7 @@
     /* --- Pet sprite — positioned directly on page per Figma --- */
     .main-pet-sprite {
       position: absolute;
-      left: 127px; top: 226px;
+      left: 125.5px; top: 226px;
       width: 151px; height: 178px;
       object-fit: contain; image-rendering: pixelated;
       animation: mainPetBob 3s ease-in-out infinite;
@@ -885,12 +885,13 @@
 
     /* --- Cards Collection Panel — Figma: top:557, 401×317 --- */
     .cards-panel {
-      position: absolute; top: 557px; left: 0; width: 100%;
+      position: absolute; bottom: 0; left: 0; width: 100%;
       height: 317px;
       background: #FFFBF8;
       box-shadow: 0px -4px 0px #444444;
       border-radius: 4px;
       overflow: hidden; z-index: 15;
+      pointer-events: auto;
     }
     .cards-panel-header {
       padding: 15px 16px 0;
@@ -905,6 +906,7 @@
       overflow-x: auto; overflow-y: hidden;
       scroll-snap-type: x proximity;
       -webkit-overflow-scrolling: touch;
+      pointer-events: auto;
     }
     .cards-scroll::-webkit-scrollbar { height: 4px; }
     .cards-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -977,6 +979,8 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      z-index: 3;
+      pointer-events: auto;
     }
     .card-translated-btn:hover {
       transform: translateY(-1px);
@@ -2513,7 +2517,7 @@
     <!-- PAGE 5: MAIN GAMEPLAY -->
     <div id="page-main" class="page hidden page-main">
       <!-- Full-page ocean background (clean — no UI baked in) -->
-      <img class="main-bg" src="./assets/CodeBuddyAssets/25_1896/45.png" alt="Underwater world">
+      <img class="main-bg" src="./assets/CodeBuddyAssets/25_1896/1.png" alt="Underwater world">
 
       <!-- Left triangle toggle → status bar -->
       <button class="tri-toggle tri-toggle-left" id="triToggleLeft" aria-label="Toggle status bar"></button>
